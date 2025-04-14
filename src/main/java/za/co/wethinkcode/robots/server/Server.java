@@ -1,44 +1,66 @@
 package za.co.wethinkcode.robots.server;
 
-
+import za.co.wethinkcode.flow.Recorder;
 
 import java.io.*;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-public class Server implements Runnable {
+public class Server {
 
-    public static final int PORT = 5000;
-    private final BufferedReader in;
-    private final PrintStream out;
-    private final String clientMachine;
+    public static void main(String[] args) throws IOException {
+//        throw new UnsupportedOperationException( "TODO" );
 
-    public Server(Socket socket) throws IOException {
-        clientMachine = socket.getInetAddress().getHostName();
-        System.out.println("Connection from " + clientMachine);
+        Socket socket = null;
+        InputStreamReader inputStreamReader = null;
+        OutputStreamWriter outputStreamWriter = null;
+        BufferedReader bufferedReader = null;
+        BufferedWriter bufferedWriter = null;
+        ServerSocket serverSocket = null;
 
-        out = new PrintStream(socket.getOutputStream());
-        in = new BufferedReader(new InputStreamReader(
-                socket.getInputStream()));
-        System.out.println("Waiting for client...");
-    }
+        serverSocket = new ServerSocket(1234);
 
-    public void run() {
-        try {
-            String messageFromClient;
-            while((messageFromClient = in.readLine()) != null) {
-                System.out.println("Message \"" + messageFromClient + "\" from " + clientMachine);
-                out.println("Thanks for this message: "+messageFromClient);
+        while (true){
+            try{
+                socket = serverSocket.accept();
+
+                inputStreamReader= new InputStreamReader(socket.getInputStream());
+                outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
+                bufferedReader = new BufferedReader(inputStreamReader);
+                bufferedWriter = new BufferedWriter(outputStreamWriter);
+
+                while (true){
+                    System.out.println("Client connected.");
+                    String msgFromClient = bufferedReader.readLine();
+                    System.out.println("Client: "+msgFromClient);
+
+                    bufferedWriter.write("msg received");
+                    bufferedWriter.newLine();
+                    bufferedWriter.flush();
+
+                    if(msgFromClient.equalsIgnoreCase("BYE"))
+                        break;
+
+                }
+
+                socket.close();
+                inputStreamReader.close();
+                bufferedWriter.close();
+                bufferedReader.close();
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch(IOException ex) {
-            System.out.println("Shutting down single client server");
-        } finally {
-            closeQuietly();
         }
+
+
+
     }
 
-    private void closeQuietly() {
-        try { in.close(); out.close();
-        } catch(IOException ex) {}
+    // The following initialisation is REQUIRED for `flow` monitoring.
+    // DO NOT REMOVE OR MODIFY THIS CODE.
+    static {
+        new Recorder().logRun();
     }
+
 }
-
