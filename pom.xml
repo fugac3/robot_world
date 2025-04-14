@@ -21,6 +21,14 @@
         <version.slf4j>2.0.17</version.slf4j>
         <version.surefire>2.22.1</version.surefire>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <dependencies>
         <dependency>
