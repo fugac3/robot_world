@@ -20,47 +20,51 @@ public class Server {
 
         serverSocket = new ServerSocket(1234);
 
-        while (true){
-            try{
+        while (true) {
+            try {
                 socket = serverSocket.accept();
 
-                inputStreamReader= new InputStreamReader(socket.getInputStream());
+                inputStreamReader = new InputStreamReader(socket.getInputStream());
                 outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
                 bufferedReader = new BufferedReader(inputStreamReader);
                 bufferedWriter = new BufferedWriter(outputStreamWriter);
 
-                while (true){
-                    System.out.println("Client connected.");
+                System.out.println("Client connected.");
+                while (true) {
                     String msgFromClient = bufferedReader.readLine();
-                    System.out.println("Client: "+msgFromClient);
+                    if (msgFromClient == null) break;
+                    System.out.println("Client: " + msgFromClient);
 
                     bufferedWriter.write("msg received");
                     bufferedWriter.newLine();
                     bufferedWriter.flush();
 
-                    if(msgFromClient.equalsIgnoreCase("BYE"))
+                    if (msgFromClient.equalsIgnoreCase("BYE")) {
                         break;
+                    }
 
                 }
 
-                socket.close();
-                inputStreamReader.close();
-                bufferedWriter.close();
-                bufferedReader.close();
 
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+            } finally {
+                // Ensure resources are cleaned up, even if an error occurs
+                try {
+                    if (socket != null && !socket.isClosed()) socket.close();
+                    if (bufferedReader != null) bufferedReader.close();
+                    if (bufferedWriter != null) bufferedWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+
+
+            // The following initialisation is REQUIRED for `flow` monitoring.
+            // DO NOT REMOVE OR MODIFY THIS CODE.
         }
-
-
-
     }
-
-    // The following initialisation is REQUIRED for `flow` monitoring.
-    // DO NOT REMOVE OR MODIFY THIS CODE.
     static {
         new Recorder().logRun();
     }
-
 }
