@@ -10,60 +10,24 @@ public class Server {
 
     public static void main(String[] args) throws IOException {
 //        throw new UnsupportedOperationException( "TODO" );
+        int port = 1235;
 
-        Socket socket = null;
-        InputStreamReader inputStreamReader = null;
-        OutputStreamWriter outputStreamWriter = null;
-        BufferedReader bufferedReader = null;
-        BufferedWriter bufferedWriter = null;
-        ServerSocket serverSocket = null;
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Server started. Listening on port " + port);
+            while (true) {
 
-        serverSocket = new ServerSocket(1234);
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("New client connected.");
 
-        while (true) {
-            try {
-                socket = serverSocket.accept();
+                // Handle each client in a new thread
+                ClientHandler handler = new ClientHandler(clientSocket);
+                new Thread(handler).start();
 
-                inputStreamReader = new InputStreamReader(socket.getInputStream());
-                outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
-                bufferedReader = new BufferedReader(inputStreamReader);
-                bufferedWriter = new BufferedWriter(outputStreamWriter);
-
-                System.out.println("Client connected.");
-                while (true) {
-                    String msgFromClient = bufferedReader.readLine();
-                    if (msgFromClient == null) break;
-                    System.out.println("Client: " + msgFromClient);
-
-                    bufferedWriter.write("msg received");
-                    bufferedWriter.newLine();
-                    bufferedWriter.flush();
-
-                    if (msgFromClient.equalsIgnoreCase("BYE")) {
-                        break;
-                    }
-
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                // Ensure resources are cleaned up, even if an error occurs
-                try {
-                    if (socket != null && !socket.isClosed()) socket.close();
-                    if (bufferedReader != null) bufferedReader.close();
-                    if (bufferedWriter != null) bufferedWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
-
-
-            // The following initialisation is REQUIRED for `flow` monitoring.
-            // DO NOT REMOVE OR MODIFY THIS CODE.
         }
     }
+    // The following initialisation is REQUIRED for `flow` monitoring.
+    // DO NOT REMOVE OR MODIFY THIS CODE.
     static {
         new Recorder().logRun();
     }
