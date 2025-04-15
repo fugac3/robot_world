@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+//  allows handling multiple clients at the same time
 class ClientHandler implements Runnable {
     private final Socket socket;
 
@@ -25,7 +26,8 @@ class ClientHandler implements Runnable {
                 writer.newLine();
                 writer.flush();
 
-                if (msgFromClient.equalsIgnoreCase("BYE")) {
+                if (msgFromClient.equalsIgnoreCase("SHUTDOWN")) {
+                    System.out.println("Shutdown command received.");
                     break;
                 }
             }

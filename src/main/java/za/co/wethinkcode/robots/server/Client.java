@@ -8,6 +8,9 @@ import java.util.Scanner;
 public class Client {
     public static void main(String[] args) {
 
+
+        PortNum portNum = new PortNum(4433);
+
         Socket socket = null;
 //        InputStreamReader inputStreamReader = null;  //byte based
 //        OutputStreamWriter outputStreamWriter = null;    // char based output stream. byte to char stream
@@ -15,7 +18,8 @@ public class Client {
         BufferedWriter bufferedWriter = null;    // Not good for files of text
 
         try {
-            socket = new Socket("localhost", 4444);
+            socket = new Socket("localhost", portNum.getPort());
+//            socket = new Socket("localhost", portNum.getPort());
             System.out.println("Connected to server.");
 
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //End in Stream is byte     //Not end in Stream so = char

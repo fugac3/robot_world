@@ -20,13 +20,16 @@ public class SimpleServerOLD {
 
         serverSocket = new ServerSocket(4444);
 
+//        flag for client wanting to shut down the server
         boolean serverRunning = true;
+
         while (serverRunning) {
             try {
                 socket = serverSocket.accept();
                                           // char <-- to      // <-- bytes
                 inputStreamReader = new InputStreamReader(socket.getInputStream());
                 outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
+//                Groups the char to all be sent at once
                 bufferedReader = new BufferedReader(inputStreamReader);
                 bufferedWriter = new BufferedWriter(outputStreamWriter);
 
@@ -36,12 +39,14 @@ public class SimpleServerOLD {
                     System.out.println("Client: " + msgFromClient);
 
                     bufferedWriter.write("msg received");
+//                    client reads with readline(). without client would hang waiting forever.
                     bufferedWriter.newLine();
+//                    flush sends the data in the buffer
                     bufferedWriter.flush();
 
-                    if (msgFromClient.equalsIgnoreCase("BYE")) {
-                        serverSocket.close();
+                    if (msgFromClient.equalsIgnoreCase("SHUTDOWN")) {
                         System.out.println("Server shutting down");
+                        serverSocket.close();
                         serverRunning = false;
                         break;
                     }
@@ -63,10 +68,10 @@ public class SimpleServerOLD {
             }
 
 
-            // The following initialisation is REQUIRED for flow monitoring.
-            // DO NOT REMOVE OR MODIFY THIS CODE.
         }
     }
+    // The following initialisation is REQUIRED for flow monitoring.
+    // DO NOT REMOVE OR MODIFY THIS CODE.
     static {
         new Recorder().logRun();
     }

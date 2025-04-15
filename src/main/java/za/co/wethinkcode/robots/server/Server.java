@@ -8,12 +8,21 @@ import java.net.Socket;
 
 public class Server {
 
+//    ================ HOW TO RUN ======================   //
+//    use to run in terminal
+//    in: /path/to/oop-ex-toy-robot-group$
+//    java -cp target/classes za.co.wethinkcode.robots.server.Server
+//    java -cp target/classes za.co.wethinkcode.robots.server.Client
+//    ==================================================   //
+
     public static void main(String[] args) throws IOException {
 //        throw new UnsupportedOperationException( "TODO" );
-        int port = 1235;
+//        int port = 1234;
+        PortNum portNum = new PortNum(4433);
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server started. Listening on port " + port);
+//        create a server that can listen for incoming client connections
+        try (ServerSocket serverSocket = new ServerSocket(portNum.getPort())) {
+            System.out.println("Server started. Listening on port " + portNum.getPort());
             while (true) {
 
                 Socket clientSocket = serverSocket.accept();
