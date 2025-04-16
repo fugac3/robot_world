@@ -32,7 +32,7 @@ public class ServerTest {
 
     @Test
     public void testClientServerConnection() {
-        try (Socket socket = new Socket("localhost", 1234)) {
+        try (Socket socket = new Socket("localhost", 4433)) {
             assertTrue(socket.isConnected());
         } catch (IOException e) {
             fail("Could not connect to server");
@@ -42,7 +42,7 @@ public class ServerTest {
     @Test
     public void testMessageExchange() {
         try (
-                Socket socket = new Socket("localhost", 1234);
+                Socket socket = new Socket("localhost", 4433);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
@@ -63,7 +63,7 @@ public class ServerTest {
     @Test
     public void testClientLogoff() {
         try (
-                Socket socket = new Socket("localhost", 1234);
+                Socket socket = new Socket("localhost", 4433);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
