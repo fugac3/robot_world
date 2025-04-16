@@ -9,7 +9,7 @@ import za.co.wethinkcode.*;
 
 import java.util.*;
 
-public class SimpleMazeRunner implements   MazeRunner{
+public class SimpleMazeRunner implements  MazeRunner{
     private final ArrayList<Position> routeToEdge = new ArrayList<>();
     private final ArrayList<String> path = new ArrayList<>();
     private static int stepCount = 0;
