@@ -8,62 +8,37 @@ import java.net.Socket;
 
 public class Server {
 
+//    ================ HOW TO RUN ======================   //
+//    use to run in terminal
+//    in: /path/to/oop-ex-toy-robot-group$
+//    java -cp target/classes za.co.wethinkcode.robots.server.Server
+//    java -cp target/classes za.co.wethinkcode.robots.server.Client
+//    ==================================================   //
+
     public static void main(String[] args) throws IOException {
 //        throw new UnsupportedOperationException( "TODO" );
+//        int port = 1234;
+        PortNum portNum = new PortNum(4433);
+//        listen for incoming client connections
+        try (ServerSocket serverSocket = new ServerSocket(portNum.getPort())) {
+            System.out.println("Server started. Listening on port " + portNum.getPort());
+            while (true) {
 
-        Socket socket = null;
-        InputStreamReader inputStreamReader = null;
-        OutputStreamWriter outputStreamWriter = null;
-        BufferedReader bufferedReader = null;
-        BufferedWriter bufferedWriter = null;
-        ServerSocket serverSocket = null;
+//              ServerSocket = the doorman
+//              accept() = opens the door
+//              Socket = room where the client and server can talk.
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("New client connected.");
 
-        serverSocket = new ServerSocket(1234);
+                // Handle each client in a new thread
+                ClientHandler handler = new ClientHandler(clientSocket);
+                new Thread(handler).start();
 
-        while (true) {
-            try {
-                socket = serverSocket.accept();
-
-                inputStreamReader = new InputStreamReader(socket.getInputStream());
-                outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
-                bufferedReader = new BufferedReader(inputStreamReader);
-                bufferedWriter = new BufferedWriter(outputStreamWriter);
-
-                System.out.println("Client connected.");
-                while (true) {
-                    String msgFromClient = bufferedReader.readLine();
-                    if (msgFromClient == null) break;
-                    System.out.println("Client: " + msgFromClient);
-
-                    bufferedWriter.write("msg received");
-                    bufferedWriter.newLine();
-                    bufferedWriter.flush();
-
-                    if (msgFromClient.equalsIgnoreCase("BYE")) {
-                        break;
-                    }
-
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                // Ensure resources are cleaned up, even if an error occurs
-                try {
-                    if (socket != null && !socket.isClosed()) socket.close();
-                    if (bufferedReader != null) bufferedReader.close();
-                    if (bufferedWriter != null) bufferedWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
-
-
-            // The following initialisation is REQUIRED for `flow` monitoring.
-            // DO NOT REMOVE OR MODIFY THIS CODE.
         }
     }
+    // The following initialisation is REQUIRED for `flow` monitoring.
+    // DO NOT REMOVE OR MODIFY THIS CODE.
     static {
         new Recorder().logRun();
     }
