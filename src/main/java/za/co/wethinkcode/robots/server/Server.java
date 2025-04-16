@@ -19,12 +19,14 @@ public class Server {
 //        throw new UnsupportedOperationException( "TODO" );
 //        int port = 1234;
         PortNum portNum = new PortNum(4433);
-
-//        create a server that can listen for incoming client connections
+//        listen for incoming client connections
         try (ServerSocket serverSocket = new ServerSocket(portNum.getPort())) {
             System.out.println("Server started. Listening on port " + portNum.getPort());
             while (true) {
 
+//              ServerSocket = the doorman
+//              accept() = opens the door
+//              Socket = room where the client and server can talk.
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New client connected.");
 

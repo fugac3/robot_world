@@ -27,6 +27,15 @@ public class Client {
 
             Scanner scanner = new Scanner(System.in);
 
+            String clientName;
+            System.out.println("Enter your name: ");
+            clientName = scanner.nextLine();
+            System.out.println("Hello: "+ clientName);
+
+            bufferedWriter.write(clientName);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+
             while (true) {
 
                 String msgToSend = scanner.nextLine();

@@ -22,6 +22,7 @@ public class SimpleServerOLD {
 
 //        flag for client wanting to shut down the server
         boolean serverRunning = true;
+        System.out.println("Server started. Listening on port " + serverSocket);
 
         while (serverRunning) {
             try {
