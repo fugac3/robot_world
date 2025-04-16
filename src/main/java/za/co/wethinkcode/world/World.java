@@ -1,6 +1,7 @@
 package za.co.wethinkcode.world;
 
 import java.util.List;
+import za.co.wethinkcode.Position;
 // configuration to connect with the world
 /**
  * Your Text and Turtle worlds must implement this interface.

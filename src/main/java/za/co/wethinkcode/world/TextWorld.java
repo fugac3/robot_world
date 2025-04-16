@@ -6,5 +6,4 @@ public class TextWorld {
     public TextWorld(Maze maze) {
         super(maze);
     }
-
 }
