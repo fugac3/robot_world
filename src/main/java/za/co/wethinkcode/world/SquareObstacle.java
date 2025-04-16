@@ -1,4 +1,6 @@
 package za.co.wethinkcode.world;
+import za.co.wethinkcode.Position;
+import java.util.ArrayList;
 
 public class SquareObstacle implements Obstacle{
     private int x;

@@ -1,6 +1,6 @@
 package za.co.wethinkcode.world;
 
-//import Position;
+import za.co.wethinkcode.Position;
 
 /**
  * Defines an interface for obstacles you want to place in your world.
