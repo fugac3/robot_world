@@ -3,7 +3,7 @@ package za.co.wethinkcode.robots.commands;
 import za.co.wethinkcode.robots.robot.Robot;
 
 public abstract class Command {
-    private final String name;
+    private String name;
     public String argument;
 
     public abstract boolean execute(Robot target);
@@ -20,6 +20,10 @@ public abstract class Command {
 
     public String getName() {                                                                           //<2>
         return name;
+    }
+
+    public void setName(String newName){
+        this.name = newName;
     }
 
     public String getArgument() {

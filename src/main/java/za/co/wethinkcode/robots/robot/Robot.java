@@ -13,10 +13,10 @@ public class Robot {
 //  top left of where the world end.
     private final Position TOP_LEFT = new Position(-200,100);
 
-//    Bottom right of where the world start.
+//  Bottom right of where the world start.
     private final Position BOTTOM_RIGHT = new Position(100,-200);
 
-// The center of where the world where the robot will start.
+//  The center of where the world where the robot will start.
     public static final Position CENTRE = new Position(0,0);
 
 //  The direction of where the robot will be facing as a starting point.
@@ -31,7 +31,7 @@ public class Robot {
 //  This  attribute inherit from the interface so that the can hiden unessesary details.
     private final IWorld world;
 
-// This attribute is set to list so that it can store the commands
+//  This attribute is set to list so that it can store the commands
     private final List<String> commands;
 
     public Robot(String name) {
@@ -132,7 +132,7 @@ public class Robot {
         this.currentDirection = this.currentDirection.turnRight();
     }
 
-    //   Making a bot to be able to turn left.
+//    Making a bot to be able to turn left.
     public void turnLeft() {
         this.currentDirection = this.currentDirection.turnLeft();
     }
