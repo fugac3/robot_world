@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robots.world;
 
 import za.co.wethinkcode.robots.robot.Position;
+import za.co.wethinkcode.robots.robot.Robot;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * Your Text and Turtle worlds must implement this interface.
  */
 public interface IWorld {
-    boolean blocksPath(Position a, Position b);
+    boolean blocksPath(Position a, Position b, Robot bot);
 
     void setPosition(Position newPosition);
 

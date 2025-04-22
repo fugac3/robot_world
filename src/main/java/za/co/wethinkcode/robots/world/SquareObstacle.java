@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robots.world;
 
 import za.co.wethinkcode.robots.robot.Position;
+import za.co.wethinkcode.robots.robot.Robot;
 
 public class SquareObstacle implements Obstacle {
 
@@ -45,7 +46,7 @@ public class SquareObstacle implements Obstacle {
     }
 
     @Override
-    public boolean blocksPath(Position a, Position b) {
+    public boolean blocksPath(Position a, Position b, Robot bot) {
         // simulate movement from a to b and check if any point intersects the obstacle
         // d(x/y) will be 1 if moving right, -1 if moving left, 0 if not moving in vertices
         // checks all comparison conditions >,<,=
@@ -56,7 +57,7 @@ public class SquareObstacle implements Obstacle {
         int y = a.getY();
 
         // Walk from start to just before the destination
-        while (x != b.getX() || y != b.getY()) {
+        while (x != b.getX() || y != b.getY()  && bot == bot ) {
             if (blocksPosition(new Position(x, y))) {
                 return true;
             }

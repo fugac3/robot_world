@@ -11,12 +11,21 @@ public class Play {
         scanner = new Scanner(System.in);
         Robot robot;
 
-        String name = getInput("What do you want to name your robot?");
+
+
+        String name = getInput("What do you want to name your first robot?");
         robot = new Robot(name);
         System.out.println("Hello Kiddo!");
 
         System.out.println(robot);
 
+
+// second robot
+        String bot2 = getInput("What do you want to name your second robot?");
+        robot = new Robot(bot2);
+        System.out.println("Hello Kiddo!");
+
+        System.out.println(robot);
 
 //        TextWorld world = new TextWorld("My Toy World");
         robot.getWorld().showObstacles();
@@ -25,6 +34,7 @@ public class Play {
         boolean shouldContinue = true;
         do {
             String instruction = getInput(robot.getName() + "> What must I do next?").strip().toLowerCase();
+            String instruction2 = getInput(robot.getName() + "> What must I do next?").strip().toLowerCase();
             try {
                 command = Command.create(instruction);
 

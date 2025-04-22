@@ -44,6 +44,7 @@ public class Robot {
         this.world = new TextWorld();
     }
 
+
     public boolean updatePosition(int nrSteps){
 
 //      Setting the position according to the starting position in y.
@@ -72,9 +73,10 @@ public class Robot {
 
 //      if the position is set correctly from switch then it must be set to the new position
         Position newPosition = new Position(newX,  newY);
+        Robot newBot = new Robot("bot");
 
 //      while the bot is moving even check the blocked position then return the position.
-        if (world.blocksPath(this.world.getPosition(), newPosition)) {
+        if (world.blocksPath(this.world.getPosition(), newPosition,newBot)) {
             this.setStatus("Sorry, there's an obstacle in the way.");
             return false;
         }

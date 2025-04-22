@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robots.world;
 
 import za.co.wethinkcode.robots.robot.Position;
+import za.co.wethinkcode.robots.robot.Robot;
 //import za.co.wethinkcode.robot.position;
 
 
@@ -19,9 +20,9 @@ public class TextWorld extends AbstractWorld{
 
 
     @Override
-    public boolean blocksPath(Position start, Position end) {
+    public boolean blocksPath(Position start, Position end , Robot bot) {
         for (Obstacle o : obstacles) {
-            if (o.blocksPath(start, end)) {
+            if (o.blocksPath(start, end ,bot)) {
                 return true;
             }
         }
