@@ -3,6 +3,8 @@ package za.co.wethinkcode.robots.world;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
+import java.util.List;
+
 /**
  * Defines an interface for obstacles you want to place in your world.
  */
@@ -42,5 +44,5 @@ public interface Obstacle {
      * @param b second position
      * @return `true` if this obstacle is in the way
      */
-    boolean blocksPath(Position a, Position b , Robot bot);
+    boolean blocksPath(Position a, Position b, Robot movingRobot, List<Robot> allRobots);
 }

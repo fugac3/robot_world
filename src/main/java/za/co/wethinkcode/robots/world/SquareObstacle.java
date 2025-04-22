@@ -3,6 +3,8 @@ package za.co.wethinkcode.robots.world;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
+import java.util.List;
+
 public class SquareObstacle implements Obstacle {
 
     private final int bottomLeftX;
@@ -46,28 +48,42 @@ public class SquareObstacle implements Obstacle {
     }
 
     @Override
-    public boolean blocksPath(Position a, Position b, Robot bot) {
-        // simulate movement from a to b and check if any point intersects the obstacle
-        // d(x/y) will be 1 if moving right, -1 if moving left, 0 if not moving in vertices
-        // checks all comparison conditions >,<,=
+    public boolean blocksPath(Position a, Position b, Robot movingRobot, List<Robot> allRobots) {
         int dx = Integer.compare(b.getX(), a.getX());
         int dy = Integer.compare(b.getY(), a.getY());
 
         int x = a.getX();
         int y = a.getY();
 
-        // Walk from start to just before the destination
-        while (x != b.getX() || y != b.getY()  && bot == bot ) {
-            if (blocksPosition(new Position(x, y))) {
+        while (x != b.getX() || y != b.getY()) {
+            Position current = new Position(x, y);
+
+            // Check for collisions with square obstacle
+            if (blocksPosition(current)) {
                 return true;
             }
-            x += dx;
-            y += dy;
+
+            // Check for collisions with other robots
+            for (Robot r : allRobots) {
+                if (!r.equals(movingRobot) && r.getPosition().equals(current)) {
+                    return true;
+                }
+            }
+
+            if (x != b.getX()) x += dx;
+            if (y != b.getY()) y += dy;
         }
 
-        // Also check the final position
+        // Check destination
+        for (Robot r : allRobots) {
+            if (!r.equals(movingRobot) && r.getPosition().equals(b)) {
+                return true;
+            }
+        }
+
         return blocksPosition(b);
     }
+
 
 //========
 }
