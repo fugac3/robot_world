@@ -1,7 +1,6 @@
 package za.co.wethinkcode.world;
 
 import za.co.wethinkcode.Position;
-import za.co.wethinkcode.maze.Maze;
 import java.util.ArrayList;
 import java.util.List;
 
