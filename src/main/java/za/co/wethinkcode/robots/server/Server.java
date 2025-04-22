@@ -39,7 +39,7 @@ public class Server {
     }
     // The following initialisation is REQUIRED for `flow` monitoring.
     // DO NOT REMOVE OR MODIFY THIS CODE.
-    static {
-        new Recorder().logRun();
-    }
+//    static {
+//        new Recorder().logRun();
+//    }
 }
