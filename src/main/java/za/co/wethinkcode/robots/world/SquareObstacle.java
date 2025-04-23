@@ -65,8 +65,18 @@ public class SquareObstacle implements Obstacle {
                 pos.getY() >= bottomLeftY && pos.getY() < bottomLeftY + size;
     }
 
+    /**
+     * Checks if this obstacle blocks the path that goes from coordinate (x1, y1) to (x2, y2).
+     * Since our robot can only move in horizontal or vertical lines (no diagonals yet), we can assume that either x1==x2 or y1==y2.
+     *
+     * @param a           first position
+     * @param b           second position
+
+     * @return `true` if this obstacle is in the way
+     */
+
     @Override
-    public boolean blocksPath(Position a, Position b, Robot movingRobot, List<Robot> allRobots) {
+    public boolean blocksPath(Position a, Position b) {
         int dx = Integer.compare(b.getX(), a.getX());
         int dy = Integer.compare(b.getY(), a.getY());
 
@@ -82,34 +92,34 @@ public class SquareObstacle implements Obstacle {
             }
 
             // Check for collisions with other robots
-            for (Robot r : allRobots) {
-                if (!r.equals(movingRobot) && r.getPosition().equals(current)) {
-                    return true;
-                }
-            }
+//            for (Robot r : allRobots) {
+//                if (!r.equals(movingRobot) && r.getPosition().equals(current)) {
+//                    return true;
+//                }
+//            }
 
             if (x != b.getX()) x += dx;
             if (y != b.getY()) y += dy;
         }
 
         // Check destination
-        for (Robot r : allRobots) {
-            if (!r.equals(movingRobot) && r.getPosition().equals(b)) {
-                return true;
-            }
-        }
+//        for (Robot r : allRobots) {
+//            if (!r.equals(movingRobot) && r.getPosition().equals(b)) {
+//                return true;
+//            }
+//        }
 
         return blocksPosition(b);
     }
 
-    @Override
-    public Boolean getTypeObsticle() {
-        return false;
-    }
+//    @Override
+//    public Boolean getTypeObsticle() {
+//        return false;
+//    }
 
-    public Object getType() {
-        return mountain;
-    }
+//    public Object getType() {
+//        return mountain;
+//    }
 
 
 //========
