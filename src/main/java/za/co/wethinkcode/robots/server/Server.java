@@ -25,9 +25,10 @@ public class Server {
     private static final TextWorld world = new TextWorld();
 
     public static void main(String[] args) {
+        int port = 4433;
         try {
-            serverSocket = new ServerSocket(4433);
-            System.out.println("Server started.");
+            serverSocket = new ServerSocket(port);
+            System.out.println("Server started. Listening on port " + port);
 
             while (running) {
                 Socket clientSocket = serverSocket.accept();

@@ -1,5 +1,7 @@
 package za.co.wethinkcode.robots.server;
 
+import za.co.wethinkcode.robots.commands.Command;
+import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.io.*;
@@ -10,6 +12,7 @@ public class ClientHandler implements Runnable {
     private final Socket socket;
     private volatile boolean running = true;
     private final TextWorld world;
+    private Robot robot;
 
     public ClientHandler(Socket socket,TextWorld world) {
         this.socket = socket;
@@ -39,7 +42,7 @@ public class ClientHandler implements Runnable {
             String msgFromClient;
             //It blocks until the client sends a line. Stores in var msgFromClient
             while (running && (msgFromClient = reader.readLine()) != null) {
-                System.out.println(clientName + ": " + msgFromClient);
+//                System.out.println(clientName + ": " + msgFromClient);
 
                 if (msgFromClient.equalsIgnoreCase("QUIT")) {
                     System.out.println("Shutdown command received from " + clientName);
@@ -47,8 +50,48 @@ public class ClientHandler implements Runnable {
                     break;
                 }
 
-                writer.write("msg received");
-                // client reads with readline(). without client would hang waiting forever.
+                //Check for robot launch from client
+                if (robot == null && msgFromClient.toLowerCase().startsWith("launch")) {
+                    String[] parts = msgFromClient.split(" ");
+                    if (parts.length >= 2) {
+                        String robotName = parts[1];
+                        this.robot = new Robot(robotName, world);
+                        writer.write("Robot '" + robotName + "' launched into the world.");
+                        robot.getWorld().showObstacles();
+                    }else {
+                        //if launch has no args
+                        writer.write("Please launch a robot first using: launch <name>");
+                    }
+                }
+
+//                        // Prevent launching more than once
+//                        if (this.robot != null) {
+//                            writer.write("A robot has already been launched for this client.");
+//                        } else {
+//                            System.out.println("Client " + clientName + " has launched robot '" + robotName + "' into the world.");
+//                        }
+
+
+                else if (robot != null) {
+                    try {
+                        Command command = Command.create(msgFromClient);
+//                        boolean success = robot.handleCommand(command);
+                        robot.handleCommand(command);
+
+                        writer.write(robot.toString());
+                        System.out.println("Command from " + clientName + ": " + msgFromClient + " -> " + robot.getStatus());
+                    } catch (IllegalArgumentException e) {
+                        writer.write("Invalid command: " + e.getMessage());
+                        System.out.println("Invalid command from " + clientName + ": " + msgFromClient);
+                    }
+                } else {
+                    // robot == null but not a launch command
+                    writer.write("Please launch a robot first using: launch <name>");
+                }
+
+
+//                writer.write("msg received");
+//                // client reads with readline(). without client would hang waiting forever.
                 writer.newLine();
                 writer.flush();
             }

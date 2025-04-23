@@ -19,20 +19,25 @@ public class Robot {
     private String status;
     private final String name;
     private final IWorld world;
+    private Position position;
+
 
 
     private final List<String> commands;
 
-    public Robot(String name) {
+//    public Robot(String name) {
+    public Robot(String name,IWorld world) {
         this.name = name;
         this.status = "Ready";
         this.commands = new ArrayList<>();
-        this.world = new TextWorld();
+        this.world = world;
+        this.position = new Position(0, 0); // start at center
+//        this.world = new TextWorld();
     }
 
     public boolean updatePosition(int nrSteps){
-        int newY = this.world.getPosition().getY();
-        int newX = this.world.getPosition().getX();
+        int newY = this.position.getY();
+        int newX = this.position.getX();
 
         switch (currentDirection){
             case Direction.NORTH:
@@ -53,14 +58,14 @@ public class Robot {
 
         Position newPosition = new Position(newX,  newY);
 
-        if (world.blocksPath(this.world.getPosition(), newPosition)) {
+        if (world.blocksPath(this.position, newPosition)) {
             this.setStatus("Sorry, there's an obstacle in the way.");
             return false;
         }
 
         if (newPosition.isIn(TOP_LEFT,BOTTOM_RIGHT)){
-//            this.position() = newPosition;
-            this.world.setPosition(newPosition);
+            this.position = newPosition;
+//            this.world.setPosition(newPosition);
             this.setStatus("Moved forward by " + nrSteps + " steps.");
             return true;
         }
@@ -69,7 +74,7 @@ public class Robot {
 
 
     public Position getPosition() {
-        return this.world.getPosition();
+        return this.position;
     }
 
 
@@ -112,7 +117,7 @@ public class Robot {
 
     @Override
     public String toString() {
-        return "[" + this.world.getPosition().getX() + "," + this.world.getPosition().getY() + "] "
+        return "[" + this.position.getX() + "," + this.position.getY() + "] "
                 + this.name + "> " + this.status;
     }
 
