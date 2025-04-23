@@ -48,7 +48,7 @@ public interface IWorld {
     /**
      * Retrieves the current position of the robot
      */
-    Position getPosition();
+//    Position getPosition();
 
     /**
      * Gets the current direction the robot is facing in relation to a world edge.

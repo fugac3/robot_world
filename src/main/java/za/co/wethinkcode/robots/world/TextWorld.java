@@ -60,10 +60,7 @@ public class TextWorld extends AbstractWorld{
 
     }
 
-    @Override
-    public Position getPosition() {
-        return this.position;
-    }
+
 
     public void setPosition(Position pos) {
         this.position = pos;
