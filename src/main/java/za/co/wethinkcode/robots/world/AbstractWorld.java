@@ -16,6 +16,7 @@ public abstract class AbstractWorld implements IWorld{
         return obstacles;
     }
 
+
     @Override
     public void showObstacles() {
         if (obstacles.isEmpty()) {

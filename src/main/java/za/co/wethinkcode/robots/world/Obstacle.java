@@ -45,4 +45,6 @@ public interface Obstacle {
      * @return `true` if this obstacle is in the way
      */
     boolean blocksPath(Position a, Position b, Robot movingRobot, List<Robot> allRobots);
+
+    String typeObsticle();
 }

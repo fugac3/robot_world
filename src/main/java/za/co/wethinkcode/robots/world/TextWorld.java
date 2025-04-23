@@ -57,6 +57,7 @@ public class TextWorld extends AbstractWorld{
     @Override
     public void updateDirection(boolean turnRight) {
 
+
     }
 
     @Override
@@ -75,7 +76,7 @@ public class TextWorld extends AbstractWorld{
      */
     @Override
     public Direction getCurrentDirection() {
-        return null;
+        return Direction.UP;
     }
 
     /**
@@ -86,6 +87,10 @@ public class TextWorld extends AbstractWorld{
      */
     @Override
     public boolean isNewPositionAllowed(Position position) {
+
+//        if(!position.equals(getObstacles())){
+//            return true;
+//        }
         return false;
     }
 
