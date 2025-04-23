@@ -27,7 +27,7 @@ public class SimpleServerOLD {
         while (serverRunning) {
             try {
                 socket = serverSocket.accept();
-                                          // char <-- to      // <-- bytes
+                // char <-- to      // <-- bytes
                 inputStreamReader = new InputStreamReader(socket.getInputStream());
                 outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
 //                Groups the char to all be sent at once
@@ -45,13 +45,22 @@ public class SimpleServerOLD {
 //                    flush sends the data in the buffer
                     bufferedWriter.flush();
 
-                    if (msgFromClient.equalsIgnoreCase("SHUTDOWN")) {
+                    if (msgFromClient.equalsIgnoreCase("QUIT")) {
                         System.out.println("Server shutting down");
                         serverSocket.close();
                         serverRunning = false;
                         break;
                     }
+
+                    if (msgFromClient == null) {
+                        System.out.println("user called quit");
+                        break;
+                    }
+
+
+
                 }
+
 
 
             } catch (IOException e) {

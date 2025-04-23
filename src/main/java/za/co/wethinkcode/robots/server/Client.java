@@ -53,8 +53,10 @@ public class Client {
 
                 System.out.println("Server: " + response);
 
-                if (msgToSend.equalsIgnoreCase("BYE"))
+                if (msgToSend.equalsIgnoreCase("BYE")) {
+                    System.out.println("Bye " + clientName);
                     break;
+                }
             }
         } catch (IOException e) {
             System.out.println("Unable to connect to server. Is it running?");
