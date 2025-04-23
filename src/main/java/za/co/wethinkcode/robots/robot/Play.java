@@ -4,6 +4,8 @@ import za.co.wethinkcode.robots.commands.Command;
 
 import java.util.Scanner;
 
+
+
 public class Play {
     static Scanner scanner;
 
@@ -11,33 +13,37 @@ public class Play {
         scanner = new Scanner(System.in);
         Robot robot;
 
-        String name = getInput("What do you want to name your robot?");
-        robot = new Robot(name);
-        System.out.println("Hello Kiddo!");
+        // Create the first robot
+        String name1 = getInput("What do you want to name your first robot?");
+        robot = new Robot(name1);
+        System.out.println("Hello Kiddo! Your First Bot: " + robot.getName());
 
-        System.out.println(robot);
 
-
-//        TextWorld world = new TextWorld("My Toy World");
+        // Show obstacles in the world
         robot.getWorld().showObstacles();
 
         Command command;
         boolean shouldContinue = true;
         do {
-            String instruction = getInput(robot.getName() + "> What must I do next?").strip().toLowerCase();
-            try {
-                command = Command.create(instruction);
+            // Get instructions for bot1
+            String instructionForBot1 = getInput(robot.getName() + "> What must I do next?").strip().toLowerCase();
 
+            try {
+                // Execute the instructions for bot1
+                command = Command.create(instructionForBot1);
                 shouldContinue = robot.handleCommand(command);
+
+
             } catch (IllegalArgumentException e) {
-                robot.setStatus("Sorry, I did not understand '" + instruction + "'.");
+                robot.setStatus("Sorry, I did not understand instructions from '" + robot.getName() + "': " + instructionForBot1);
+
             }
 
+            // Print the status of the robots after processing commands
             System.out.println(robot);
 
 
         } while (shouldContinue);
-
     }
 
     private static String getInput(String prompt) {

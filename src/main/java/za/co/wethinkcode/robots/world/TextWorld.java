@@ -1,6 +1,10 @@
 package za.co.wethinkcode.robots.world;
 
 import za.co.wethinkcode.robots.robot.Position;
+import za.co.wethinkcode.robots.robot.Robot;
+
+import java.util.ArrayList;
+import java.util.List;
 //import za.co.wethinkcode.robot.position;
 
 
@@ -9,6 +13,8 @@ public class TextWorld extends AbstractWorld{
     private final Position TOP_LEFT = new Position(-200,100);
     private final Position BOTTOM_RIGHT = new Position(100,-200);
     public static final Position CENTRE = new Position(0,0);
+    private List<Robot> robots = new ArrayList<>();
+
 
     private Position position;
 
@@ -19,9 +25,9 @@ public class TextWorld extends AbstractWorld{
 
 
     @Override
-    public boolean blocksPath(Position start, Position end) {
+    public boolean blocksPath(Position start, Position end , Robot bot) {
         for (Obstacle o : obstacles) {
-            if (o.blocksPath(start, end)) {
+            if (o.blocksPath(start, end ,bot, robots)) {
                 return true;
             }
         }
@@ -51,12 +57,10 @@ public class TextWorld extends AbstractWorld{
     @Override
     public void updateDirection(boolean turnRight) {
 
+
     }
 
-    @Override
-    public Position getPosition() {
-        return this.position;
-    }
+
 
     public void setPosition(Position pos) {
         this.position = pos;
@@ -69,7 +73,7 @@ public class TextWorld extends AbstractWorld{
      */
     @Override
     public Direction getCurrentDirection() {
-        return null;
+        return Direction.UP;
     }
 
     /**
@@ -80,6 +84,10 @@ public class TextWorld extends AbstractWorld{
      */
     @Override
     public boolean isNewPositionAllowed(Position position) {
+
+//        if(!position.equals(getObstacles())){
+//            return true;
+//        }
         return false;
     }
 
