@@ -1,12 +1,13 @@
 package za.co.wethinkcode.robots.server;
 
-import za.co.wethinkcode.flow.Recorder;
+import za.co.wethinkcode.robots.world.TextWorld;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-public class Server {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 //    ================ HOW TO RUN ======================   //
 //    use to run in terminal
@@ -15,31 +16,57 @@ public class Server {
 //    java -cp target/classes za.co.wethinkcode.robots.server.Client
 //    ==================================================   //
 
-    public static void main(String[] args) throws IOException {
-//        throw new UnsupportedOperationException( "TODO" );
-//        int port = 1234;
-        PortNum portNum = new PortNum(4433);
-//        listen for incoming client connections
-        try (ServerSocket serverSocket = new ServerSocket(portNum.getPort())) {
-            System.out.println("Server started. Listening on port " + portNum.getPort());
-            while (true) {
 
-//              ServerSocket = the doorman
-//              accept() = opens the door
-//              Socket = room where the client and server can talk.
+public class Server {
+    private static boolean running = true;
+    private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
+    private static ServerSocket serverSocket;
+
+    private static final TextWorld world = new TextWorld();
+
+    public static void main(String[] args) {
+        try {
+            serverSocket = new ServerSocket(4433);
+            System.out.println("Server started.");
+
+            while (running) {
                 Socket clientSocket = serverSocket.accept();
+                ClientHandler handler = new ClientHandler(clientSocket, world);
+                clients.add(handler);
                 System.out.println("New client connected.");
-
-                // Handle each client in a new thread
-                ClientHandler handler = new ClientHandler(clientSocket);
                 new Thread(handler).start();
-
             }
+
+        } catch (IOException e) {
+            if (running) {
+                System.out.println("Server error: " + e.getMessage());
+            } else {
+                System.out.println("Server shut down.");
+            }
+        } finally {
+            shutdownServer(); // Clean up even if crash
         }
     }
-    // The following initialisation is REQUIRED for `flow` monitoring.
-    // DO NOT REMOVE OR MODIFY THIS CODE.
-//    static {
-//        new Recorder().logRun();
-//    }
+
+    public static void shutdownServer() {
+        running = false;
+
+        //Close the server socket (stops accept loop)
+        try {
+            //checks if the server socket was created successfully.
+            //else it would cause a NullPointerException
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Close all client handlers
+        for (ClientHandler handler : clients) {
+            handler.stop();
+        }
+
+        System.out.println("Server and all clients shut down.");
+    }
 }
