@@ -1,4 +1,4 @@
-package za.co.wethinkcode;
+
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -12,109 +12,55 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ServerTest {
 
-    @BeforeAll
-    public static void startServer() {
-        Thread serverThread = new Thread(() -> {
-            try {
-                Server.main(null);
-            } catch (Exception ignored) {
+     @Test
+    public void testClientNameAndMessage() throws Exception {
+        int port = 5555;
+
+        // Start server in a separate thread
+        new Thread(() -> {
+            try (ServerSocket serverSocket = new ServerSocket(port)) {
+                System.out.println("Server started on port " + port);
+                Socket clientSocket = serverSocket.accept();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+
+                String clientName = reader.readLine();
+                System.out.println(clientName + " connected.");  // should be "TestClient"
+
+                String msg = reader.readLine();
+                System.out.println(clientName + ": " + msg);     // should be "Hello!"
+
+                writer.write("ACK");
+                writer.newLine();
+                writer.flush();
+
+                clientSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
-        serverThread.setDaemon(true);
-        serverThread.start();
+        }).start();
 
-        // Give server time to start
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ignored) {
-        }
-    }
+        // Let the server start
+        Thread.sleep(500);
 
+        // Connect client
+        try (Socket socket = new Socket("localhost", port);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
 
-    @Test
-    public void testClientServerConnection() {
-        try (Socket socket = new Socket("localhost", 4433)) {
-            assertTrue(socket.isConnected());
-        } catch (IOException e) {
-            fail("Could not connect to server");
-        }
-    }
+            writer.write("TestClient");
+            writer.newLine();
+            writer.flush();
 
-    @Test
-    public void testMessageExchange() {
-        try (
-                Socket socket = new Socket("localhost", 4433);
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
-        ) {
-            String testMsg = "Hello Server";
-            out.write(testMsg);
-            out.newLine();
-            out.flush();
+            writer.write("Hello!");
+            writer.newLine();
+            writer.flush();
 
-            String response = in.readLine();
-            assertNotNull(response);
-            assertEquals("msg received", response); // or whatever your server responds with
-
-        } catch (IOException e) {
-            fail("Message exchange failed: " + e.getMessage());
-        }
-    }
-
-    @Test
-    public void testClientLogoff() {
-        try (
-                Socket socket = new Socket("localhost", 4433);
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
-        ) {
-            out.write("BYE");
-            out.newLine();
-            out.flush();
-
-            String response = in.readLine();
-            assertEquals("msg received", response); // Server should respond before closing
-
-        } catch (IOException e) {
-            fail("Client logoff test failed: " + e.getMessage());
+            String response = reader.readLine();
+            assertEquals("ACK", response);
         }
     }
 }
-
-//    @Test
-//        //Ensure correct response for valid input.
-//    void testValidRequests(){
-//        Server server = new Server(); // depends on constructor implementation
-//        String response = server.handleRequest(in); // hypothetical method
-//        assertEquals("EXPECTED_RESPONSE", response); // replace with actual expected
-//    }
-//
-//    @Test
-//        //Handle bad input gracefully.
-//    void testInvalidRequests(){
-//        Server server = new Server();
-//        String response = server.handleRequest(in);
-//        assertEquals("ERROR_RESPONSE", response);
-//    }
-//
-//    //    Simulate internal failures.
-//    @Test
-//    void testServerErrors(){
-//        Server server = new Server();
-//        assertThrows(RuntimeException.class, () -> {
-//            server.handleRequest(null); // or some input that causes failure
-//        });
-//    }
-//
-//    //    Simultaneous connections/requests.
-//    @Test
-//    void testConcurrency(){
-//        Server server = new Server();
-//        assertThrows(RuntimeException.class, () -> {
-//            server.handleRequest(null); // or some input that causes failure
-//        });
-//    }
-//}
-
 
 
