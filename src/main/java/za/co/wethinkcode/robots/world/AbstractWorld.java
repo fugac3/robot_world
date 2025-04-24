@@ -22,9 +22,9 @@ public abstract class AbstractWorld implements IWorld {
         } else {
             System.out.println("There are some obstacles:");
             for (Obstacle o : obstacles) {
-                System.out.printf("- At position (%d, %d) to (%d, %d) [Type: %s]\n",
+                System.out.printf("- At position (%d, %d) to (%d, %d) \n",
                         o.getBottomLeftX(), o.getBottomLeftY(),
-                        o.getTopRightX(), o.getTopRightY(), ((SquareObstacle) o));
+                        o.getTopRightX(), o.getTopRightY());
             }
         }
     }
@@ -46,8 +46,12 @@ public abstract class AbstractWorld implements IWorld {
             // Random position for obstacle
 //            int x = random.nextInt(maxX - minX + 1) + minX;
 //            int y = random.nextInt(maxY - minY + 1) + minY;
-            int x =5;
+            int x = 5;
             int y = 5;
+
+            SquareObstacle obstacle = new SquareObstacle(x, y);
+            obstacles.add(obstacle);
+
             // Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
 //            Class<?> obstacleType = obstacleTypes[random.nextInt(obstacleTypes.length)];
 
