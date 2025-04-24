@@ -1,3 +1,4 @@
+package za.co.wethinkcode;
 
 import org.junit.jupiter.api.Test;
 import za.co.wethinkcode.robots.commands.*;
