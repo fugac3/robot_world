@@ -57,7 +57,7 @@ public class Robot {
 
         Position newPosition = new Position(newX,  newY);
 
-        if (world.blockspath(this.position, newPosition)) {
+        if (world.blocksPath(this.position, newPosition)) {
             this.setStatus("Sorry, there's an obstacle in the way.");
             return false;
         }
