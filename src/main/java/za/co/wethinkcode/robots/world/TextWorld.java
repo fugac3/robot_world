@@ -13,7 +13,7 @@ public class TextWorld extends AbstractWorld{
     private final Position TOP_LEFT = new Position(-200,100);
     private final Position BOTTOM_RIGHT = new Position(100,-200);
     public static final Position CENTRE = new Position(0,0);
-    private List<Robot> robots = new ArrayList<>();
+
 
 
     private Position position;
@@ -25,9 +25,9 @@ public class TextWorld extends AbstractWorld{
 
 
     @Override
-    public boolean blocksPath(Position start, Position end , Robot bot) {
+    public boolean blockspath(Position start, Position end) {
         for (Obstacle o : obstacles) {
-            if (o.blocksPath(start, end ,bot, robots)) {
+            if (o.blocksPath(start, end)) {
                 return true;
             }
         }

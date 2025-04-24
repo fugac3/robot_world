@@ -3,7 +3,6 @@ package za.co.wethinkcode.robots.robot;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.world.IWorld;
-import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +57,7 @@ public class Robot {
 
         Position newPosition = new Position(newX,  newY);
 
-        if (world.blocksPath(this.position, newPosition)) {
+        if (world.blockspath(this.position, newPosition)) {
             this.setStatus("Sorry, there's an obstacle in the way.");
             return false;
         }
