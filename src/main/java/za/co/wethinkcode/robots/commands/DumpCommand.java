@@ -9,6 +9,6 @@ public class DumpCommand extends Command{
 
     @Override
     public boolean execute(Robot target) {
-        return true;
+        return false;
     }
 }

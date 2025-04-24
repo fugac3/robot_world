@@ -9,6 +9,7 @@ public class LookCommand extends Command{
 
     @Override
     public boolean execute(Robot target) {
+
         return true;
     }
 }

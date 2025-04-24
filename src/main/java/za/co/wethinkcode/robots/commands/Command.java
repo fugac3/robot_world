@@ -55,6 +55,8 @@ public abstract class Command {
                 } else {
                     return new ReplayCommand();
                 }
+            case "state":
+                return new StateCommand();
             default:
                 throw new IllegalArgumentException("Unsupported command: " + instruction);
         }

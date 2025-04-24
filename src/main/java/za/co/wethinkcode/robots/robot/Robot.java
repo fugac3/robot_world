@@ -17,6 +17,7 @@ public class Robot {
 //    private Position position;
     private Direction currentDirection = Direction.NORTH;
     private String status;
+    private String response;
     private final String name;
     private final IWorld world;
     private Position position;
@@ -28,7 +29,8 @@ public class Robot {
 //    public Robot(String name) {
     public Robot(String name,IWorld world) {
         this.name = name;
-        this.status = "Ready";
+        this.status = "OK";
+        this.response = "Ready";
         this.commands = new ArrayList<>();
         this.world = world;
         this.position = new Position(0, 0); // start at center
@@ -87,6 +89,10 @@ public class Robot {
         return this.status;
     }
 
+    public String getResponse() {
+        return this.response;
+    }
+
     public Direction getCurrentDirection() {
         return this.currentDirection;
     }
@@ -125,6 +131,10 @@ public class Robot {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
     }
 
     public String getName() {
