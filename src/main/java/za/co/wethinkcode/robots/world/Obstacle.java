@@ -46,5 +46,5 @@ public interface Obstacle {
      */
     boolean blocksPath(Position a, Position b);
 
-    Boolean getTypeObsticle();
+//    Boolean getTypeObsticle();
 }

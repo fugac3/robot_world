@@ -58,18 +58,13 @@ public class ClientHandler implements Runnable {
                         this.robot = new Robot(robotName, world);
                         writer.write("Robot '" + robotName + "' launched into the world.");
                         robot.getWorld().showObstacles();
+                        world.addRobot(robot);
+                        writer.flush();
                     }else {
                         //if launch has no args
                         writer.write("Please launch a robot first using: launch <name>");
                     }
                 }
-
-//                        // Prevent launching more than once
-//                        if (this.robot != null) {
-//                            writer.write("A robot has already been launched for this client.");
-//                        } else {
-//                            System.out.println("Client " + clientName + " has launched robot '" + robotName + "' into the world.");
-//                        }
 
 
                 else if (robot != null) {
@@ -77,9 +72,9 @@ public class ClientHandler implements Runnable {
                         Command command = Command.create(msgFromClient);
 //                        boolean success = robot.handleCommand(command);
                         robot.handleCommand(command);
-
                         writer.write(robot.toString());
                         System.out.println("Command from " + clientName + ": " + msgFromClient + " -> " + robot.getStatus());
+                        writer.flush();
                     } catch (IllegalArgumentException e) {
                         writer.write("Invalid command: " + e.getMessage());
                         System.out.println("Invalid command from " + clientName + ": " + msgFromClient);
