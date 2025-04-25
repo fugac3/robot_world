@@ -2,6 +2,8 @@ package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
 
+//command
+
 public abstract class Command {
     private String name;
     public String argument;
@@ -37,8 +39,6 @@ public abstract class Command {
             case "shutdown":
             case "off":
                 return new ShutdownCommand();
-            case "robot":
-                return new RobotCommand();
             case "help":
                 return new HelpCommand();
             case "forward":
@@ -57,8 +57,8 @@ public abstract class Command {
                 } else {
                     return new ReplayCommand();
                 }
-            case "state":
-                return new StateCommand();
+            case "look":
+                return new LookCommand();
             default:
                 throw new IllegalArgumentException("Unsupported command: " + instruction);
         }
