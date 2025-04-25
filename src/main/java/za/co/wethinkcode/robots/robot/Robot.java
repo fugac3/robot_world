@@ -2,22 +2,25 @@ package za.co.wethinkcode.robots.robot;
 
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
+import za.co.wethinkcode.robots.world.Artefact;
 import za.co.wethinkcode.robots.world.IWorld;
-import za.co.wethinkcode.robots.world.TextWorld;
+import za.co.wethinkcode.robots.world.Obstacle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Robot {
     private final Position TOP_LEFT = new Position(-200,100);
     private final Position BOTTOM_RIGHT = new Position(100,-200);
 
     public static final Position CENTRE = new Position(0,0);
+    protected List<Obstacle> obstacles = new ArrayList<>();
 
-//    private Position position;
+    //    private Position position;
     private Direction currentDirection = Direction.NORTH;
     private String status;
-    private String response;
     private final String name;
     private final IWorld world;
     private Position position;
@@ -26,11 +29,10 @@ public class Robot {
 
     private final List<String> commands;
 
-//    public Robot(String name) {
+    //    public Robot(String name) {
     public Robot(String name,IWorld world) {
         this.name = name;
-        this.status = "OK";
-        this.response = "Ready";
+        this.status = "Ready";
         this.commands = new ArrayList<>();
         this.world = world;
         this.position = new Position(0, 0); // start at center
@@ -89,10 +91,6 @@ public class Robot {
         return this.status;
     }
 
-    public String getResponse() {
-        return this.response;
-    }
-
     public Direction getCurrentDirection() {
         return this.currentDirection;
     }
@@ -133,11 +131,66 @@ public class Robot {
         this.status = status;
     }
 
-    public void setResponse(String response) {
-        this.response = response;
-    }
-
     public String getName() {
         return name;
     }
+
+    public Map<IWorld.Direction, Artefact> lookAround() {
+        Map<Direction, Artefact> view = world.look();
+        System.out.println("Robot looks around and sees:");
+        for (Map.Entry<Direction, Artefact> entry : view.entrySet()) {
+            System.out.println(" - " + entry.getKey() + ": " + entry.getValue());
+        }
+        return new HashMap<>();
+    }
+
+    public Map<IWorld.Direction, Artefact> look(Position robotPosition) {
+        Map<IWorld.Direction, Artefact> visibleArea = new HashMap<>();
+
+        // Check each direction (NORTH, SOUTH, EAST, WEST)
+        if (isObstacleInDirection(robotPosition, IWorld.Direction.NORTH)) {
+            visibleArea.put(IWorld.Direction.NORTH, Artefact.OBSTACLE);
+        } else {
+            visibleArea.put(IWorld.Direction.NORTH, Artefact.EMPTY); // No obstacle, empty space
+        }
+
+        if (isObstacleInDirection(robotPosition, IWorld.Direction.SOUTH)) {
+            visibleArea.put(IWorld.Direction.SOUTH, Artefact.OBSTACLE);
+        } else {
+            visibleArea.put(IWorld.Direction.SOUTH, Artefact.EMPTY); // No obstacle, empty space
+        }
+
+        if (isObstacleInDirection(robotPosition, IWorld.Direction.EAST)) {
+            visibleArea.put(IWorld.Direction.EAST, Artefact.OBSTACLE);
+        } else {
+            visibleArea.put(IWorld.Direction.EAST, Artefact.EMPTY); // No obstacle, empty space
+        }
+
+        if (isObstacleInDirection(robotPosition, IWorld.Direction.WEST)) {
+            visibleArea.put(IWorld.Direction.WEST, Artefact.OBSTACLE);
+        } else {
+            visibleArea.put(IWorld.Direction.WEST, Artefact.EMPTY); // No obstacle, empty space
+        }
+
+        return visibleArea;
+    }
+
+    private boolean isObstacleInDirection(Position robotPosition, IWorld.Direction direction) {
+        Position targetPosition = getTargetPositionInDirection(robotPosition, direction);
+
+        // Check if there's an obstacle at the target position
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle.contains(targetPosition)) {
+                return true; // There's an obstacle in this direction
+            }
+        }
+        return false; // No obstacle
+    }
+
+    private Position getTargetPositionInDirection(Position robotPosition, IWorld.Direction direction) {
+        return robotPosition;
+    }
+
+
+
 }

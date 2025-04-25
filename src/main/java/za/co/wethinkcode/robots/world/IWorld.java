@@ -1,9 +1,11 @@
 package za.co.wethinkcode.robots.world;
 
+import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Your Text and Turtle worlds must implement this interface.
@@ -13,11 +15,14 @@ public interface IWorld {
 
     void setPosition(Position newPosition);
 
+    Map<za.co.wethinkcode.robots.commands.Direction, Artefact> look();
+
     /**
      * Enum used to track direction
      */
     enum Direction {
-        UP, RIGHT, DOWN, LEFT
+        NORTH, SOUTH, EAST, WEST;
+
     }
 
     /**
@@ -87,4 +92,7 @@ public interface IWorld {
      * Gives opportunity to world to draw or list obstacles.
      */
     void showObstacles();
+
+
+
 }

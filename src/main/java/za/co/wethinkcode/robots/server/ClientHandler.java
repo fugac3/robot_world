@@ -58,7 +58,7 @@ public class ClientHandler implements Runnable {
                         this.robot = new Robot(robotName, world);
                         writer.write("Robot '" + robotName + "' launched into the world.");
                         robot.getWorld().showObstacles();
-                        world.addRobot(robot);
+//                        world.addRobot(robot);
                         writer.flush();
                     }else {
                         //if launch has no args
