@@ -37,6 +37,8 @@ public abstract class Command {
             case "shutdown":
             case "off":
                 return new ShutdownCommand();
+            case "robot":
+                return new RobotCommand();
             case "help":
                 return new HelpCommand();
             case "forward":
