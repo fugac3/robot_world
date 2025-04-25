@@ -2,10 +2,12 @@ package za.co.wethinkcode;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
 import za.co.wethinkcode.robots.world.TextWorld;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.world.Obstacle;
 import za.co.wethinkcode.robots.world.SquareObstacle;
+import za.co.wethinkcode.robots.robot.Robot;
 
 import java.util.List;
 
@@ -31,6 +33,20 @@ public class WorldTest {
 
         Position justOutsideObs = new Position(10, 10);
         assertFalse(obstacle.blocksPosition(justOutsideObs));
+    }
+
+    @Test
+    void testObstacleBlocksPath() {
+        TextWorld world = new TextWorld();
+        Robot robo = new Robot("Robo", world);
+        SquareObstacle obstacle = new SquareObstacle(5,5);
+        Position pastObstacle = new Position(7, 11);
+        //Blocked
+        assertTrue(obstacle.blocksPath(robo.getPosition(),pastObstacle));
+
+        //Obstacle doesn't block path
+        Position notBlocked = new Position(7,4);
+        assertFalse(obstacle.blocksPath(robo.getPosition(),notBlocked));
     }
 
     @Test

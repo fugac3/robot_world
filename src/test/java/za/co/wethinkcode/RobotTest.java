@@ -18,7 +18,7 @@ class RobotTest {
         assertEquals(Direction.NORTH, robot.getCurrentDirection());
         assertEquals("CrashTestDummy", robot.getName());
         assertEquals(world, robot.getWorld());
-        assertEquals("Ready", robot.getStatus());
+        assertEquals("Ready", robot.getResponse());
     }
 
     @Test
@@ -40,7 +40,7 @@ class RobotTest {
         boolean result = robot.updatePosition(1000);
         assertFalse(result); //movement should fail/out of bounds
         assertEquals(new Position(0, 0), robot.getPosition());
-        assertEquals("Sorry, I cannot go outside my safe zone.", robot.getStatus());
+        assertEquals("Sorry, I cannot go outside my safe zone.", robot.getResponse());
     }
 
     @Test

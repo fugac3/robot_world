@@ -30,9 +30,9 @@ class DumpTest {
 
         assertTrue(result); //make sure it has executed
         //Ensure result mention everything in world
-        assertTrue(robot1.getStatus().contains("Robot1"));
-        assertTrue(robot1.getStatus().contains("Robot2"));
-        assertTrue(robot1.getStatus().contains("(5,5)"));
-        assertTrue(robot1.getStatus().contains("(-10,-10)"));
+        assertTrue(robot1.getResponse().contains("Robot1"));
+        assertTrue(robot1.getResponse().contains("Robot2"));
+        assertTrue(robot1.getResponse().contains("(5,5)"));
+        assertTrue(robot1.getResponse().contains("(-10,-10)"));
     }
 }

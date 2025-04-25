@@ -21,7 +21,7 @@ class ListRobotsTest {
         boolean result = listRobots.execute(robot1);
 
         assertTrue(result); //make sure it has executed
-        assertTrue(robot1.getStatus().contains("Robot1"));
-        assertTrue(robot1.getStatus().contains("Robot2"));
+        assertTrue(robot1.getResponse().contains("Robot1"));
+        assertTrue(robot1.getResponse().contains("Robot2"));
     }
 }
