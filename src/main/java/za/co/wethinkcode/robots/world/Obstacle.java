@@ -44,7 +44,7 @@ public interface Obstacle {
      * @param b second position
      * @return `true` if this obstacle is in the way
      */
-    boolean blocksPath(Position a, Position b, Robot movingRobot, List<Robot> allRobots);
+    boolean blocksPath(Position a, Position b);
 
     Boolean getTypeObsticle();
 }

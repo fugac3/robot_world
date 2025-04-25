@@ -9,7 +9,7 @@ import java.util.List;
  * Your Text and Turtle worlds must implement this interface.
  */
 public interface IWorld {
-    boolean blocksPath(Position a, Position b, Robot bot);
+    boolean blocksPath(Position a, Position b);
 
     void setPosition(Position newPosition);
 
