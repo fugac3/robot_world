@@ -2,6 +2,7 @@ package za.co.wethinkcode.robots.commands;
 
 //import java.awt.*;
 import za.co.wethinkcode.robots.robot.Robot;
+import za.co.wethinkcode.robots.server.Response;
 
 public class ForwardCommand extends Command {
 
@@ -12,15 +13,16 @@ public class ForwardCommand extends Command {
     }
 
     @Override
-    public boolean execute(Robot target) {
-        int nrSteps = Integer.parseInt(getArgument());
-        if (target.updatePosition(nrSteps)){
-            target.setStatus("Moved forward by "+nrSteps+" steps.");
+    public Response execute(Robot robot) {
+        boolean moved = robot.updatePosition(Integer.parseInt(this.argument));
+        if (moved) {
+            return new Response("OK", "Moved forward " + this.argument + " steps.", robot.getState());
         } else {
-            target.setStatus("Sorry, I cannot go outside my safe zone.");
+            return new Response("FAILED", "Cannot move forward.", robot.getState());
         }
-        return true;
     }
+
+
 
     @Override
     public String toString() {

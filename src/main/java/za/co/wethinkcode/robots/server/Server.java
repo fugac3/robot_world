@@ -19,11 +19,12 @@ import java.util.List;
 
 public class Server {
     private static boolean running = true;
+//    private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
     private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
     private static ServerSocket serverSocket;
 
-    private static final TextWorld world = new TextWorld();
-
+//    private static final TextWorld world = new TextWorld();
+    private static final TextWorld world = TextWorld.getInstance();
     public static void main(String[] args) {
         int port = 4433;
         try {

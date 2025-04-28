@@ -11,6 +11,9 @@ import java.util.concurrent.ConcurrentMap;
 
 public class TextWorld extends AbstractWorld{
 
+//    private static TextWorld instance = new TextWorld();
+    private static TextWorld instance;
+
     private final Position TOP_LEFT = new Position(-200,100);
     private final Position BOTTOM_RIGHT = new Position(100,-200);
     public static final Position CENTRE = new Position(0,0);
@@ -19,9 +22,19 @@ public class TextWorld extends AbstractWorld{
     private final Map<String, Robot> robots = new HashMap<>();
     private Position position;
 
-    public TextWorld() {
+    private TextWorld() {
         this.position = CENTRE;
         generateRandomObstacles(TOP_LEFT,BOTTOM_RIGHT);
+    }
+
+//    public static TextWorld getInstance(){
+//        return instance;
+//    }
+    public static synchronized TextWorld getInstance() {
+        if (instance == null) {
+            instance = new TextWorld();
+        }
+        return instance;
     }
 
 
