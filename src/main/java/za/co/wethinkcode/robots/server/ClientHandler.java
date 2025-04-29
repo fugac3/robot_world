@@ -6,6 +6,7 @@ import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 //  allows handling multiple clients at the same time
 public class ClientHandler implements Runnable {
@@ -58,7 +59,7 @@ public class ClientHandler implements Runnable {
                         this.robot = new Robot(robotName, world);
                         writer.write("Robot '" + robotName + "' launched into the world.");
                         robot.getWorld().showObstacles();
-//                        world.addRobot(robot);
+                        world.addRobot(robot);
                         writer.flush();
                     }else {
                         //if launch has no args

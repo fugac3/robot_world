@@ -21,6 +21,7 @@
         <version.slf4j>2.0.17</version.slf4j>
         <version.surefire>2.22.1</version.surefire>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -28,9 +29,7 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
 
-    <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -53,8 +52,6 @@
             <artifactId>picocli</artifactId>
             <version>${version.picocli}</version>
         </dependency>
-        <!-- The following 2 dependencies are REQUIRED to enable `flow`. -->
-        <!-- DO NOT REMOVE THEM. -->
         <dependency>
             <groupId>za.co.wethinkcode</groupId>
             <artifactId>flow</artifactId>
@@ -66,6 +63,7 @@
             <version>${version.slf4j}</version>
         </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
