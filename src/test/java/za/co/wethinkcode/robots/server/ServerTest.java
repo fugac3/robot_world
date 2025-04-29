@@ -3,6 +3,7 @@ package za.co.wethinkcode.robots.server;
 import org.junit.jupiter.api.Test;
 
 
+import static java.lang.System.in;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServerTest {

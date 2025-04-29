@@ -59,6 +59,8 @@ public abstract class Command {
                 }
             case "look":
                 return new LookCommand();
+            case "dump":
+                return new DumpCommand();
             default:
                 throw new IllegalArgumentException("Unsupported command: " + instruction);
         }
