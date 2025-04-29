@@ -23,18 +23,16 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
-        </dependency>
+
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${version.jackson}</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
         </dependency>
+
+
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -52,6 +50,8 @@
             <artifactId>picocli</artifactId>
             <version>${version.picocli}</version>
         </dependency>
+        <!-- The following 2 dependencies are REQUIRED to enable `flow`. -->
+        <!-- DO NOT REMOVE THEM. -->
         <dependency>
             <groupId>za.co.wethinkcode</groupId>
             <artifactId>flow</artifactId>
@@ -63,7 +63,6 @@
             <version>${version.slf4j}</version>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>

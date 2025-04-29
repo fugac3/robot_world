@@ -2,9 +2,9 @@ package za.co.wethinkcode.robots.robot;
 
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
-import za.co.wethinkcode.robots.world.Artefact;
+import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.IWorld;
-import za.co.wethinkcode.robots.world.Obstacle;
+import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +16,8 @@ public class Robot {
     private final Position BOTTOM_RIGHT = new Position(100,-200);
 
     public static final Position CENTRE = new Position(0,0);
-    protected List<Obstacle> obstacles = new ArrayList<>();
-
-    //    private Position position;
+    private Map<String, Object> state = new HashMap<>();
+//    private Position position;
     private Direction currentDirection = Direction.NORTH;
     private String status;
     private final String name;
@@ -29,7 +28,7 @@ public class Robot {
 
     private final List<String> commands;
 
-    //    public Robot(String name) {
+//    public Robot(String name) {
     public Robot(String name,IWorld world) {
         this.name = name;
         this.status = "Ready";
@@ -39,21 +38,39 @@ public class Robot {
 //        this.world = new TextWorld();
     }
 
+    public void setState(Map<String, Object> state) {
+        this.state = state;
+    }
+
+    public Map<String, Object> getState() {
+        Map<String, Object> currentState = new HashMap<>();
+
+        Map<String, Integer> position = new HashMap<>();
+        position.put("x", this.position.getX());
+        position.put("y", this.position.getY());
+
+        currentState.put("position", position);  // Store position as a map of x and y
+        currentState.put("direction", this.currentDirection.toString());
+        currentState.put("status", this.status);
+        currentState.put("name", this.name);
+        return currentState;
+    }
+
     public boolean updatePosition(int nrSteps){
         int newY = this.position.getY();
         int newX = this.position.getX();
 
         switch (currentDirection){
-            case Direction.NORTH:
+            case NORTH:
                 newY += nrSteps;
                 break;
-            case Direction.SOUTH:
+            case SOUTH:
                 newY -= nrSteps;
                 break;
-            case Direction.EAST:
+            case EAST:
                 newX += nrSteps;
                 break;
-            case Direction.WEST:
+            case WEST:
                 newX -= nrSteps;
                 break;
             default:
@@ -69,8 +86,7 @@ public class Robot {
 
         if (newPosition.isIn(TOP_LEFT,BOTTOM_RIGHT)){
             this.position = newPosition;
-//            this.world.setPosition(newPosition);
-            this.setStatus("Moved forward by " + nrSteps + " steps.");
+            setStatus("Moved forward by " + nrSteps + " steps.");
             return true;
         }
         return false;
@@ -95,10 +111,10 @@ public class Robot {
         return this.currentDirection;
     }
 
-    public boolean handleCommand(Command command) {
-        boolean result = command.execute(this);
+    public Response handleCommand(Command command) {
+        Response response = command.execute(this);
         addCommand(command.getName() + " " + command.getArgument().trim());
-        return result;
+        return response;
     }
 
     public void addCommand(String command) {
@@ -134,63 +150,4 @@ public class Robot {
     public String getName() {
         return name;
     }
-
-    public Map<IWorld.Direction, Artefact> lookAround() {
-        Map<Direction, Artefact> view = world.look();
-        System.out.println("Robot looks around and sees:");
-        for (Map.Entry<Direction, Artefact> entry : view.entrySet()) {
-            System.out.println(" - " + entry.getKey() + ": " + entry.getValue());
-        }
-        return new HashMap<>();
-    }
-
-    public Map<IWorld.Direction, Artefact> look(Position robotPosition) {
-        Map<IWorld.Direction, Artefact> visibleArea = new HashMap<>();
-
-        // Check each direction (NORTH, SOUTH, EAST, WEST)
-        if (isObstacleInDirection(robotPosition, IWorld.Direction.NORTH)) {
-            visibleArea.put(IWorld.Direction.NORTH, Artefact.OBSTACLE);
-        } else {
-            visibleArea.put(IWorld.Direction.NORTH, Artefact.EMPTY); // No obstacle, empty space
-        }
-
-        if (isObstacleInDirection(robotPosition, IWorld.Direction.SOUTH)) {
-            visibleArea.put(IWorld.Direction.SOUTH, Artefact.OBSTACLE);
-        } else {
-            visibleArea.put(IWorld.Direction.SOUTH, Artefact.EMPTY); // No obstacle, empty space
-        }
-
-        if (isObstacleInDirection(robotPosition, IWorld.Direction.EAST)) {
-            visibleArea.put(IWorld.Direction.EAST, Artefact.OBSTACLE);
-        } else {
-            visibleArea.put(IWorld.Direction.EAST, Artefact.EMPTY); // No obstacle, empty space
-        }
-
-        if (isObstacleInDirection(robotPosition, IWorld.Direction.WEST)) {
-            visibleArea.put(IWorld.Direction.WEST, Artefact.OBSTACLE);
-        } else {
-            visibleArea.put(IWorld.Direction.WEST, Artefact.EMPTY); // No obstacle, empty space
-        }
-
-        return visibleArea;
-    }
-
-    private boolean isObstacleInDirection(Position robotPosition, IWorld.Direction direction) {
-        Position targetPosition = getTargetPositionInDirection(robotPosition, direction);
-
-        // Check if there's an obstacle at the target position
-        for (Obstacle obstacle : obstacles) {
-            if (obstacle.contains(targetPosition)) {
-                return true; // There's an obstacle in this direction
-            }
-        }
-        return false; // No obstacle
-    }
-
-    private Position getTargetPositionInDirection(Position robotPosition, IWorld.Direction direction) {
-        return robotPosition;
-    }
-
-
-
 }
