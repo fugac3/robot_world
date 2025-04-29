@@ -47,21 +47,25 @@ public abstract class AbstractWorld implements IWorld {
             int x =5;
             int y = 5;
 
-            // Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
-            Class<?> obstacleType = obstacleTypes[random.nextInt(obstacleTypes.length)];
+            SquareObstacle obstacle = new SquareObstacle(x, y);
+            obstacles.add(obstacle);
 
-            try {
-                if (obstacleType == MountainObstacle.class) {
-                    obstacles.add(new MountainObstacle(x, y));
-                }
+
+            // Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
+//            Class<?> obstacleType = obstacleTypes[random.nextInt(obstacleTypes.length)];
+
+//            try {
+//                if (obstacleType == MountainObstacle.class) {
+//                    obstacles.add(new MountainObstacle(x, y));
+//                }
 //                } else if (obstacleType == LakesObsticle.class) {
 //                    obstacles.add(new LakesObsticle(x, y));
 //                } else if (obstacleType == BottomlessPit.class) {
 //                    obstacles.add(new BottomlessPit(x, y));
 //                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
 
 

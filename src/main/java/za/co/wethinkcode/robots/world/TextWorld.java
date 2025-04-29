@@ -4,9 +4,9 @@ import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 //import za.co.wethinkcode.robot.position;
 
 
@@ -15,15 +15,45 @@ public class TextWorld extends AbstractWorld{
     private final Position TOP_LEFT = new Position(-200,100);
     private final Position BOTTOM_RIGHT = new Position(100,-200);
     public static final Position CENTRE = new Position(0,0);
-    private List<Robot> robots = new ArrayList<>();
 
-
+    //    private final ConcurrentMap<String, Robot> robots = new ConcurrentHashMap<>();
+    private final Map<String, Robot> robots = new HashMap<>();
     private Position position;
 
     public TextWorld() {
         this.position = CENTRE;
         generateRandomObstacles(TOP_LEFT,BOTTOM_RIGHT);
     }
+
+
+    public void addRobot(Robot robot) {
+        robots.put(robot.getName(), robot);
+    }
+
+    public Collection<Robot> getAllRobots() {
+        return robots.values();
+    }
+
+
+//    public boolean registerRobot(Robot robot) {
+//        // returns false if a robot with that name already exists
+//        return robots.putIfAbsent(robot.getName(), robot) == null;
+//    }
+
+//    public Robot getRobotByName(String name) {
+//        return robots.get(name);
+//    }
+//
+//    public int getRobotCount() {
+//        return robots.size();
+//    }
+//
+//    public Map<String, Robot> getRobots() {
+//        return Collections.unmodifiableMap(robots);
+//    }
+
+
+
 
 
     @Override
