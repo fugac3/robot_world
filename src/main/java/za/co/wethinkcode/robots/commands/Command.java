@@ -36,6 +36,8 @@ public abstract class Command {
         String[] args = instruction.toLowerCase().trim().split(" ");
 
         switch (args[0]){
+            case "state":
+                return new StateCommand();
             case "shutdown":
             case "off":
                 return new ShutdownCommand();
