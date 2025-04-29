@@ -9,7 +9,7 @@ public class Client {
     public static void main(String[] args) {
 
 
-        PortNum portNum = new PortNum(4433);
+        int Port = 4433;
 
         Socket socket = null;
 //        InputStreamReader inputStreamReader = null;  //byte based
@@ -19,8 +19,7 @@ public class Client {
         Scanner scanner = new Scanner(System.in);
 
         try {
-            socket = new Socket("localhost", portNum.getPort());
-//            socket = new Socket("localhost", portNum.getPort());
+            socket = new Socket("localhost",Port);
             System.out.println("Connected to server.");
 
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //End in Stream is byte     //Not end in Stream so = char
