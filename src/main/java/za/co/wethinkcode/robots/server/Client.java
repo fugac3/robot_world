@@ -9,36 +9,46 @@ public class Client {
     public static void main(String[] args) {
 
 
-        PortNum portNum = new PortNum(4433);
+        int Port = 4433;
 
         Socket socket = null;
 //        InputStreamReader inputStreamReader = null;  //byte based
 //        OutputStreamWriter outputStreamWriter = null;    // char based output stream. byte to char stream
         BufferedReader bufferedReader = null;    // large block/array of char at a time.
         BufferedWriter bufferedWriter = null;    // Not good for files of text
+        Scanner scanner = new Scanner(System.in);
 
         try {
-            socket = new Socket("localhost", portNum.getPort());
-//            socket = new Socket("localhost", portNum.getPort());
+            socket = new Socket("localhost",Port);
             System.out.println("Connected to server.");
 
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //End in Stream is byte     //Not end in Stream so = char
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-            Scanner scanner = new Scanner(System.in);
+
 
             String clientName;
             System.out.println("Enter your name: ");
-            clientName = scanner.nextLine();
+            clientName = scanner.nextLine().trim();
             System.out.println("Hello: "+ clientName);
 
             bufferedWriter.write(clientName);
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
-            while (true) {
+            scanner = new Scanner(System.in);
+            System.out.println("Now you can enter commands:");
 
+            while (true) {
+//                System.out.print("> "); // prompt for input
+                // Consume any leftover new line after sending name
                 String msgToSend = scanner.nextLine();
+
+                if (msgToSend.isEmpty()) {
+                    System.out.println("(Please enter a command.)");
+                    continue;
+                }
+
                 bufferedWriter.write(msgToSend);
                 bufferedWriter.newLine();
                 bufferedWriter.flush();

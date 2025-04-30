@@ -1,11 +1,17 @@
 package za.co.wethinkcode.robots.server;
 
 import za.co.wethinkcode.robots.commands.Command;
+import za.co.wethinkcode.robots.commands.LaunchCommand;
+import za.co.wethinkcode.robots.commands.QuitCommand;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.world.TextWorld;
+import com.google.gson.Gson;
+
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 //  allows handling multiple clients at the same time
 public class ClientHandler implements Runnable {
@@ -13,6 +19,8 @@ public class ClientHandler implements Runnable {
     private volatile boolean running = true;
     private final TextWorld world;
     private Robot robot;
+    private String clientName;
+    private String robotName;
 
     public ClientHandler(Socket socket,TextWorld world) {
         this.socket = socket;
@@ -30,76 +38,133 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+        Gson gson = new Gson();
+
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
+            this.clientName = reader.readLine();   // Save into field
+            System.out.println("DEBUG: New client name = '" + clientName + "'");
 
+            if (clientName == null || clientName.isBlank()) {
+                System.out.println("Enter valid name");
+                stop();
+                return;
+            }
 
-            String clientName = reader.readLine();  // Read name sent from client
-            System.out.println(clientName + " connected.");
+            System.out.println(this.clientName + " connected.");
 
             String msgFromClient;
-            //It blocks until the client sends a line. Stores in var msgFromClient
             while (running && (msgFromClient = reader.readLine()) != null) {
-//                System.out.println(clientName + ": " + msgFromClient);
-
-                if (msgFromClient.equalsIgnoreCase("QUIT")) {
-                    System.out.println("Shutdown command received from " + clientName);
-                    Server.shutdownServer(); // Notify server to shut down
+                //Take JSON string (msgFromClient) from client.
+                //Convert (deserialize) it into a Java object of type Request.
+                //Store that object into variable request.
+                Request request;
+                if (msgFromClient.equalsIgnoreCase("quit")){
+                    Server.shutdownServer();
+                    this.stop();
                     break;
                 }
 
-                //Check for robot launch from client
-                if (robot == null && msgFromClient.toLowerCase().startsWith("launch")) {
-                    String[] parts = msgFromClient.split(" ");
-                    if (parts.length >= 2) {
-                        String robotName = parts[1];
-                        this.robot = new Robot(robotName, world);
-                        writer.write("Robot '" + robotName + "' launched into the world.");
-                        robot.getWorld().showObstacles();
-                    }else {
-                        //if launch has no args
-                        writer.write("Please launch a robot first using: launch <name>");
-                    }
-                }
-
-//                        // Prevent launching more than once
-//                        if (this.robot != null) {
-//                            writer.write("A robot has already been launched for this client.");
-//                        } else {
-//                            System.out.println("Client " + clientName + " has launched robot '" + robotName + "' into the world.");
-//                        }
-
-
-                else if (robot != null) {
-                    try {
-                        Command command = Command.create(msgFromClient);
-//                        boolean success = robot.handleCommand(command);
-                        robot.handleCommand(command);
-
-                        writer.write(robot.toString());
-                        System.out.println("Command from " + clientName + ": " + msgFromClient + " -> " + robot.getStatus());
-                    } catch (IllegalArgumentException e) {
-                        writer.write("Invalid command: " + e.getMessage());
-                        System.out.println("Invalid command from " + clientName + ": " + msgFromClient);
-                    }
+                if (msgFromClient.trim().startsWith("{")) {
+                    // It is already JSON
+                    request = gson.fromJson(msgFromClient, Request.class);
                 } else {
-                    // robot == null but not a launch command
-                    writer.write("Please launch a robot first using: launch <name>");
+                    // It is normal user input like "forward 10"
+                    Command command = Command.create(msgFromClient);
+                    Map<String, Object> args = new HashMap<>();
+
+                    System.out.println("DEBUG: Command name = " + command.getName() + " - in cli handler");
+                    System.out.println("DEBUG: Command argument = " + command.getArgument());
+
+                    if (command.getArgument() != null && !command.getArgument().isEmpty()) {
+                        if (command.getName().equals("forward") || command.getName().equals("back") || command.getName().equals("sprint")) {
+                            args.put("steps", command.getArgument());
+                        } else if (command.getName().equals("launch")) {
+                            args.put("name", command.getArgument());
+                        }
+
+                    }
+                    request = new Request(command.getName(), args);
                 }
 
 
-//                writer.write("msg received");
-//                // client reads with readline(). without client would hang waiting forever.
+
+
+                Response response;
+
+                try {
+                    Command command;
+                    if (request.getCommand().equalsIgnoreCase("launch")) {
+                        String name = (String) request.getArguments().get("name");
+                        command = new LaunchCommand(name);
+                    } else if (request.getCommand().equalsIgnoreCase("quit")) {
+                        command = new QuitCommand();
+                    } else {
+                        String reconstructedInstruction = request.getCommand();
+                        Object stepsArg = request.getArguments().get("steps");
+
+                        if (stepsArg != null) {
+                            reconstructedInstruction += " " + stepsArg.toString();
+                        }
+
+                        command = Command.create(reconstructedInstruction);
+
+                    }
+
+                    if (robot == null) {
+                        if (command instanceof LaunchCommand) {
+                            this.robotName = (String) request.getArguments().get("name");
+
+                            if (robotName == null || robotName.isEmpty()) {
+                                response = new Response("ERROR", "Launch command needs a robot name from cli handler.", null);
+                            } else {
+                                this.robot = new Robot(robotName, world);   //Create robot manually
+                                world.addRobot(robot); //Add robot to the shared world
+
+                                Map<String, Object> state = new HashMap<>();
+                                state.put("robot", robotName);
+                                state.put("position", robot.getPosition());
+                                state.put("status", robot.getStatus());
+
+                                response = new Response("OK", "Robot '" + robotName + "' launched", state);
+                            }
+                        } else {
+                            // Any other command before launch
+                            response = new Response("ERROR", "Please launch a robot first using: launch <robotname>", null);
+                        }
+                    } else {
+                        // Robot already launched, can handle other commands
+                        response = robot.handleCommand(command);
+
+                        if (command instanceof QuitCommand) {
+                            Server.shutdownServer();
+                            this.stop();    // stops client handler too
+                            break;
+                        }
+                    }
+
+                //end of inner try
+                } catch (IllegalArgumentException e) {
+                    response = new Response("ERROR", e.getMessage(), null);
+                }
+
+                // Send the response back
+                writer.write(gson.toJson(response));
                 writer.newLine();
                 writer.flush();
             }
+        //end of main try
         } catch (IOException e) {
-            System.out.println("Client error or disconnected: " + e.getMessage());
+//            System.out.println("Client error or disconnected: " + e.getMessage());
+            System.out.println((clientName != null ? clientName : "Unknown client") + " disconnected: " + e.getMessage());
         } finally {
             stop();
             System.out.println("Client handler exiting.");
         }
     }
+
+    //================
 }
+

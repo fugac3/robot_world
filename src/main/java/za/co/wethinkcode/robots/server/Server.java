@@ -19,11 +19,12 @@ import java.util.List;
 
 public class Server {
     private static boolean running = true;
+//    private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
     private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
     private static ServerSocket serverSocket;
 
-    private static final TextWorld world = new TextWorld();
-
+//    private static final TextWorld world = new TextWorld();
+    private static final TextWorld world = TextWorld.getInstance();
     public static void main(String[] args) {
         int port = 4433;
         try {
@@ -31,6 +32,12 @@ public class Server {
             System.out.println("Server started. Listening on port " + port);
 
             while (running) {
+                //Socket object :
+                //is the individual connection between server and one specific client.
+                //The ServerSocket is listening for new connections.
+                //When client connects, serverSocket.accept():
+                //returns Socket object that represents the connection to that client.
+                //clientSocket is used to read and write from server to that specific client.
                 Socket clientSocket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(clientSocket, world);
                 clients.add(handler);
