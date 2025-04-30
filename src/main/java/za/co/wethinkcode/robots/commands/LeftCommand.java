@@ -11,7 +11,7 @@ public class LeftCommand extends Command {
     @Override
     public Response execute(Robot robot) {
         robot.turnLeft();
-        robot.setStatus("Turned left.");
+        Response.setStatus("Turned left.");
         return new Response("OK", "Robot turned left.", robot.getState());
     }
 }

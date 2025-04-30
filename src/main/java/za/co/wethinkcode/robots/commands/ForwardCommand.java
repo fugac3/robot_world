@@ -16,9 +16,10 @@ public class ForwardCommand extends Command {
     public Response execute(Robot robot) {
         boolean moved = robot.updatePosition(Integer.parseInt(this.argument));
         if (moved) {
+            Response.setStatus("Moved forward by " + argument + " steps.");
             return new Response("OK", "Moved forward " + this.argument + " steps.", robot.getState());
         } else {
-            return new Response("FAILED", "Cannot move forward.", robot.getState());
+            return new Response("FAILED", "Cannot move forward.", robot);
         }
     }
 

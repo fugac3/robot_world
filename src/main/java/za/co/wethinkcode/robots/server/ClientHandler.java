@@ -15,41 +15,33 @@ import java.util.Map;
 
 //  allows handling multiple clients at the same time
 public class ClientHandler implements Runnable {
-    private final Socket socket;
+    private final ConnectionManager connectionManager;
     private volatile boolean running = true;
     private final TextWorld world;
     private Robot robot;
     private String clientName;
     private String robotName;
 
-    public ClientHandler(Socket socket,TextWorld world) {
-        this.socket = socket;
+    public ClientHandler(Socket socket, TextWorld world) {
+        this.connectionManager = new ConnectionManager(socket);
         this.world = world;
     }
 
-    public void stop() {
-        running = false;
-        try {
-            socket.close();
-        } catch (IOException e) {
-            // Ignore, probably already closed
-        }
-    }
 
     @Override
     public void run() {
         Gson gson = new Gson();
 
         try (
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionManager.getSocket().getOutputStream()))
         ) {
             this.clientName = reader.readLine();   // Save into field
             System.out.println("DEBUG: New client name = '" + clientName + "'");
 
             if (clientName == null || clientName.isBlank()) {
                 System.out.println("Enter valid name");
-                stop();
+                connectionManager.stop();
                 return;
             }
 
@@ -63,7 +55,7 @@ public class ClientHandler implements Runnable {
                 Request request;
                 if (msgFromClient.equalsIgnoreCase("quit")){
                     Server.shutdownServer();
-                    this.stop();
+                    connectionManager.stop();
                     break;
                 }
 
@@ -126,7 +118,7 @@ public class ClientHandler implements Runnable {
                                 Map<String, Object> state = new HashMap<>();
                                 state.put("robot", robotName);
                                 state.put("position", robot.getPosition());
-                                state.put("status", robot.getStatus());
+                                state.put("status", Response.getStatus());
 
                                 response = new Response("OK", "Robot '" + robotName + "' launched", state);
                             }
@@ -140,7 +132,7 @@ public class ClientHandler implements Runnable {
 
                         if (command instanceof QuitCommand) {
                             Server.shutdownServer();
-                            this.stop();    // stops client handler too
+                            connectionManager.stop();    // stops client handler too
                             break;
                         }
                     }
@@ -160,7 +152,7 @@ public class ClientHandler implements Runnable {
 //            System.out.println("Client error or disconnected: " + e.getMessage());
             System.out.println((clientName != null ? clientName : "Unknown client") + " disconnected: " + e.getMessage());
         } finally {
-            stop();
+            connectionManager.stop();
             System.out.println("Client handler exiting.");
         }
     }
