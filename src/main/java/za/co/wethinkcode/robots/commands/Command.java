@@ -70,6 +70,8 @@ public abstract class Command {
                 return new RightCommand();
             case "left":
                 return new LeftCommand();
+            case "dump":
+                return new DumpCommand();
             default:
                 throw new IllegalArgumentException("Unsupported command: " + instruction);
         }
