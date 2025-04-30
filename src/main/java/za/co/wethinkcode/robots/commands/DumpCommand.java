@@ -5,6 +5,7 @@ import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.IWorld;
 import za.co.wethinkcode.robots.world.Obstacle;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 public class DumpCommand extends Command {
