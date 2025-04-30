@@ -1,14 +1,14 @@
 package za.co.wethinkcode.robots.world;
 
 import za.co.wethinkcode.robots.robot.Position;
+import za.co.wethinkcode.robots.commands.Direction;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public abstract class AbstractWorld implements IWorld {
 
     protected List<Obstacle> obstacles = new ArrayList<>();
+    private Map<Direction, Artefact> visibleArea;
 
     @Override
     public List<Obstacle> getObstacles() {
@@ -22,49 +22,59 @@ public abstract class AbstractWorld implements IWorld {
         } else {
             System.out.println("There are some obstacles:");
             for (Obstacle o : obstacles) {
-                System.out.printf("- At position (%d, %d) to (%d, %d) | Type: %s\n",
+                System.out.printf("- At position (%d, %d) to (%d, %d) \n",
                         o.getBottomLeftX(), o.getBottomLeftY(),
-                        o.getTopRightX(), o.getTopRightY(),
-                        o.getClass().getSimpleName()); // Print obstacle type
+                        o.getTopRightX(), o.getTopRightY());
             }
         }
     }
 
-    protected void generateRandomObstacles(Position topLeft, Position bottomRight) {
+    protected void generateRandomObstacles(Position topLeft, Position bottomRight){
         Random random = new Random();
-        int numObstacles = 1; // Number of obstacles to place
+        int numObstacles = 1;
 
-        // Get world bounds
         int maxX = bottomRight.getX();
-        int minX = topLeft.getX();
         int minY = bottomRight.getY();
         int maxY = topLeft.getY();
 
         // List of obstacle types to choose from
-        Class<?>[] obstacleTypes = {MountainObstacle.class};
+        Class<?>[] obstacleTypes = {MountainObstacle.class, LakesObsticle.class, BottomlessPit.class};
 
-        for (int i = 0; i < numObstacles; i++) {
+        for (int i = 0; i < numObstacles; i++){
             // Random position for obstacle
 //            int x = random.nextInt(maxX - minX + 1) + minX;
 //            int y = random.nextInt(maxY - minY + 1) + minY;
-            int x = 5;
+            int x =5;
             int y = 5;
 
-            // Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
-            Class<?> obstacleType = obstacleTypes[random.nextInt(obstacleTypes.length)];
+            SquareObstacle obstacle = new SquareObstacle(x,y);
+            obstacles.add(obstacle);
 
-            // Create the obstacle based on the randomly selected type
-            try {
-                if (obstacleType == MountainObstacle.class) {
-                    obstacles.add(new MountainObstacle(x, y));
+            // Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
+//            Class<?> obstacleType = obstacleTypes[random.nextInt(obstacleTypes.length)];
+//
+//            try {
+//                if (obstacleType == MountainObstacle.class) {
+//                    obstacles.add(new MountainObstacle(x, y));
+//                }
 //                } else if (obstacleType == LakesObsticle.class) {
 //                    obstacles.add(new LakesObsticle(x, y));
 //                } else if (obstacleType == BottomlessPit.class) {
 //                    obstacles.add(new BottomlessPit(x, y));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+
+
         }
+
+
+
+
     }
+
+
+
 }

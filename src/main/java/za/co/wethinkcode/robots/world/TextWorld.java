@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robots.world;
 
+import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
@@ -18,7 +19,7 @@ public class TextWorld extends AbstractWorld{
     private final Position BOTTOM_RIGHT = new Position(100,-200);
     public static final Position CENTRE = new Position(0,0);
 
-//    private final ConcurrentMap<String, Robot> robots = new ConcurrentHashMap<>();
+    //    private final ConcurrentMap<String, Robot> robots = new ConcurrentHashMap<>();
     private final Map<String, Robot> robots = new HashMap<>();
     private Position position;
 
@@ -83,8 +84,8 @@ public class TextWorld extends AbstractWorld{
     /**
      * Updates the position of your robot in the world by moving the nrSteps in the robots current direction.
 
-//     * @param nrSteps steps to move in current direction
-//     * @return true if this does not take the robot over the world's limits, or into an obstacle.
+     //     * @param nrSteps steps to move in current direction
+     //     * @return true if this does not take the robot over the world's limits, or into an obstacle.
      */
     @Override
     public boolean updatePosition(int nrSteps) {
@@ -111,6 +112,11 @@ public class TextWorld extends AbstractWorld{
         this.position = pos;
     }
 
+    @Override
+    public Map<za.co.wethinkcode.robots.commands.Direction, Artefact> look() {
+        return Map.of();
+    }
+
     /**
      * Gets the current direction the robot is facing in relation to a world edge.
      *
@@ -118,7 +124,7 @@ public class TextWorld extends AbstractWorld{
      */
     @Override
     public Direction getCurrentDirection() {
-        return Direction.UP;
+        return Direction.NORTH;
     }
 
     /**

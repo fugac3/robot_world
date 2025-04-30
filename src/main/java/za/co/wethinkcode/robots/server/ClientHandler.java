@@ -79,7 +79,7 @@ public class ClientHandler implements Runnable {
                     System.out.println("DEBUG: Command argument = " + command.getArgument());
 
                     if (command.getArgument() != null && !command.getArgument().isEmpty()) {
-                        if (command.getName().equals("forward") || command.getName().equals("back") || command.getName().equals("sprint")) {
+                        if (command.getName().equals("forward") || command.getName().equals("back")) {
                             args.put("steps", command.getArgument());
                         } else if (command.getName().equals("launch")) {
                             args.put("name", command.getArgument());

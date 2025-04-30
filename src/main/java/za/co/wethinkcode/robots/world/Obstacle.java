@@ -46,5 +46,7 @@ public interface Obstacle {
      */
     boolean blocksPath(Position a, Position b);
 
+    boolean contains(Position targetPosition);
 
+//    Boolean getTypeObsticle();
 }

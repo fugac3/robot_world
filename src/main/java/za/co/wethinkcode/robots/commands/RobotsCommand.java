@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RobotCommand extends Command{
+public class RobotsCommand extends Command{
 
-    public RobotCommand() {
+    public RobotsCommand() {
         super("robot");
     }
 

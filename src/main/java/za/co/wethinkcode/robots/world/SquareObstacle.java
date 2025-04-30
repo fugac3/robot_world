@@ -112,6 +112,11 @@ public class SquareObstacle implements Obstacle {
         return blocksPosition(b);
     }
 
+    @Override
+    public boolean contains(Position targetPosition) {
+        return false;
+    }
+
 //    @Override
 //    public Boolean getTypeObsticle() {
 //        return false;
