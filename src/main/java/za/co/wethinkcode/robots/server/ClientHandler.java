@@ -111,16 +111,19 @@ public class ClientHandler implements Runnable {
 
                             if (robotName == null || robotName.isEmpty()) {
                                 response = new Response("ERROR", "Launch command needs a robot name from cli handler.", null);
-                            } else {
+                            }
+//                            else if (robotName == this.robotName) {
+
+                             else {
                                 this.robot = new Robot(robotName, world);   //Create robot manually
                                 world.addRobot(robot); //Add robot to the shared world
 
                                 Map<String, Object> state = new HashMap<>();
                                 state.put("robot", robotName);
                                 state.put("position", robot.getPosition());
-                                state.put("status", Response.getStatus());
+                                state.put("status", robot.getStatus());
 
-                                response = new Response("OK", "Robot '" + robotName + "' launched", state);
+                                response = new Response("OK", "Robot '" + robotName + "' launched", robot);
                             }
                         } else {
                             // Any other command before launch

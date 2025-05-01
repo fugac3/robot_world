@@ -7,14 +7,9 @@ import za.co.wethinkcode.robots.world.IWorld;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Robot {
-    private final Position TOP_LEFT = new Position(-200,100);
-    private final Position BOTTOM_RIGHT = new Position(100,-200);
-
     public static final Position CENTRE = new Position(0,0);
 
 //    private Position position;
@@ -23,6 +18,7 @@ public class Robot {
     private final String name;
     private final IWorld world;
     private Position position;
+    private String status;
 
 
 
@@ -36,6 +32,15 @@ public class Robot {
         this.world = world;
         this.position = new Position(0, 0); // start at center
 //        this.world = new TextWorld();
+    }
+
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return this.status;
     }
 
 
@@ -64,11 +69,11 @@ public class Robot {
         Position newPosition = new Position(newX,  newY);
 
         if (world.blocksPath(this.position, newPosition)) {
-            Response.setStatus("Sorry, there's an obstacle in the way.");
+            setStatus("Sorry, there's an obstacle in the way.");
             return false;
         }
 
-        if (newPosition.isIn(TOP_LEFT,BOTTOM_RIGHT)){
+        if (newPosition.isIn(TextWorld.TOP_LEFT,TextWorld.BOTTOM_RIGHT)){
             this.position = newPosition;
 
             return true;

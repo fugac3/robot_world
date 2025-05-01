@@ -52,8 +52,8 @@ public abstract class Command {
                     throw new IllegalArgumentException("Launch command needs a robot name from cmd class.");
                 }
                 return new LaunchCommand(args[1]);
-            case "robot":
-                return new RobotCommand();
+//            case "robot":
+//                return new RobotCommand();
             case "quit":
                 return new QuitCommand();
             case "forward":

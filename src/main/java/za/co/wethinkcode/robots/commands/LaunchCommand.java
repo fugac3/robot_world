@@ -22,7 +22,7 @@ public class LaunchCommand extends Command {
         if (robot != null) {
             // Already launched
             state.put("position", robot.getPosition());
-            return new Response("ERROR", "Robot already launched.", state);
+            return new Response("ERROR", "Robot already launched.", robot);
         }
         Robot newRobot = new Robot(robotName, TextWorld.getInstance()); // or however your world works
         TextWorld.getInstance().addRobot(newRobot);
@@ -30,7 +30,7 @@ public class LaunchCommand extends Command {
         state.put("position", newRobot.getPosition());
         state.put("status", "Robot '" + robotName + "' launched successfully.");
 
-        return new Response("OK", "Robot launched successfully.", state);
+        return new Response("OK", "Robot launched successfully.", null);
     }
 
     public String getRobotName() {

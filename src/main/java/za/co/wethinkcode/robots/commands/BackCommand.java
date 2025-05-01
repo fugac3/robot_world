@@ -13,10 +13,10 @@ public class BackCommand extends Command {
     public Response execute(Robot robot) {
         boolean moved = robot.updatePosition(-Integer.parseInt(this.argument));
         if (moved) {
-            Response.setStatus("NORMAL");
-            return new Response("OK", "Moved backwards " + this.argument + " steps.", robot.getState());
+            robot.setStatus("NORMAL");
+            return new Response("OK", "Moved backwards " + this.argument + " steps.", robot);
         } else {
-            return new Response("FAILED", "Cannot move backwards.", robot.getState());
+            return new Response("FAILED", "Cannot move backwards.", robot);
         }
     }
 

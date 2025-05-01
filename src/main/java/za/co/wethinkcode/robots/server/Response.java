@@ -8,14 +8,16 @@ import java.util.Map;
 
 public class Response {
     private String result;
-    private String message;
-    private String status;
+    private String data;
+
     private Map<String, Object> state = new HashMap<>();
 
-    public Response(String result, String message, Robot robot) {
-        this.status = "Ready";
+    public Response(String result, String data, Robot robot) {
         this.result = result;
-        this.message = message;
+        this.data = data;
+//        if(robot.isNull){
+//
+//        }
         this.state = getState(robot);
     }
 
@@ -28,27 +30,17 @@ public class Response {
 
         Position pos = robot.getPosition();
         currentState.put("position", new int[]{pos.getX(), pos.getY()});
-//        Map<String, Integer> position = new HashMap<>();
-//        position.put("x", robot.getPosition().getX());
-//        position.put("y", robot.getPosition().getY());        // Store position as a map of x and y
         currentState.put("direction", robot.getCurrentDirection().toString());
-        currentState.put("status", getStatus());
-//        currentState.put("name", this.name);
+        currentState.put("status", robot.getStatus());
         return currentState;
     }
 
 
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
-    public String getStatus() {
-        return this.status;
-    }
 
-    public String getMessage() {
-        return message;
+    public String getData() {
+        return data;
     }
 
     public String getResult() {

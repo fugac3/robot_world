@@ -13,7 +13,7 @@ public class RightCommand extends Command {
     @Override
     public Response execute(Robot robot) {
         robot.turnRight();
-        Response.setStatus("Turned right.");
-        return new Response("OK", "Robot turned right.", robot.getState());
+        robot.setStatus("Turned right.");
+        return new Response("OK", "Robot turned right.", robot);
     }
 }
