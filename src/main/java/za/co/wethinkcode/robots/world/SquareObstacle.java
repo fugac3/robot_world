@@ -122,9 +122,9 @@ public class SquareObstacle implements Obstacle {
 //        return false;
 //    }
 
-//    public Object getType() {
-//        return mountain;
-//    }
+    public Object getType() {
+        return mountain;
+    }
 
 
 //========
