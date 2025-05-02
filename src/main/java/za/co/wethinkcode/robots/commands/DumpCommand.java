@@ -7,6 +7,7 @@ import za.co.wethinkcode.robots.world.Obstacle;
 
 import java.lang.reflect.Array;
 import java.util.List;
+import java.util.Map;
 
 public class DumpCommand extends Command {
     public DumpCommand() {
@@ -33,9 +34,6 @@ public class DumpCommand extends Command {
 
         System.out.println("=========================");
 
-        return null;
+        return new Response("OK","Robot has been dumped", Map.of(robot.getStatus(),robot.getPosition()));
     }
-
-
-
 }
