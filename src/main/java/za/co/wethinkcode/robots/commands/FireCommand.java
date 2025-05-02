@@ -16,7 +16,9 @@ public class FireCommand extends Command {
     public Response execute(Robot robot) {
         Map<String, String> fireInfo = new HashMap<>();
 
+        fireInfo.put("Direction", robot.getCurrentDirection().toString());
 
-        return new Response("OK","Hit",Map.of());
+
+        return new Response("OK","Hit",Map.of(robot.getName(),fireInfo));
     }
 }
