@@ -16,6 +16,7 @@ public class LookCommand extends Command {
         Map<String, String> lookInfo = new HashMap<>();
         lookInfo.put("Position",robot.getPosition().toString());
         lookInfo.put("Obstacle", robot.getWorld().getObstacles().toString());
+        lookInfo.put("State", robot.getStatus());
 
         return new Response("Ok","Robot looking around the world",Map.of(robot.getName(),lookInfo));
     }
