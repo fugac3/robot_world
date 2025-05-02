@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robots.server;
 
+import za.co.wethinkcode.flow.Recorder;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.io.IOException;
@@ -32,6 +33,12 @@ public class Server {
             System.out.println("Server started. Listening on port " + port);
 
             while (running) {
+                //Socket object :
+                //is the individual connection between server and one specific client.
+                //The ServerSocket is listening for new connections.
+                //When client connects, serverSocket.accept():
+                //returns Socket object that represents the connection to that client.
+                //clientSocket is used to read and write from server to that specific client.
                 Socket clientSocket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(clientSocket, world);
                 clients.add(handler);
@@ -71,4 +78,8 @@ public class Server {
 
         System.out.println("Server and all clients shut down.");
     }
+    static {
+        new Recorder().logRun();
+    }
+
 }
