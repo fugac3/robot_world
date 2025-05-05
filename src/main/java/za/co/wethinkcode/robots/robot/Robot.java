@@ -4,6 +4,7 @@ import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.IWorld;
+import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Robot {
     private Position position;
     private String status;
     private String lastMoveReason = "";
+    private int ammo = 5; // starting ammo
 
 
 
@@ -42,6 +44,28 @@ public class Robot {
     }
 
 
+
+    public boolean fire() {
+        if (ammo <= 0) {
+            status = "No ammo left! Reload required.";
+            return false;
+        }
+
+        ammo--; // consuming a bullet
+        boolean hit = world.processFire(position, currentDirection); // processFire needs to be added to AbstractWorld
+        status = hit ? "Target hit!" : "Missed shot!";
+        return hit;
+    }
+
+    public boolean reload() {
+        ammo = 5; // reset to full ammo
+        status = "Reloaded successfully.";
+        return true;
+    }
+
+    public int getAmmo() {
+        return ammo;
+    }
 
     public boolean updatePosition(int nrSteps){
         int newY = this.position.getY();
