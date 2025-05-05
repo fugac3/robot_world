@@ -115,7 +115,7 @@ public class ClientHandler implements Runnable {
 
                     if (robot == null) {
                         if (command instanceof LaunchCommand) {
-                            this.robotName = (String) request.getArguments().get("name");
+                            this.robotName = String.valueOf(request.getArguments().get("name"));
 
                             if (robotName == null || robotName.isEmpty()) {
                                 response = new Response("ERROR", "Launch command needs a robot name from cli handler.", null);

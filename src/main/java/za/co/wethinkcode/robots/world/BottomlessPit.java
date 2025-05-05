@@ -8,4 +8,9 @@ public class BottomlessPit extends SquareObstacle{
     public String getType(){
         return "bottomless pits";
     }
+
+
+//    public String bottomLessPits(){
+//        return "bottomL"
+//    }
 }

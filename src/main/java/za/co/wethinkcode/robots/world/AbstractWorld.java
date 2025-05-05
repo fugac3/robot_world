@@ -10,9 +10,15 @@ public abstract class AbstractWorld implements IWorld {
     protected List<Obstacle> obstacles = new ArrayList<>();
     private Map<Direction, Artefact> visibleArea;
 
+
+
     @Override
     public List<Obstacle> getObstacles() {
         return obstacles;
+    }
+
+    public void setObstacles(List<Obstacle> newObstacle){
+        this.obstacles = newObstacle;
     }
 
     @Override
@@ -74,6 +80,8 @@ public abstract class AbstractWorld implements IWorld {
 
 
     }
+
+//    public  void Obb (String newO)
 
 
 
