@@ -37,7 +37,7 @@ public abstract class Command {
             throw new IllegalArgumentException("Empty command received.");
         }
 
-//        String[] args = instruction.toLowerCase().trim().split(" ",2);
+//        String[] args = instruction..trim().split(" ",2);
         String[] args = instruction.trim().split("\\s+");
 
         System.out.println("DEBUG: instruction = '" + instruction + "'");
@@ -52,8 +52,8 @@ public abstract class Command {
                     throw new IllegalArgumentException("Launch command needs a robot name from cmd class.");
                 }
                 return new LaunchCommand(args[1]);
-//            case "robot":
-//                return new RobotCommand();
+            case "robots":
+                return new RobotsCommand();
             case "quit":
                 return new QuitCommand();
             case "forward":

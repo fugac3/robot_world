@@ -27,6 +27,10 @@ public class ClientHandler implements Runnable {
         this.world = world;
     }
 
+    public String getClientName(){
+        return this.clientName;
+    }
+
 
     @Override
     public void run() {
@@ -36,16 +40,13 @@ public class ClientHandler implements Runnable {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionManager.getSocket().getOutputStream()))
         ) {
+
             this.clientName = reader.readLine();   // Save into field
-            System.out.println("DEBUG: New client name = '" + clientName + "'");
 
-            if (clientName == null || clientName.isBlank()) {
-                System.out.println("Enter valid name");
-                connectionManager.stop();
-                return;
-            }
-
-            System.out.println(this.clientName + " connected.");
+            System.out.println("Client "+clientName+" has connected.");
+            writer.write("Welcome, " + this.clientName + "!");
+            writer.newLine();
+            writer.flush();
 
             String msgFromClient;
             while (running && (msgFromClient = reader.readLine()) != null) {
@@ -64,25 +65,21 @@ public class ClientHandler implements Runnable {
                     request = gson.fromJson(msgFromClient, Request.class);
                 } else {
                     // It is normal user input like "forward 10"
-                    Command command = Command.create(msgFromClient);
+                    Command command = Command.create(msgFromClient.toLowerCase());
                     Map<String, Object> args = new HashMap<>();
 
                     System.out.println("DEBUG: Command name = " + command.getName() + " - in cli handler");
                     System.out.println("DEBUG: Command argument = " + command.getArgument());
 
-                    if (command.getArgument() != null && !command.getArgument().isEmpty()) {
-                        if (command.getName().equals("forward") || command.getName().equals("back") || command.getName().equals("sprint")) {
+                    if (command.getArgument() != null || !command.getArgument().isEmpty()) {
+                        if (command.getName().equals("forward") || command.getName().equals("back")) {
                             args.put("steps", command.getArgument());
                         } else if (command.getName().equals("launch")) {
                             args.put("name", command.getArgument());
                         }
-
                     }
                     request = new Request(command.getName(), args);
                 }
-
-
-
 
                 Response response;
 
@@ -92,7 +89,9 @@ public class ClientHandler implements Runnable {
                         String name = (String) request.getArguments().get("name");
                         command = new LaunchCommand(name);
                     } else if (request.getCommand().equalsIgnoreCase("quit")) {
-                        command = new QuitCommand();
+                        Server.shutdownServer();
+                        connectionManager.stop();    // stops client handler too
+                        break;
                     } else {
                         String reconstructedInstruction = request.getCommand();
                         Object stepsArg = request.getArguments().get("steps");
@@ -105,44 +104,43 @@ public class ClientHandler implements Runnable {
 
                     }
 
+                    Map<String, Object> data = new HashMap<>();
+
                     if (robot == null) {
                         if (command instanceof LaunchCommand) {
-                            this.robotName = (String) request.getArguments().get("name");
-
+//                            this.robotName = (String) request.getArguments().get("name");
+                            this.robotName = ((LaunchCommand) command).getRobotName();
                             if (robotName == null || robotName.isEmpty()) {
-                                response = new Response("ERROR", "Launch command needs a robot name from cli handler.", null);
+                                data.put("message","Launch command needs <robotname>.");
+                                response = new Response("ERROR", data, null);
                             }
-//                            else if (robotName == this.robotName) {
 
                              else {
                                 this.robot = new Robot(robotName, world);   //Create robot manually
                                 world.addRobot(robot); //Add robot to the shared world
-
-                                Map<String, Object> state = new HashMap<>();
-                                state.put("robot", robotName);
-                                state.put("position", robot.getPosition());
-                                state.put("status", robot.getStatus());
-
-                                response = new Response("OK", "Robot '" + robotName + "' launched", robot);
-                            }
+//                                response = robot.handleCommand(command);
+//                                String obstacles = world.showObstacles();
+//                                writer.write(world.showObstacles());
+//                                writer.newLine();
+//                                writer.flush();
+                                world.showObstacles();
+                                response = command.execute(robot);  // Now pass it to LaunchCommand
+                             }
                         } else {
                             // Any other command before launch
-                            response = new Response("ERROR", "Please launch a robot first using: launch <robotname>", null);
+                            data.put("message","Please launch a robot first using: launch <robotname>");
+                            response = new Response("ERROR", data, null);
                         }
                     } else {
                         // Robot already launched, can handle other commands
                         response = robot.handleCommand(command);
-
-                        if (command instanceof QuitCommand) {
-                            Server.shutdownServer();
-                            connectionManager.stop();    // stops client handler too
-                            break;
-                        }
                     }
 
                 //end of inner try
                 } catch (IllegalArgumentException e) {
-                    response = new Response("ERROR", e.getMessage(), null);
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("message",e.getMessage());
+                    response = new Response("ERROR", data, null);
                 }
 
                 // Send the response back

@@ -18,7 +18,4 @@ public enum Direction {
         int index = ROTATIONAL_DIRECTIONS.indexOf(this);
         return ROTATIONAL_DIRECTIONS.get((index - 1 + ROTATIONAL_DIRECTIONS.size()) % ROTATIONAL_DIRECTIONS.size());
     }
-
-
-
 }

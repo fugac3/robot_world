@@ -3,6 +3,9 @@ package za.co.wethinkcode.robots.commands;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class QuitCommand extends Command {
 
     public QuitCommand() {
@@ -11,6 +14,8 @@ public class QuitCommand extends Command {
 
     @Override
     public Response execute(Robot robot) {
-        return new Response("EXIT", "Server shutting down.", null);
+        Map<String, Object> data = new HashMap<>();
+        data.put("message","Server shutting down.");
+        return new Response("EXIT", data, null);
     }
 }

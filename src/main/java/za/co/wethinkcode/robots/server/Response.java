@@ -8,26 +8,18 @@ import java.util.Map;
 
 public class Response {
     private String result;
-    private String data;
+    private final Map<String, Object> data;
+    private final Map<String, Object> state;
 
-    private Map<String, Object> state = new HashMap<>();
-
-    public Response(String result, String data, Robot robot) {
+    public Response(String result, Map<String, Object> data, Robot robot) {
         this.result = result;
         this.data = data;
-//        if(robot.isNull){
-//
-//        }
-        this.state = getState(robot);
+        this.state = (robot != null) ? buildState(robot) : null;
     }
 
-    public void setState(Map<String, Object> state) {
-        this.state = state;
-    }
-
-    public Map<String, Object> getState(Robot robot) {
+    public static Map<String, Object> buildState(Robot robot) {
+        if (robot == null) return null;
         Map<String, Object> currentState = new HashMap<>();
-
         Position pos = robot.getPosition();
         currentState.put("position", new int[]{pos.getX(), pos.getY()});
         currentState.put("direction", robot.getCurrentDirection().toString());
@@ -35,11 +27,11 @@ public class Response {
         return currentState;
     }
 
+    public Map<String, Object> getState() {
+        return state;
+    }
 
-
-
-
-    public String getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 

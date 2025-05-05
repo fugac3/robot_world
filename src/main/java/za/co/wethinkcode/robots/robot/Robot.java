@@ -19,6 +19,7 @@ public class Robot {
     private final IWorld world;
     private Position position;
     private String status;
+    private String lastMoveReason = "";
 
 
 
@@ -27,11 +28,9 @@ public class Robot {
 //    public Robot(String name) {
     public Robot(String name,IWorld world) {
         this.name = name;
-
         this.commands = new ArrayList<>();
         this.world = world;
         this.position = new Position(0, 0); // start at center
-//        this.world = new TextWorld();
     }
 
 
@@ -69,16 +68,20 @@ public class Robot {
         Position newPosition = new Position(newX,  newY);
 
         if (world.blocksPath(this.position, newPosition)) {
-            setStatus("Sorry, there's an obstacle in the way.");
+            lastMoveReason = "Obstructed";
             return false;
         }
 
-        if (newPosition.isIn(TextWorld.TOP_LEFT,TextWorld.BOTTOM_RIGHT)){
-            this.position = newPosition;
-
-            return true;
+        if (!newPosition.isIn(TextWorld.TOP_LEFT,TextWorld.BOTTOM_RIGHT)){
+            lastMoveReason = "Edge of world";
+            return false;
         }
-        return false;
+        this.position = newPosition;
+        return true;
+    }
+
+    public String getLastMoveReason() {
+        return lastMoveReason;
     }
 
 
