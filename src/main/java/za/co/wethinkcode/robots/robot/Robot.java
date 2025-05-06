@@ -92,12 +92,12 @@ public class Robot {
 
         if (world.blocksPath(this.position, newPosition)) {
             lastMoveReason = "Obstructed";
-            return false;
+            return true;
         }
 
         if (!newPosition.isIn(TextWorld.TOP_LEFT,TextWorld.BOTTOM_RIGHT)){
             lastMoveReason = "Edge of world";
-            return false;
+            return true;
         }
         this.position = newPosition;
         return true;
