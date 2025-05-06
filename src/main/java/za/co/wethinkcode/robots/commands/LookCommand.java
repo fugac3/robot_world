@@ -58,6 +58,7 @@ public class LookCommand extends Command {
 
                         //If it's a mountain, we can't see past it
                         if (obstacle instanceof MountainObstacle) {
+                            System.out.println("You cant go through these an obsticle... ");
                             obstacleFound = true; // so that we can end the loop for direction below (because we can't see past mountains) otherwise loop continues till constraint
                             break;
                         }
@@ -68,6 +69,7 @@ public class LookCommand extends Command {
 
                 //Only applies for mountains
                 if (obstacleFound) {
+//                    System.out.println("These a Mountain so " + getName() + " cant go through");
                     break; // Stop checking further in this direction if we found a mountain
                 }
 
@@ -80,6 +82,7 @@ public class LookCommand extends Command {
                     objects.add(edgeObject);
 
                     obstacleFound = true;
+                    System.out.println("You've reached the end of the world... ");
                     break;
                 }
 

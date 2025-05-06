@@ -49,10 +49,10 @@ public abstract class AbstractWorld implements IWorld {
 
         for (int i = 0; i < numObstacles; i++){
             // Random position for obstacle
-            int x = random.nextInt(maxX - minX + 1) + minX;
-            int y = random.nextInt(maxY - minY + 1) + minY;
-//            int x =5;
-//            int y = 5;
+//            int x = random.nextInt(maxX - minX + 1) + minX;
+//            int y = random.nextInt(maxY - minY + 1) + minY;
+            int x =5;
+            int y = 5;
 
 //            SquareObstacle obstacle = new SquareObstacle(x,y);
 //            obstacles.add(obstacle);
