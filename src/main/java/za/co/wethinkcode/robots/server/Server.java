@@ -71,13 +71,11 @@ public class Server {
             e.printStackTrace();
         }
 
-        //Close all client handlers
-        for (ClientHandler handler : clients) {
-            handler.stop();
-        }
 
         System.out.println("Server and all clients shut down.");
     }
+    // The following initialisation is REQUIRED for `flow` monitoring.
+    // DO NOT REMOVE OR MODIFY THIS CODE.
     static {
         new Recorder().logRun();
     }

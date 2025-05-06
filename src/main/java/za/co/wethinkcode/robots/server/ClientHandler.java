@@ -15,45 +15,38 @@ import java.util.Map;
 
 //  allows handling multiple clients at the same time
 public class ClientHandler implements Runnable {
-    private final Socket socket;
+    private final ConnectionManager connectionManager;
     private volatile boolean running = true;
     private final TextWorld world;
     private Robot robot;
     private String clientName;
     private String robotName;
 
-    public ClientHandler(Socket socket,TextWorld world) {
-        this.socket = socket;
+    public ClientHandler(Socket socket, TextWorld world) {
+        this.connectionManager = new ConnectionManager(socket);
         this.world = world;
     }
 
-    public void stop() {
-        running = false;
-        try {
-            socket.close();
-        } catch (IOException e) {
-            // Ignore, probably already closed
-        }
+    public String getClientName(){
+        return this.clientName;
     }
+
 
     @Override
     public void run() {
         Gson gson = new Gson();
 
         try (
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionManager.getSocket().getOutputStream()))
         ) {
+
             this.clientName = reader.readLine();   // Save into field
-            System.out.println("DEBUG: New client name = '" + clientName + "'");
 
-            if (clientName == null || clientName.isBlank()) {
-                System.out.println("Enter valid name");
-                stop();
-                return;
-            }
-
-            System.out.println(this.clientName + " connected.");
+            System.out.println("Client "+clientName+" has connected.");
+            writer.write("Welcome, " + this.clientName + "!");
+            writer.newLine();
+            writer.flush();
 
             String msgFromClient;
             while (running && (msgFromClient = reader.readLine()) != null) {
@@ -63,7 +56,7 @@ public class ClientHandler implements Runnable {
                 Request request;
                 if (msgFromClient.equalsIgnoreCase("quit")){
                     Server.shutdownServer();
-                    this.stop();
+                    connectionManager.stop();
                     break;
                 }
 
@@ -72,25 +65,21 @@ public class ClientHandler implements Runnable {
                     request = gson.fromJson(msgFromClient, Request.class);
                 } else {
                     // It is normal user input like "forward 10"
-                    Command command = Command.create(msgFromClient);
+                    Command command = Command.create(msgFromClient.toLowerCase());
                     Map<String, Object> args = new HashMap<>();
 
                     System.out.println("DEBUG: Command name = " + command.getName() + " - in cli handler");
                     System.out.println("DEBUG: Command argument = " + command.getArgument());
 
-                    if (command.getArgument() != null && !command.getArgument().isEmpty()) {
+                    if (command.getArgument() != null || !command.getArgument().isEmpty()) {
                         if (command.getName().equals("forward") || command.getName().equals("back")) {
                             args.put("steps", command.getArgument());
                         } else if (command.getName().equals("launch")) {
                             args.put("name", command.getArgument());
                         }
-
                     }
                     request = new Request(command.getName(), args);
                 }
-
-
-
 
                 Response response;
 
@@ -100,7 +89,9 @@ public class ClientHandler implements Runnable {
                         String name = (String) request.getArguments().get("name");
                         command = new LaunchCommand(name);
                     } else if (request.getCommand().equalsIgnoreCase("quit")) {
-                        command = new QuitCommand();
+                        Server.shutdownServer();
+                        connectionManager.stop();    // stops client handler too
+                        break;
                     } else {
                         String reconstructedInstruction = request.getCommand();
                         Object stepsArg = request.getArguments().get("steps");
@@ -113,41 +104,43 @@ public class ClientHandler implements Runnable {
 
                     }
 
+                    Map<String, Object> data = new HashMap<>();
+
                     if (robot == null) {
                         if (command instanceof LaunchCommand) {
-                            this.robotName = String.valueOf(request.getArguments().get("name"));
-
+//                            this.robotName = (String) request.getArguments().get("name");
+                            this.robotName = ((LaunchCommand) command).getRobotName();
                             if (robotName == null || robotName.isEmpty()) {
-                                response = new Response("ERROR", "Launch command needs a robot name from cli handler.", null);
-                            } else {
+                                data.put("message","Launch command needs <robotname>.");
+                                response = new Response("ERROR", data, null);
+                            }
+
+                             else {
                                 this.robot = new Robot(robotName, world);   //Create robot manually
                                 world.addRobot(robot); //Add robot to the shared world
-
-                                Map<String, Object> state = new HashMap<>();
-                                state.put("robot", robotName);
-                                state.put("position", robot.getPosition());
-                                state.put("status", robot.getStatus());
-
-                                response = new Response("OK", "Robot '" + robotName + "' launched", state);
-                            }
+//                                response = robot.handleCommand(command);
+//                                String obstacles = world.showObstacles();
+//                                writer.write(world.showObstacles());
+//                                writer.newLine();
+//                                writer.flush();
+                                world.showObstacles();
+                                response = command.execute(robot);  // Now pass it to LaunchCommand
+                             }
                         } else {
                             // Any other command before launch
-                            response = new Response("ERROR", "Please launch a robot first using: launch <robotname>", null);
+                            data.put("message","Please launch a robot first using: launch <robotname>");
+                            response = new Response("ERROR", data, null);
                         }
                     } else {
                         // Robot already launched, can handle other commands
                         response = robot.handleCommand(command);
-
-                        if (command instanceof QuitCommand) {
-                            Server.shutdownServer();
-                            this.stop();    // stops client handler too
-                            break;
-                        }
                     }
 
                 //end of inner try
                 } catch (IllegalArgumentException e) {
-                    response = new Response("ERROR", e.getMessage(), null);
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("message",e.getMessage());
+                    response = new Response("ERROR", data, null);
                 }
 
                 // Send the response back
@@ -160,7 +153,7 @@ public class ClientHandler implements Runnable {
 //            System.out.println("Client error or disconnected: " + e.getMessage());
             System.out.println((clientName != null ? clientName : "Unknown client") + " disconnected: " + e.getMessage());
         } finally {
-            stop();
+            connectionManager.stop();
             System.out.println("Client handler exiting.");
         }
     }

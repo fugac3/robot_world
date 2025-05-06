@@ -12,7 +12,7 @@ import java.util.Map;
 public class RobotsCommand extends Command{
 
     public RobotsCommand() {
-        super("robot");
+        super("robots");
     }
 
     @Override
@@ -35,11 +35,11 @@ public class RobotsCommand extends Command{
             state.put("position", robot.getPosition());
             state.put("status", "Listed all robots.");
 
-            return new Response("OK", "Command executed.", state);
+            return new Response("OK", state, robot);
         } else {
             state.put("position", robot.getPosition());
             state.put("status", "World does not support listing robots.");
-            return new Response("ERROR", "World does not support listing robots.", state);
+            return new Response("ERROR", state,robot);
         }
     }
 }

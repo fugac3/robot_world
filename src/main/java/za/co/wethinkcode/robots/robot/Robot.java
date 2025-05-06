@@ -4,24 +4,23 @@ import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.IWorld;
+import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Robot {
-    private final Position TOP_LEFT = new Position(-200,100);
-    private final Position BOTTOM_RIGHT = new Position(100,-200);
-
     public static final Position CENTRE = new Position(0,0);
-    private Map<String, Object> state = new HashMap<>();
+
 //    private Position position;
     private Direction currentDirection = Direction.NORTH;
-    private String status;
+
     private final String name;
     private final IWorld world;
     private Position position;
+    private String status;
+    private String lastMoveReason = "";
+    private int ammo = 5; // starting ammo
 
 
 
@@ -30,29 +29,42 @@ public class Robot {
 //    public Robot(String name) {
     public Robot(String name,IWorld world) {
         this.name = name;
-        this.status = "Ready";
         this.commands = new ArrayList<>();
         this.world = world;
         this.position = new Position(0, 0); // start at center
-//        this.world = new TextWorld();
     }
 
-    public void setState(Map<String, Object> state) {
-        this.state = state;
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public Map<String, Object> getState() {
-        Map<String, Object> currentState = new HashMap<>();
+    public String getStatus() {
+        return this.status;
+    }
 
-        Map<String, Integer> position = new HashMap<>();
-        position.put("x", this.position.getX());
-        position.put("y", this.position.getY());
 
-        currentState.put("position", position);  // Store position as a map of x and y
-        currentState.put("direction", this.currentDirection.toString());
-        currentState.put("status", this.status);
-        currentState.put("name", this.name);
-        return currentState;
+
+    public boolean fire() {
+        if (ammo <= 0) {
+            status = "No ammo left! Reload required.";
+            return false;
+        }
+
+        ammo--; // consuming a bullet
+        boolean hit = world.processFire(position, currentDirection); // processFire needs to be added to AbstractWorld
+        status = hit ? "Target hit!" : "Missed shot!";
+        return hit;
+    }
+
+    public boolean reload() {
+        ammo = 5; // reset to full ammo
+        status = "Reloaded successfully.";
+        return true;
+    }
+
+    public int getAmmo() {
+        return ammo;
     }
 
     public boolean updatePosition(int nrSteps){
@@ -79,16 +91,20 @@ public class Robot {
         Position newPosition = new Position(newX,  newY);
 
         if (world.blocksPath(this.position, newPosition)) {
-            this.setStatus("Sorry, there's an obstacle in the way.");
+            lastMoveReason = "Obstructed";
             return false;
         }
 
-        if (newPosition.isIn(TOP_LEFT,BOTTOM_RIGHT)){
-            this.position = newPosition;
-            setStatus("Moved forward by " + nrSteps + " steps.");
-            return true;
+        if (!newPosition.isIn(TextWorld.TOP_LEFT,TextWorld.BOTTOM_RIGHT)){
+            lastMoveReason = "Edge of world";
+            return false;
         }
-        return false;
+        this.position = newPosition;
+        return true;
+    }
+
+    public String getLastMoveReason() {
+        return lastMoveReason;
     }
 
 
@@ -102,9 +118,7 @@ public class Robot {
     }
 
 
-    public String getStatus() {
-        return this.status;
-    }
+
 
     public Direction getCurrentDirection() {
         return this.currentDirection;
@@ -138,12 +152,6 @@ public class Robot {
     public String toString() {
         return "[" + this.position.getX() + "," + this.position.getY() + "] "
                 + this.name + "> " + this.status;
-    }
-
-
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getName() {

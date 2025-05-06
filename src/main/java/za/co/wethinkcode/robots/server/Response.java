@@ -1,28 +1,43 @@
 package za.co.wethinkcode.robots.server;
 
+import za.co.wethinkcode.robots.robot.Position;
+import za.co.wethinkcode.robots.robot.Robot;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class Response {
     private String result;
-    private String message;
-    private Map<String, Object> state;
+    private final Map<String, Object> data;
+    private final Map<String, Object> state;
 
-    public Response(String result, String message, Map<String, Object> state) {
+    public Response(String result, Map<String, Object> data, Robot robot) {
         this.result = result;
-        this.message = message;
-        this.state = state;
+        this.data = data;
+        this.state = (robot != null) ? buildState(robot) : null;
     }
 
-    public String getMessage() {
-        return message;
+    public static Map<String, Object> buildState(Robot robot) {
+        if (robot == null) return null;
+        Map<String, Object> currentState = new HashMap<>();
+        Position pos = robot.getPosition();
+        currentState.put("position", new int[]{pos.getX(), pos.getY()});
+        currentState.put("direction", robot.getCurrentDirection().toString());
+        currentState.put("status", robot.getStatus());
+        return currentState;
+    }
+
+    public Map<String, Object> getState() {
+        return state;
+    }
+
+    public Map<String, Object> getData() {
+        return data;
     }
 
     public String getResult() {
         return result;
     }
 
-    public Map<String, Object> getState() {
-        return state;
-    }
 
 }

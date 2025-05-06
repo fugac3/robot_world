@@ -17,23 +17,22 @@ public class LaunchCommand extends Command {
 
     @Override
     public Response execute(Robot robot) {
-        Map<String, Object> state = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
 
-        if (robot != null) {
-            // Already launched
-            state.put("position", robot.getPosition());
-            return new Response("ERROR", "Robot already launched.", state);
+        if (robot == null) {
+            data.put("message", "Robot not initialized.");
+            return new Response("ERROR", data, null);
         }
-        Robot newRobot = new Robot(robotName, TextWorld.getInstance()); // or however your world works
-        TextWorld.getInstance().addRobot(newRobot);
 
-        state.put("position", newRobot.getPosition());
-        state.put("status", "Robot '" + robotName + "' launched successfully.");
 
-        return new Response("OK", "Robot launched successfully.", state);
+        data.put("position", robot.getPosition());
+        return new Response("OK", data, robot);
     }
 
     public String getRobotName() {
         return robotName;
     }
 }
+
+
+

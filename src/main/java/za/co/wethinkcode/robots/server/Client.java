@@ -3,7 +3,9 @@ package za.co.wethinkcode.robots.server;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
-//fdg
+
+import static java.lang.System.in;
+
 
 public class Client {
     public static void main(String[] args) {
@@ -16,7 +18,8 @@ public class Client {
 //        OutputStreamWriter outputStreamWriter = null;    // char based output stream. byte to char stream
         BufferedReader bufferedReader = null;    // large block/array of char at a time.
         BufferedWriter bufferedWriter = null;    // Not good for files of text
-        Scanner scanner = new Scanner(System.in);
+//        Scanner scanner = new Scanner(in);
+        String clientName = null;
 
         try {
             socket = new Socket("localhost",Port);
@@ -24,23 +27,29 @@ public class Client {
 
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //End in Stream is byte     //Not end in Stream so = char
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            Scanner scanner = new Scanner(System.in);
 
-
-
-            String clientName;
-            System.out.println("Enter your name: ");
-            clientName = scanner.nextLine().trim();
-            System.out.println("Hello: "+ clientName);
+            while (true) {
+                System.out.print("Enter your name: ");
+                clientName = scanner.nextLine().trim();
+                if (clientName.isBlank()) {
+                    System.out.println("Invalid name. Try again.");
+                }
+                else {
+                    break;
+                }
+            }
 
             bufferedWriter.write(clientName);
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
-            scanner = new Scanner(System.in);
-            System.out.println("Now you can enter commands:");
+            // Receive greeting/confirmation from server
+            String welcomeMsg = bufferedReader.readLine();
+            System.out.println("Server: " + welcomeMsg);
 
             while (true) {
-//                System.out.print("> "); // prompt for input
+                System.out.print("> "); // prompt for input
                 // Consume any leftover new line after sending name
                 String msgToSend = scanner.nextLine();
 
@@ -53,18 +62,16 @@ public class Client {
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
 
-
                 String response = bufferedReader.readLine();
                 if (response == null) {
                     System.out.println("Server closed the connection.");
                     break;
                 }
 
-
                 System.out.println("Server: " + response);
 
                 if (msgToSend.equalsIgnoreCase("BYE")) {
-                    System.out.println("Bye " + clientName);
+                    System.out.println("Bye"+clientName);
                     break;
                 }
             }

@@ -6,10 +6,10 @@ import za.co.wethinkcode.robots.server.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FireCommand extends Command {
+public class ReloadCommand extends Command {
 
-    public FireCommand() {
-        super("fire");
+    public ReloadCommand() {
+        super("reload");
     }
 
     @Override
@@ -20,17 +20,16 @@ public class FireCommand extends Command {
             return new Response("ERROR", data, null);
         }
 
-        boolean fired = robot.fire();
+        boolean reloaded = robot.reload();
 
         Map<String, Object> data = new HashMap<>();
         data.put("message", robot.getStatus());
 
-        return fired ? new Response("OK", data, robot) : new Response("FAILED", data, robot);
+        return reloaded ? new Response("OK", data, robot) : new Response("FAILED", data, robot);
     }
 
     @Override
     public String toString() {
-        return "Fire Command Executed";
+        return "Reload Command executed";
     }
 }
-
