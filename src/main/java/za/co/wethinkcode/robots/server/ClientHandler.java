@@ -115,7 +115,7 @@ public class ClientHandler implements Runnable {
                                 response = new Response("ERROR", data, null);
                             }
 
-                             else {
+                            else {
                                 this.robot = new Robot(robotName, world);   //Create robot manually
                                 world.addRobot(robot); //Add robot to the shared world
 //                                response = robot.handleCommand(command);
@@ -125,7 +125,7 @@ public class ClientHandler implements Runnable {
 //                                writer.flush();
                                 world.showObstacles();
                                 response = command.execute(robot);  // Now pass it to LaunchCommand
-                             }
+                            }
                         } else {
                             // Any other command before launch
                             data.put("message","Please launch a robot first using: launch <robotname>");
@@ -136,7 +136,7 @@ public class ClientHandler implements Runnable {
                         response = robot.handleCommand(command);
                     }
 
-                //end of inner try
+                    //end of inner try
                 } catch (IllegalArgumentException e) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("message",e.getMessage());
@@ -148,7 +148,7 @@ public class ClientHandler implements Runnable {
                 writer.newLine();
                 writer.flush();
             }
-        //end of main try
+            //end of main try
         } catch (IOException e) {
 //            System.out.println("Client error or disconnected: " + e.getMessage());
             System.out.println((clientName != null ? clientName : "Unknown client") + " disconnected: " + e.getMessage());

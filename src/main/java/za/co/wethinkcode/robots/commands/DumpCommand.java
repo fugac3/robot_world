@@ -12,14 +12,14 @@ public class DumpCommand extends Command {
 
     @Override
     public Response execute(Robot robot) {
-        Map<String,String>dumpInfo = new HashMap<>();
+        Map<String,Object>data = new HashMap<>();
 
-        dumpInfo.put("Robot name: ", robot.getName());
-        dumpInfo.put("Position ", robot.getPosition().toString());
-        dumpInfo.put("Direction: ", robot.getCurrentDirection().toString());
-        dumpInfo.put("Obstacle",robot.getWorld().getObstacles().toString());
+        data.put("Robot name: ", robot.getName());
+        data.put("Position ", robot.getPosition());
+        data.put("Direction: ", robot.getCurrentDirection());
+        data.put("Obstacle",robot.getWorld().getObstacles());
 
 
-        return new Response("OK","Robot has been dumped", Map.of(robot.getName(), dumpInfo));
+        return new Response("OK",data, robot);
     }
 }
