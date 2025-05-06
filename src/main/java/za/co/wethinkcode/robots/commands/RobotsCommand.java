@@ -28,17 +28,21 @@ public class RobotsCommand extends Command{
                 Map<String, Object> robotInfo = new HashMap<>();
                 robotInfo.put("name", r.getName());
                 robotInfo.put("position", r.getPosition());
+                robotInfo.put("shots", r.getAmmo());
+                robotInfo.put("status", r.getStatus());
                 robotList.add(robotInfo);
             }
 
             state.put("robots", robotList);
-            state.put("position", robot.getPosition());
-            state.put("status", "Listed all robots.");
+//            state.put("position", robot.getPosition());
+//            state.put("status", );
+            robot.setStatus("NORMAL");
 
             return new Response("OK", state, robot);
         } else {
             state.put("position", robot.getPosition());
-            state.put("status", "World does not support listing robots.");
+            robot.setStatus("error");
+//            state.put("status", "World does not support listing robots.");
             return new Response("ERROR", state,robot);
         }
     }

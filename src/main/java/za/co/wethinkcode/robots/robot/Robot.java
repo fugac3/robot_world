@@ -7,7 +7,9 @@ import za.co.wethinkcode.robots.world.IWorld;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Robot {
     public static final Position CENTRE = new Position(0,0);
@@ -68,6 +70,8 @@ public class Robot {
     }
 
     public boolean updatePosition(int nrSteps){
+
+
         int newY = this.position.getY();
         int newX = this.position.getX();
 
@@ -85,7 +89,7 @@ public class Robot {
                 newX -= nrSteps;
                 break;
             default:
-                status = "Invalid direction" + currentDirection;
+                status = "ERROR" ;
         }
 
         Position newPosition = new Position(newX,  newY);

@@ -18,24 +18,25 @@ public class ForwardCommand extends Command {
 
     @Override
     public Response execute(Robot robot) {
-        int steps;
+        boolean moved;
+        Map<String, Object> data = new HashMap<>();
 
         try {
-            steps = Integer.parseInt(argument);
+            int steps = Integer.parseInt(argument);
+            moved = robot.updatePosition(steps);
         } catch (NumberFormatException e) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("message", "Invalid steps: must be a number.");
-            return new Response("ERROR", data, null);
+            data.put("message","Invalid steps: steps must be a number.");
+            robot.setStatus("NORMAL");
+            return new Response("ERROR",data,robot);
         }
 
-        boolean moved = robot.updatePosition(steps);
-
-        Map<String, Object> data = new HashMap<>();
         if (moved) {
             data.put("message", "Done");
+            robot.setStatus("NORMAL");
             return new Response("OK", data, robot);
         }else {
             data.put("message", robot.getLastMoveReason());
+            robot.setStatus("NORMAL");
             return new Response("FAILED", data, robot);
         }
     }
