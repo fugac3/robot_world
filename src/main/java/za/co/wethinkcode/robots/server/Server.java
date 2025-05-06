@@ -10,12 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//    ================ HOW TO RUN ======================   //
-//    use to run in terminal
-//    in: /path/to/oop-ex-toy-robot-group$
-//    java -cp target/classes za.co.wethinkcode.robots.server.Server
-//    java -cp target/classes za.co.wethinkcode.robots.server.Client
-//    ==================================================   //
 
 
 public class Server {
