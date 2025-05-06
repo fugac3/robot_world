@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robots.world;
 
+import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
@@ -106,6 +107,11 @@ public class TextWorld extends AbstractWorld{
         this.position = pos;
     }
 
+    @Override
+    public Map<za.co.wethinkcode.robots.commands.Direction, Artefact> look() {
+        return Map.of();
+    }
+
     /**
      * Gets the current direction the robot is facing in relation to a world edge.
      *
@@ -113,7 +119,7 @@ public class TextWorld extends AbstractWorld{
      */
     @Override
     public Direction getCurrentDirection() {
-        return Direction.UP;
+        return Direction.NORTH;
     }
 
     /**

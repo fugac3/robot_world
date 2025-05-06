@@ -24,8 +24,10 @@ public class FireCommand extends Command {
 
         Map<String, Object> data = new HashMap<>();
         data.put("message", robot.getStatus());
+        data.put("ammo", robot.getAmmo());
 
         return fired ? new Response("OK", data, robot) : new Response("FAILED", data, robot);
+
     }
 
     @Override

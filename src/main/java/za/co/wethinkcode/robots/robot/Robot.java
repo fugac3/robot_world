@@ -52,7 +52,7 @@ public class Robot {
         }
 
         ammo--; // consuming a bullet
-        boolean hit = world.processFire(position, currentDirection); // processFire needs to be added to AbstractWorld
+        boolean hit = true; // processFire needs to be added to AbstractWorld
         status = hit ? "Target hit!" : "Missed shot!";
         return hit;
     }

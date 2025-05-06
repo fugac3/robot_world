@@ -70,12 +70,16 @@ public abstract class Command {
                 return new RightCommand();
             case "left":
                 return new LeftCommand();
-            case "dump":
-                return new DumpCommand();
-            case "look":
-                return new LookCommand();
-            case "state":
-                return new StateCommand();
+            case "fire":
+                return new FireCommand();
+            case "reload":
+                return new ReloadCommand();
+//            case "dump":
+//                return new DumpCommand();
+//            case "look":
+//                return new LookCommand();
+//            case "state":
+//                return new StateCommand();
             default:
                 throw new IllegalArgumentException("Unsupported command: " + instruction);
         }
