@@ -31,6 +31,7 @@ public class RobotsCommand extends Command{
                 robotList.add(robotInfo);
             }
 
+// extract this into a class and call it in robots and dump
             state.put("robots", robotList);
             state.put("position", robot.getPosition());
             state.put("status", "Listed all robots.");
