@@ -3,6 +3,7 @@ package za.co.wethinkcode.robots.robot;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.Bullet;
 import za.co.wethinkcode.robots.world.IWorld;
 import za.co.wethinkcode.robots.world.TextWorld;
 
@@ -24,6 +25,8 @@ public class Robot {
     private String lastMoveReason = "";
     private int ammo = 5; // starting ammo
     private int shotsFired = 0;
+    private static final int bulletMaxDistance = 3;
+    private List<Bullet> bullets = new ArrayList<>();
 
 
 
@@ -56,9 +59,16 @@ public class Robot {
 
         ammo--; // consuming a bullet
         shotsFired++;
-        boolean hit = false;
+
+        // Create a new bullet travelling in the current direction
+        Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance);
+        bullets.add(bullet);
+
+        // Determine whether the bullet hits an obstacle or enemy (to be coded)
+        boolean hit = false; // boolean hit = isBulletBlocked(bullet); (for later implementation)
         status = "NORMAL";
         return hit;
+        // return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired)); (for later implementation)
     }
 
     public int getShotsFired() {
