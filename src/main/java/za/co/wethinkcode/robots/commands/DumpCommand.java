@@ -18,10 +18,7 @@ public class DumpCommand extends Command {
     public Response execute(Robot robot) {
         Map<String,Object> data = new HashMap<>();
 
-        data.put("Robot name", robot.getName());
-        data.put("Position", robot.getPosition());
-        data.put("Direction", robot.getCurrentDirection());
-
+//        "data":
         List<Map<String, Object>> obstacleData = new ArrayList<>();
         for (Obstacle o : robot.getWorld().getObstacles()) {
             Map<String, Object> obsInfo = new HashMap<>();
@@ -31,7 +28,17 @@ public class DumpCommand extends Command {
             obstacleData.add(obsInfo);
         }
 
+        List<Map<String, Object>> robotList = RobotList.getAllRobotsInfo(robot);
+
+        if (robotList == null) {
+            Map<String, Object> errorData = new HashMap<>();
+            errorData.put("message", "Failed to retrieve robot list.");
+            return new Response("ERROR", errorData, robot);
+        }
+        robot.setStatus("NORMAL");
+
         data.put("Obstacles", obstacleData);
+        data.put("robots", robotList);
 
         return new Response("OK", data, robot);
     }

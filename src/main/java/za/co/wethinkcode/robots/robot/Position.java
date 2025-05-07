@@ -33,8 +33,6 @@ public class Position {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Position position = (Position) o;
-//        if (x != position.x) return false;
-//        return y == position.y;
         return x == position.x && y == position.y;
     }
 
