@@ -13,15 +13,11 @@ public class StateCommand extends Command {
 
     @Override
     public Response execute(Robot robot) {
-        Map<String, Object> data = new HashMap<>();
+//        Map<String, Object> data = new HashMap<>();
 
-        data.put("Position",robot.getPosition());
-        data.put("Direction", robot.getCurrentDirection());
-        data.put("ammo", robot.getAmmo());
+//        data.put("Position",robot.getPosition());
+//        data.put("Direction", robot.getCurrentDirection());
 
-        Map<String, Object> state = new HashMap<>();
-        state.put("shots", robot.getAmmo());
-
-        return new Response("OK", data, robot);
+        return new Response(null, null,robot);
     }
 }

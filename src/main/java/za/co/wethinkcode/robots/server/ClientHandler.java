@@ -1,12 +1,13 @@
 package za.co.wethinkcode.robots.server;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.LaunchCommand;
 import za.co.wethinkcode.robots.commands.QuitCommand;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.world.TextWorld;
 import com.google.gson.Gson;
-
 
 import java.io.*;
 import java.net.Socket;
@@ -35,7 +36,6 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         Gson gson = new Gson();
-
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionManager.getSocket().getOutputStream()))
@@ -68,8 +68,8 @@ public class ClientHandler implements Runnable {
                     Command command = Command.create(msgFromClient.toLowerCase());
                     Map<String, Object> args = new HashMap<>();
 
-                    System.out.println("DEBUG: Command name = " + command.getName() + " - in cli handler");
-                    System.out.println("DEBUG: Command argument = " + command.getArgument());
+//                    System.out.println("DEBUG: Command name = " + command.getName() + " - in cli handler");
+//                    System.out.println("DEBUG: Command argument = " + command.getArgument());
 
                     if (command.getArgument() != null || !command.getArgument().isEmpty()) {
                         if (command.getName().equals("forward") || command.getName().equals("back")) {
@@ -108,27 +108,22 @@ public class ClientHandler implements Runnable {
 
                     if (robot == null) {
                         if (command instanceof LaunchCommand) {
-//                            this.robotName = (String) request.getArguments().get("name");
+                            //this.robotName = (String) request.getArguments().get("name");
                             this.robotName = ((LaunchCommand) command).getRobotName();
                             if (robotName == null || robotName.isEmpty()) {
-                                data.put("message","Launch command needs <robotname>.");
+                                data.put("message","Launch command needs a name.");
                                 response = new Response("ERROR", data, null);
                             }
 
                             else {
                                 this.robot = new Robot(robotName, world);   //Create robot manually
                                 world.addRobot(robot); //Add robot to the shared world
-//                                response = robot.handleCommand(command);
-//                                String obstacles = world.showObstacles();
-//                                writer.write(world.showObstacles());
-//                                writer.newLine();
-//                                writer.flush();
                                 world.showObstacles();
                                 response = command.execute(robot);  // Now pass it to LaunchCommand
                             }
                         } else {
                             // Any other command before launch
-                            data.put("message","Please launch a robot first using: launch <robotname>");
+                            data.put("message","Please launch a robot first using: launch robot-name");
                             response = new Response("ERROR", data, null);
                         }
                     } else {
@@ -144,13 +139,14 @@ public class ClientHandler implements Runnable {
                 }
 
                 // Send the response back
-                writer.write(gson.toJson(response));
+                String json = new Gson().toJson(response);
+                System.out.println(json);
+                writer.write(json);
                 writer.newLine();
                 writer.flush();
             }
             //end of main try
         } catch (IOException e) {
-//            System.out.println("Client error or disconnected: " + e.getMessage());
             System.out.println((clientName != null ? clientName : "Unknown client") + " disconnected: " + e.getMessage());
         } finally {
             connectionManager.stop();

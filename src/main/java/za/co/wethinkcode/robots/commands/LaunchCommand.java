@@ -23,9 +23,8 @@ public class LaunchCommand extends Command {
             data.put("message", "Robot not initialized.");
             return new Response("ERROR", data, null);
         }
-
-
         data.put("position", robot.getPosition());
+        robot.setStatus("NORMAL");
         return new Response("OK", data, robot);
     }
 
