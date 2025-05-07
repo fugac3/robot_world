@@ -48,14 +48,14 @@ public class Robot {
 
     public boolean fire() {
         if (ammo <= 0) {
-            status = "No ammo left! Reload required.";
+            status = "NORMAL";
             return false;
         }
 
         ammo--; // consuming a bullet
         shotsFired++;
         boolean hit = false;
-        status = hit ? "Hit" : "Miss";
+        status = "NORMAL";
         return hit;
     }
 

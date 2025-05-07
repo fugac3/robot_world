@@ -24,6 +24,7 @@ public class Response {
         currentState.put("position", new int[]{pos.getX(), pos.getY()});
         currentState.put("direction", robot.getCurrentDirection().toString());
         currentState.put("status", robot.getStatus());
+        currentState.put("shots", robot.getAmmo());
         return currentState;
     }
 
