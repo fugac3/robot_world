@@ -17,7 +17,11 @@ public class StateCommand extends Command {
 
         data.put("Position",robot.getPosition());
         data.put("Direction", robot.getCurrentDirection());
+        data.put("ammo", robot.getAmmo());
 
-        return new Response("Ok", data,robot);
+        Map<String, Object> state = new HashMap<>();
+        state.put("shots", robot.getAmmo());
+
+        return new Response("OK", data, robot);
     }
 }

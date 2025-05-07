@@ -21,6 +21,7 @@ public class Robot {
     private String status;
     private String lastMoveReason = "";
     private int ammo = 5; // starting ammo
+    private int shotsFired = 0;
 
 
 
@@ -52,14 +53,19 @@ public class Robot {
         }
 
         ammo--; // consuming a bullet
-        boolean hit = true; //world.processFire(position, currentDirection); // processFire needs to be added to AbstractWorld
-        status = hit ? "Target hit!" : "Missed shot!";
+        shotsFired++;
+        boolean hit = false;
+        status = hit ? "Hit" : "Miss";
         return hit;
+    }
+
+    public int getShotsFired() {
+        return shotsFired;
     }
 
     public boolean reload() {
         ammo = 5; // reset to full ammo
-        status = "Reloaded successfully.";
+        status = "RELOAD";
         return true;
     }
 
