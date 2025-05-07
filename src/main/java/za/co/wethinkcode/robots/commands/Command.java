@@ -80,11 +80,6 @@ public abstract class Command {
                 return new LookCommand();
             case "state":
                 return new StateCommand();
-            case "fire":
-                return new FireCommand();
-            case "reload":
-                return new ReloadCommand();
-
             default:
                 throw new IllegalArgumentException("Unsupported command: " + instruction);
         }
