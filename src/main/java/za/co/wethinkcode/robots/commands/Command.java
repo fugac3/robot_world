@@ -70,6 +70,10 @@ public abstract class Command {
                 return new RightCommand();
             case "left":
                 return new LeftCommand();
+            case "fire":
+                return new FireCommand();
+            case "reload":
+                return new ReloadCommand();
             case "dump":
                 return new DumpCommand();
             case "look":
