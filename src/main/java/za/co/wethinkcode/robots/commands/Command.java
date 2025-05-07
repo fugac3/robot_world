@@ -8,7 +8,6 @@ public abstract class Command {
     public String argument;
 
     public abstract Response execute(Robot robot);
-//    public abstract boolean execute(Robot target);
 
     public Command(String name){
         this.name = name.trim().toLowerCase();
@@ -20,7 +19,7 @@ public abstract class Command {
         this.argument = argument.trim();
     }
 
-    public String getName() {                                                                           //<2>
+    public String getName() {
         return name;
     }
 
@@ -37,14 +36,7 @@ public abstract class Command {
             throw new IllegalArgumentException("Empty command received.");
         }
 
-//        String[] args = instruction..trim().split(" ",2);
         String[] args = instruction.trim().split("\\s+");
-
-        System.out.println("DEBUG: instruction = '" + instruction + "'");
-        System.out.println("DEBUG: args[0] = '" + args[0] + "'");
-        if (args.length > 1) {
-            System.out.println("DEBUG: args[1] = '" + args[1] + "'");
-        }
 
         switch (args[0]) {
             case "launch":
@@ -81,7 +73,7 @@ public abstract class Command {
             case "state":
                 return new StateCommand();
             default:
-                throw new IllegalArgumentException("Unsupported command: " + instruction);
+                return null;
         }
 
 

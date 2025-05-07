@@ -33,7 +33,6 @@ public class TextWorld extends AbstractWorld{
         return instance;
     }
 
-
     public void addRobot(Robot robot) {
         robots.put(robot.getName(), robot);
     }
@@ -41,28 +40,6 @@ public class TextWorld extends AbstractWorld{
     public Collection<Robot> getAllRobots() {
         return robots.values();
     }
-
-
-//    public boolean registerRobot(Robot robot) {
-//        // returns false if a robot with that name already exists
-//        return robots.putIfAbsent(robot.getName(), robot) == null;
-//    }
-
-//    public Robot getRobotByName(String name) {
-//        return robots.get(name);
-//    }
-//
-//    public int getRobotCount() {
-//        return robots.size();
-//    }
-//
-//    public Map<String, Robot> getRobots() {
-//        return Collections.unmodifiableMap(robots);
-//    }
-
-
-
-
 
     @Override
     public boolean blocksPath(Position start, Position end) {
@@ -74,35 +51,6 @@ public class TextWorld extends AbstractWorld{
         return false;
     }
 
-
-
-    /**
-     * Updates the position of your robot in the world by moving the nrSteps in the robots current direction.
-
-//     * @param nrSteps steps to move in current direction
-//     * @return true if this does not take the robot over the world's limits, or into an obstacle.
-     */
-    @Override
-    public boolean updatePosition(int nrSteps) {
-        return false;
-    }
-
-
-
-    /**
-     * Updates the current direction your robot is facing in the world by cycling through the directions UP, RIGHT, BOTTOM, LEFT.
-     *
-     * @param turnRight if true, then turn 90 degrees to the right, else turn left.
-     */
-    @Override
-    public void updateDirection(boolean turnRight) {
-
-
-    }
-
-
-
-
     public void setPosition(Position pos) {
         this.position = pos;
     }
@@ -111,55 +59,5 @@ public class TextWorld extends AbstractWorld{
     public Map<za.co.wethinkcode.robots.commands.Direction, Artefact> look() {
         return Map.of();
     }
-
-    /**
-     * Gets the current direction the robot is facing in relation to a world edge.
-     *
-     * @return Direction.UP, RIGHT, DOWN, or LEFT
-     */
-    @Override
-    public Direction getCurrentDirection() {
-        return Direction.NORTH;
-    }
-
-    /**
-     * Checks if the new position will be allowed, i.e. falls within the constraints of the world, and does not overlap an obstacle.
-     *
-     * @param position the position to check
-     * @return true if it is allowed, else false
-     */
-    @Override
-    public boolean isNewPositionAllowed(Position position) {
-
-//        if(!position.equals(getObstacles())){
-//            return true;
-//        }
-        return false;
-    }
-
-    /**
-     * Checks if the robot is at one of the edges of the world
-     *
-     * @return true if the robot's current is on one of the 4 edges of the world
-     */
-    @Override
-    public boolean isAtEdge() {
-        return false;
-    }
-
-    /**
-     * Reset the world by:
-     * - moving current robot position to center 0,0 coordinate
-     * - removing all obstacles
-     * - setting current direction to UP
-     */
-    @Override
-    public void reset() {
-
-    }
-
-
-
-
 //==========
 }

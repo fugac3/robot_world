@@ -14,8 +14,6 @@ public class SquareObstacle implements Obstacle {
     private boolean lake = false;
     private boolean bottomlessPit = false;
 
-
-
     public SquareObstacle(int bottomLeftX, int bottomLeftY) {
         this.bottomLeftX = bottomLeftX;
         this.bottomLeftY = bottomLeftY;
@@ -39,18 +37,6 @@ public class SquareObstacle implements Obstacle {
     public int getTopRightY() {
         return bottomLeftY + size - 1;
     }
-
-//    public boolean getMountain(){
-//        return mountain;
-//    }
-//
-//    public boolean getLake(){
-//        return lake;
-//    }
-//
-//    public boolean getBottomlessPit(){
-//        return bottomlessPit;
-//    }
 
     @Override
     public int getSize() {

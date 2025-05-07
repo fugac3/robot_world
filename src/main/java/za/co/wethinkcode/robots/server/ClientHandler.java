@@ -68,9 +68,6 @@ public class ClientHandler implements Runnable {
                     Command command = Command.create(msgFromClient.toLowerCase());
                     Map<String, Object> args = new HashMap<>();
 
-//                    System.out.println("DEBUG: Command name = " + command.getName() + " - in cli handler");
-//                    System.out.println("DEBUG: Command argument = " + command.getArgument());
-
                     if (command.getArgument() != null || !command.getArgument().isEmpty()) {
                         if (command.getName().equals("forward") || command.getName().equals("back")) {
                             args.put("steps", command.getArgument());
