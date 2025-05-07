@@ -93,6 +93,13 @@ public interface IWorld {
      */
     void showObstacles();
 
+//    /**
+//     * Checks if a bullet's position is blocked by an obstacle.
+//     * @param bulletPosition The position of the bullet
+//     * @return true if the bullet is blocked, false otherwise
+//     */
+//    boolean isBulletBlocked(Position position);
+
 
 
 }

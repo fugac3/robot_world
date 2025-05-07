@@ -75,6 +75,15 @@ public abstract class AbstractWorld implements IWorld {
 
 
     }
+//
+//    public boolean isBulletBlocked(Position bulletPosition) {
+//        for (Obstacle obstacle : obstacles) {
+//            if (obstacle.blocksPosition(bulletPosition)) {
+//                return true; // bullet hits an obstacle
+//            }
+//        }
+//        return false; // bullet is still moving
+//    }
 
 
 

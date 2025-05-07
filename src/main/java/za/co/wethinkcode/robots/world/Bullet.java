@@ -5,7 +5,7 @@ import za.co.wethinkcode.robots.robot.Position;
 
 public class Bullet {
     private Position position;
-    private Direction direction;
+    private final Direction direction;
     private int distanceLeft;
 
     public Bullet(Position startPosition, Direction direction, int maxDistance) {

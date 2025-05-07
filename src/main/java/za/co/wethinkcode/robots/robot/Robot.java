@@ -5,7 +5,9 @@ import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.Bullet;
 import za.co.wethinkcode.robots.world.IWorld;
+import za.co.wethinkcode.robots.world.Obstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
+import za.co.wethinkcode.robots.server.FireData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,11 +66,21 @@ public class Robot {
         Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance);
         bullets.add(bullet);
 
-        // Determine whether the bullet hits an obstacle or enemy (to be coded)
-        boolean hit = false; // boolean hit = isBulletBlocked(bullet); (for later implementation)
+        boolean hit = false; // boolean hit = world.isBulletBlocked(bullet.getPosition()); (for later use)
         status = "NORMAL";
         return hit;
-        // return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired)); (for later implementation)
+//        return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired));
+    }
+
+    public void updateBullets() {
+        List<Bullet> activeBullets = new ArrayList<>();
+
+        for (Bullet bullet : bullets) {
+            if (bullet.move()) {
+                activeBullets.add(bullet); // Keep only moving bullets
+            }
+        }
+        bullets = activeBullets; // Remove bullets that have stopped moving
     }
 
     public int getShotsFired() {
