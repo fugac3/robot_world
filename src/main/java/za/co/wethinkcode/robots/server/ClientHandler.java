@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robots.server;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.LaunchCommand;
 import za.co.wethinkcode.robots.commands.QuitCommand;
@@ -34,10 +35,7 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-//        Gson gson = new Gson();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-
+        Gson gson = new Gson();
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionManager.getSocket().getOutputStream()))
@@ -113,7 +111,7 @@ public class ClientHandler implements Runnable {
                             //this.robotName = (String) request.getArguments().get("name");
                             this.robotName = ((LaunchCommand) command).getRobotName();
                             if (robotName == null || robotName.isEmpty()) {
-                                data.put("message","Launch command needs <robotname>.");
+                                data.put("message","Launch command needs a name.");
                                 response = new Response("ERROR", data, null);
                             }
 
@@ -141,10 +139,9 @@ public class ClientHandler implements Runnable {
                 }
 
                 // Send the response back
-//                String prettyJson = gson.toJson(response);
-                System.out.println(new Gson().toJson(response));
-//                writer.write(prettyJson);
-                writer.write(gson.toJson(response));
+                String json = new Gson().toJson(response);
+                System.out.println(json);
+                writer.write(json);
                 writer.newLine();
                 writer.flush();
             }

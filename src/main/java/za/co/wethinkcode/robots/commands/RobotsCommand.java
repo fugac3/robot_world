@@ -28,6 +28,7 @@ public class RobotsCommand extends Command{
                 Map<String, Object> robotInfo = new HashMap<>();
                 robotInfo.put("name", r.getName());
                 robotInfo.put("position", r.getPosition());
+                robotInfo.put("direction", r.getCurrentDirection());
                 robotInfo.put("shots", r.getAmmo());
                 robotInfo.put("status", r.getStatus());
                 robotList.add(robotInfo);
