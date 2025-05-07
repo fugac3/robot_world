@@ -1,12 +1,9 @@
 package za.co.wethinkcode.robots.world;
 
-import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 //import za.co.wethinkcode.robot.position;
 
 
@@ -23,7 +20,7 @@ public class TextWorld extends AbstractWorld{
 
     private TextWorld() {
         this.position = CENTRE;
-        generateRandomObstacles(TOP_LEFT,BOTTOM_RIGHT);
+        generateRandomObstacles();
     }
 
     public static synchronized TextWorld getInstance() {

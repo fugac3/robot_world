@@ -1,10 +1,7 @@
 package za.co.wethinkcode.robots.server;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.LaunchCommand;
-import za.co.wethinkcode.robots.commands.QuitCommand;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.world.TextWorld;
 import com.google.gson.Gson;
@@ -48,72 +45,70 @@ public class ClientHandler implements Runnable {
 
             String msgFromClient;
             while (running && (msgFromClient = reader.readLine()) != null) {
+                //Take JSON string (msgFromClient) from client.
+                //Convert (deserialize) it into a Java object of type Request.
+                //Store that object into variable request.
+                Request request;
                 if (msgFromClient.equalsIgnoreCase("quit")) {
                     Server.shutdownServer();
                     connectionManager.stop();
                     break;
                 }
-
-                Request request = null;
                 Command command = null;
 
                 try {
-                    if (msgFromClient.trim().startsWith("{")) {
-                        try {
-                            request = gson.fromJson(msgFromClient, Request.class);
-                        } catch (Exception e) {
-                            sendError(writer, "Malformed JSON request.");
-                            continue;
-                        }
-                    } else {
-                        command = Command.create(msgFromClient.toLowerCase());
-                        if (command == null) {
-                            throw new IllegalArgumentException("Unknown command: " + msgFromClient);
-                        }
-
-                        Map<String, Object> args = new HashMap<>();
-                        String arg = command.getArgument();
-
-                        if (arg != null && !arg.isEmpty()) {
-                            switch (command.getName()) {
-                                case "forward":
-                                case "back":
-                                    args.put("steps", arg);
-                                    break;
-                                case "launch":
-                                    args.put("name", arg);
-                                    break;
-                            }
-                        }
-
-                        request = new Request(command.getName(), args);
+                    command = Command.create(msgFromClient.toLowerCase());
+                    if (command == null) {
+                        throw new IllegalArgumentException("Unknown command: " + msgFromClient);
                     }
+
+                    Map<String, Object> args = new HashMap<>();
+                    String arg = command.getArgument();
+
+                    if (arg != null && !arg.isEmpty()) {
+                        switch (command.getName()) {
+                            case "forward":
+                            case "back":
+                                args.put("steps", arg);
+                                break;
+                            case "launch":
+                                args.put("name", arg);
+                                break;
+                        }
+                    }
+
+                    request = new Request(command.getName(), args);
+
                 } catch (IllegalArgumentException e) {
                     sendError(writer, e.getMessage());
                     continue;
                 }
 
-                Response response;
+                Response response = null;
 
                 try {
                     String cmdName = request.getCommand();
+                    if(robot == null) {
 
-                    if ("launch".equalsIgnoreCase(cmdName)) {
-                        String name = (String) request.getArguments().get("name");
-                        if (name == null || name.isEmpty()) {
-                            response = new Response("ERROR", Map.of("message", "Launch command needs a name."), null);
-                        }else if(robot != null){
-                            response = new Response("ERROR", Map.of("message", "A robot has already been launched into world."), null);
-                        } else {
-                            command = new LaunchCommand(name);
-                            this.robotName = name;
-                            this.robot = new Robot(robotName, world);
-                            world.addRobot(robot);
-                            world.showObstacles();
-                            response = command.execute(robot);
+                        if ("launch".equalsIgnoreCase(cmdName)) {
+                            String name = (String) request.getArguments().get("name");
+                            Map<String, Object> data = new HashMap<>();
+
+                            if (name == null || name.trim().isEmpty()) {
+                                data.put("message", "Launch command needs a name.");
+                                response = new Response("ERROR", data, null);
+                            } else {
+                                this.robot = new Robot(name, world);
+                                this.robot.setStatus("NORMAL");
+                                world.addRobot(this.robot);
+                                this.robotName = name;
+
+                                data.put("position", this.robot.getPosition());
+                                response = new Response("OK", data, this.robot);
+                            }
                         }
-
-                    } else if ("quit".equalsIgnoreCase(cmdName)) {
+                    }
+                    else if ("quit".equalsIgnoreCase(cmdName)) {
                         Server.shutdownServer();
                         connectionManager.stop();
                         break;
@@ -134,7 +129,7 @@ public class ClientHandler implements Runnable {
                 } catch (IllegalArgumentException e) {
                     response = new Response("ERROR", Map.of("message", e.getMessage()), null);
                 }
-
+                // Send the response back
                 sendResponse(writer, response);
             }
         } catch (IOException e) {

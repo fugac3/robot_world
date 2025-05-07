@@ -2,10 +2,12 @@ package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.IWorld;
 
 public abstract class Command {
     private String name;
     public String argument;
+    private IWorld world;
 
     public abstract Response execute(Robot robot);
 
@@ -29,6 +31,14 @@ public abstract class Command {
 
     public String getArgument() {
         return this.argument;
+    }
+
+    public void setWorld(IWorld world) {
+        this.world = world;
+    }
+
+    public IWorld getWorld() {
+        return world;
     }
 
     public static Command create(String instruction) {

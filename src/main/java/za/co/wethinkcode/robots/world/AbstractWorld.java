@@ -1,6 +1,5 @@
 package za.co.wethinkcode.robots.world;
 
-import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.commands.Direction;
 
 import java.util.*;
@@ -29,20 +28,22 @@ public abstract class AbstractWorld implements IWorld {
         }
     }
 
-    protected void generateRandomObstacles(Position topLeft, Position bottomRight){
+    protected void generateRandomObstacles(){
         Random random = new Random();
         int numObstacles = 1;
 
-        int maxX = bottomRight.getX();
-        int minY = bottomRight.getY();
-        int maxY = topLeft.getY();
-        int minX = topLeft.getX();
+        int maxX = TextWorld.BOTTOM_RIGHT.getX();
+        int minY = TextWorld.BOTTOM_RIGHT.getY();
+        int maxY = TextWorld.TOP_LEFT.getY();
+        int minX = TextWorld.TOP_LEFT.getX();
 
         // List of obstacle types to choose from
         Class<?>[] obstacleTypes = {MountainObstacle.class, LakesObsticle.class, BottomlessPit.class};
 
         for (int i = 0; i < numObstacles; i++){
             // Random position for obstacle
+            //between ~300 - ~200 + 1 + the min again to stay in bounds
+            // (100 - (-200) + 1 = 301), shift by -200
 //            int x = random.nextInt(maxX - minX + 1) + minX;
 //            int y = random.nextInt(maxY - minY + 1) + minY;
             int x =5;
