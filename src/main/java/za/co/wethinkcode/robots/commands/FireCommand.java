@@ -14,23 +14,23 @@ public class FireCommand extends Command {
 
     @Override
     public Response execute(Robot robot) {
-        if (robot == null) {
+        if (robot.getAmmo() <= 0) {
             Map<String, Object> data = new HashMap<>();
-            data.put("message", "Error: No robot specified.");
-            return new Response("ERROR", data, null);
-        }
+            data.put("message", "Miss");
 
+            Map<String, Object> state = new HashMap<>();
+            state.put("shots", robot.getAmmo());
+
+            return new Response("FAILED", data, robot);
+        }
         boolean fired = robot.fire();
 
         Map<String, Object> data = new HashMap<>();
-        data.put("message", robot.getStatus());
+        data.put("message", fired ? "Hit" : "Miss");
 
-        return fired ? new Response("OK", data, robot) : new Response("FAILED", data, robot);
-    }
+        Map<String, Object> state = new HashMap<>();
+        state.put("shots", robot.getAmmo());
 
-    @Override
-    public String toString() {
-        return "Fire Command Executed";
+        return new Response("OK", data, robot);
     }
 }
-

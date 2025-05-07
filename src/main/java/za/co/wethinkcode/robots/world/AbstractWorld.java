@@ -58,6 +58,7 @@ public abstract class AbstractWorld implements IWorld {
 //            obstacles.add(obstacle);
 
 //             Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
+//            Class<?> obstacleType = obstacleTypes["Mountain"];
             Class<?> obstacleType = obstacleTypes[random.nextInt(obstacleTypes.length)];
 
             try {

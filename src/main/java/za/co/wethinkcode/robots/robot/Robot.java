@@ -7,7 +7,9 @@ import za.co.wethinkcode.robots.world.IWorld;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Robot {
     public static final Position CENTRE = new Position(0,0);
@@ -21,6 +23,7 @@ public class Robot {
     private String status;
     private String lastMoveReason = "";
     private int ammo = 5; // starting ammo
+    private int shotsFired = 0;
 
 
 
@@ -47,19 +50,24 @@ public class Robot {
 
     public boolean fire() {
         if (ammo <= 0) {
-            status = "No ammo left! Reload required.";
+            status = "NORMAL";
             return false;
         }
 
         ammo--; // consuming a bullet
-        boolean hit = true; //world.processFire(position, currentDirection); // processFire needs to be added to AbstractWorld
-        status = hit ? "Target hit!" : "Missed shot!";
+        shotsFired++;
+        boolean hit = false;
+        status = "NORMAL";
         return hit;
+    }
+
+    public int getShotsFired() {
+        return shotsFired;
     }
 
     public boolean reload() {
         ammo = 5; // reset to full ammo
-        status = "Reloaded successfully.";
+        status = "RELOAD";
         return true;
     }
 
@@ -68,6 +76,8 @@ public class Robot {
     }
 
     public boolean updatePosition(int nrSteps){
+
+
         int newY = this.position.getY();
         int newX = this.position.getX();
 
@@ -85,7 +95,7 @@ public class Robot {
                 newX -= nrSteps;
                 break;
             default:
-                status = "Invalid direction" + currentDirection;
+                status = "ERROR" ;
         }
 
         Position newPosition = new Position(newX,  newY);
