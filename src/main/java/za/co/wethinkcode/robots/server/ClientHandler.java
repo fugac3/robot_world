@@ -40,109 +40,103 @@ public class ClientHandler implements Runnable {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionManager.getSocket().getOutputStream()))
         ) {
-
-            this.clientName = reader.readLine();   // Save into field
-
-            System.out.println("Client "+clientName+" has connected.");
+            this.clientName = reader.readLine();
+            System.out.println("Client " + clientName + " has connected.");
             writer.write("Welcome, " + this.clientName + "!");
             writer.newLine();
             writer.flush();
 
             String msgFromClient;
             while (running && (msgFromClient = reader.readLine()) != null) {
-                //Take JSON string (msgFromClient) from client.
-                //Convert (deserialize) it into a Java object of type Request.
-                //Store that object into variable request.
-                Request request;
-                if (msgFromClient.equalsIgnoreCase("quit")){
+                if (msgFromClient.equalsIgnoreCase("quit")) {
                     Server.shutdownServer();
                     connectionManager.stop();
                     break;
                 }
 
-                if (msgFromClient.trim().startsWith("{")) {
-                    // It is already JSON
-                    request = gson.fromJson(msgFromClient, Request.class);
-                } else {
-                    // It is normal user input like "forward 10"
-                    Command command = Command.create(msgFromClient.toLowerCase());
-                    Map<String, Object> args = new HashMap<>();
+                Request request = null;
+                Command command = null;
 
-                    if (command.getArgument() != null || !command.getArgument().isEmpty()) {
-                        if (command.getName().equals("forward") || command.getName().equals("back")) {
-                            args.put("steps", command.getArgument());
-                        } else if (command.getName().equals("launch")) {
-                            args.put("name", command.getArgument());
+                try {
+                    if (msgFromClient.trim().startsWith("{")) {
+                        try {
+                            request = gson.fromJson(msgFromClient, Request.class);
+                        } catch (Exception e) {
+                            sendError(writer, "Malformed JSON request.");
+                            continue;
                         }
+                    } else {
+                        command = Command.create(msgFromClient.toLowerCase());
+                        if (command == null) {
+                            throw new IllegalArgumentException("Unknown command: " + msgFromClient);
+                        }
+
+                        Map<String, Object> args = new HashMap<>();
+                        String arg = command.getArgument();
+
+                        if (arg != null && !arg.isEmpty()) {
+                            switch (command.getName()) {
+                                case "forward":
+                                case "back":
+                                    args.put("steps", arg);
+                                    break;
+                                case "launch":
+                                    args.put("name", arg);
+                                    break;
+                            }
+                        }
+
+                        request = new Request(command.getName(), args);
                     }
-                    request = new Request(command.getName(), args);
+                } catch (IllegalArgumentException e) {
+                    sendError(writer, e.getMessage());
+                    continue;
                 }
 
                 Response response;
 
                 try {
-                    Command command;
-                    if (request.getCommand().equalsIgnoreCase("launch")) {
+                    String cmdName = request.getCommand();
+
+                    if ("launch".equalsIgnoreCase(cmdName)) {
                         String name = (String) request.getArguments().get("name");
-                        command = new LaunchCommand(name);
-                    } else if (request.getCommand().equalsIgnoreCase("quit")) {
-                        Server.shutdownServer();
-                        connectionManager.stop();    // stops client handler too
-                        break;
-                    } else {
-                        String reconstructedInstruction = request.getCommand();
-                        Object stepsArg = request.getArguments().get("steps");
-
-                        if (stepsArg != null) {
-                            reconstructedInstruction += " " + stepsArg.toString();
-                        }
-
-                        command = Command.create(reconstructedInstruction);
-
-                    }
-
-                    Map<String, Object> data = new HashMap<>();
-
-                    if (robot == null) {
-                        if (command instanceof LaunchCommand) {
-                            //this.robotName = (String) request.getArguments().get("name");
-                            this.robotName = ((LaunchCommand) command).getRobotName();
-                            if (robotName == null || robotName.isEmpty()) {
-                                data.put("message","Launch command needs a name.");
-                                response = new Response("ERROR", data, null);
-                            }
-
-                            else {
-                                this.robot = new Robot(robotName, world);   //Create robot manually
-                                world.addRobot(robot); //Add robot to the shared world
-                                world.showObstacles();
-                                response = command.execute(robot);  // Now pass it to LaunchCommand
-                            }
+                        if (name == null || name.isEmpty()) {
+                            response = new Response("ERROR", Map.of("message", "Launch command needs a name."), null);
+                        }else if(robot != null){
+                            response = new Response("ERROR", Map.of("message", "A robot has already been launched into world."), null);
                         } else {
-                            // Any other command before launch
-                            data.put("message","Please launch a robot first using: launch robot-name");
-                            response = new Response("ERROR", data, null);
+                            command = new LaunchCommand(name);
+                            this.robotName = name;
+                            this.robot = new Robot(robotName, world);
+                            world.addRobot(robot);
+                            world.showObstacles();
+                            response = command.execute(robot);
                         }
-                    } else {
-                        // Robot already launched, can handle other commands
-                        response = robot.handleCommand(command);
-                    }
 
-                    //end of inner try
+                    } else if ("quit".equalsIgnoreCase(cmdName)) {
+                        Server.shutdownServer();
+                        connectionManager.stop();
+                        break;
+
+                    } else {
+                        // All other commands after launch
+                        Object stepsArg = request.getArguments().get("steps");
+                        String reconstructed = cmdName + (stepsArg != null ? " " + stepsArg : "");
+                        command = Command.create(reconstructed);
+
+                        if (robot == null) {
+                            response = new Response("ERROR", Map.of("message", "Please launch a robot first using: launch robot-name"), null);
+                        } else {
+                            assert command != null;
+                            response = robot.handleCommand(command);
+                        }
+                    }
                 } catch (IllegalArgumentException e) {
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("message",e.getMessage());
-                    response = new Response("ERROR", data, null);
+                    response = new Response("ERROR", Map.of("message", e.getMessage()), null);
                 }
 
-                // Send the response back
-                String json = new Gson().toJson(response);
-                System.out.println(json);
-                writer.write(json);
-                writer.newLine();
-                writer.flush();
+                sendResponse(writer, response);
             }
-            //end of main try
         } catch (IOException e) {
             System.out.println((clientName != null ? clientName : "Unknown client") + " disconnected: " + e.getMessage());
         } finally {
@@ -150,6 +144,21 @@ public class ClientHandler implements Runnable {
             System.out.println("Client handler exiting.");
         }
     }
+
+
+    private void sendResponse(BufferedWriter writer, Response response) throws IOException {
+        String json = new Gson().toJson(response);
+        System.out.println(json); // Optional: debug log
+        writer.write(json);
+        writer.newLine();
+        writer.flush();
+    }
+
+    private void sendError(BufferedWriter writer, String errorMessage) throws IOException {
+        Response errorResponse = new Response("ERROR", Map.of("message", errorMessage), null);
+        sendResponse(writer, errorResponse);
+    }
+
 
     //================
 }
