@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.LaunchCommand;
 import za.co.wethinkcode.robots.commands.QuitCommand;
+import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.world.TextWorld;
 import com.google.gson.Gson;
@@ -95,6 +96,8 @@ public class ClientHandler implements Runnable {
 
                 Response response;
 
+                Map<String, Object> data = new HashMap<>();
+
                 try {
                     String cmdName = request.getCommand();
                     if ("launch".equalsIgnoreCase(cmdName)) {
@@ -103,7 +106,8 @@ public class ClientHandler implements Runnable {
 
                         // 1. Block clients trying to launch more than one robot
                         if (this.robot != null) {
-                            response = new Response("ERROR", Map.of("message", "A robot has already been launched for this client."), null);
+                            data.put("message", "A robot has already been launched for this client.");
+                            response = new Response("ERROR", data, null);
                         } else {
                             // 2. Basic name check using LaunchCommand
                             LaunchCommand launchCommand = new LaunchCommand(name);
@@ -112,14 +116,17 @@ public class ClientHandler implements Runnable {
                             boolean nameTaken = world.getAllRobots().stream()
                                     .anyMatch(r -> r.getName().equalsIgnoreCase(name));
                             if (nameTaken) {
-                                response = new Response("ERROR", Map.of("message", "A robot with this name already exists in the world."), null);
+                                data.put("message", "A robot with this name already exists in the world.");
+                                response = new Response("ERROR", data, null);
                             } else {
                                 // 4. All good, launch the robot
                                 this.robot = new Robot(name, world);
                                 this.robotName = name;
                                 world.addRobot(this.robot);
-
-                                response = new Response("OK", Map.of("message", "Robot successfully launched.", "position", this.robot.getPosition()), null);
+                                data.put("message", "Robot successfully launched.");
+                                Position pos = robot.getPosition();
+                                data.put("position", new int[]{pos.getX(), pos.getY()});
+                                response = new Response("OK", data, null);
                             }
 
                         }
@@ -136,14 +143,16 @@ public class ClientHandler implements Runnable {
                         command = Command.create(reconstructed);
 
                         if (robot == null) {
-                            response = new Response("ERROR", Map.of("message", "Please launch a robot first using: launch robot-name"), null);
+                            data.put("message", "Please launch a robot first using: launch robot-name");
+                            response = new Response("ERROR", data, null);
                         } else {
                             assert command != null;
                             response = robot.handleCommand(command);
                         }
                     }
                 } catch (IllegalArgumentException e) {
-                    response = new Response("ERROR", Map.of("message", e.getMessage()), null);
+                    data.put("message", e.getMessage());
+                    response = new Response("ERROR", data, null);
                 }
 
                 sendResponse(writer, response);
