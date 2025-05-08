@@ -26,7 +26,7 @@ public class BackCommand extends Command {
         } catch (NumberFormatException e) {
             data.put("message", "Invalid steps: must be a number.");
             robot.setStatus("NORMAL");
-            return new Response("ERROR", data, robot);
+            return new Response("ERROR", data, null);
         }
 
         if (moved) {
