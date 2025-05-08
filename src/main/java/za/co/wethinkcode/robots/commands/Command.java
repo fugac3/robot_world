@@ -41,9 +41,9 @@ public abstract class Command {
         switch (args[0]) {
             case "launch":
                 if (args.length < 2 || args[1].isBlank()) {
-                    throw new IllegalArgumentException("Launch command needs a robot name from cmd class.");
+                    throw new IllegalArgumentException("Launch command needs a name.");
                 }
-                return new LaunchCommand(args[1]);
+                return new LaunchCommand(args[1].trim());
             case "robots":
                 return new RobotsCommand();
             case "quit":

@@ -97,23 +97,34 @@ public class ClientHandler implements Runnable {
 
                 try {
                     String cmdName = request.getCommand();
-
                     if ("launch".equalsIgnoreCase(cmdName)) {
-                        String name = (String) request.getArguments().get("name");
-                        if (name == null || name.isEmpty()) {
-                            response = new Response("ERROR", Map.of("message", "Launch command needs a name."), null);
-                        }else if(robot != null){
-                            response = new Response("ERROR", Map.of("message", "A robot has already been launched into world."), null);
-                        } else {
-                            command = new LaunchCommand(name);
-                            this.robotName = name;
-                            this.robot = new Robot(robotName, world);
-                            world.addRobot(robot);
-                            world.showObstacles();
-                            response = command.execute(robot);
-                        }
 
-                    } else if ("quit".equalsIgnoreCase(cmdName)) {
+                        String name = (String) request.getArguments().get("name");
+
+                        // 1. Block clients trying to launch more than one robot
+                        if (this.robot != null) {
+                            response = new Response("ERROR", Map.of("message", "A robot has already been launched for this client."), null);
+                        } else {
+                            // 2. Basic name check using LaunchCommand
+                            LaunchCommand launchCommand = new LaunchCommand(name);
+                            response = launchCommand.execute(null);  // Validates name
+                            // 3. Check world for duplicate robot names
+                            boolean nameTaken = world.getAllRobots().stream()
+                                    .anyMatch(r -> r.getName().equalsIgnoreCase(name));
+                            if (nameTaken) {
+                                response = new Response("ERROR", Map.of("message", "A robot with this name already exists in the world."), null);
+                            } else {
+                                // 4. All good, launch the robot
+                                this.robot = new Robot(name, world);
+                                this.robotName = name;
+                                world.addRobot(this.robot);
+
+                                response = new Response("OK", Map.of("message", "Robot successfully launched.", "position", this.robot.getPosition()), null);
+                            }
+
+                        }
+                    }
+                    else if ("quit".equalsIgnoreCase(cmdName)) {
                         Server.shutdownServer();
                         connectionManager.stop();
                         break;
@@ -145,10 +156,9 @@ public class ClientHandler implements Runnable {
         }
     }
 
-
     private void sendResponse(BufferedWriter writer, Response response) throws IOException {
         String json = new Gson().toJson(response);
-        System.out.println(json); // Optional: debug log
+        System.out.println(clientName+": "+json); // Optional: debug log
         writer.write(json);
         writer.newLine();
         writer.flush();
@@ -158,8 +168,6 @@ public class ClientHandler implements Runnable {
         Response errorResponse = new Response("ERROR", Map.of("message", errorMessage), null);
         sendResponse(writer, errorResponse);
     }
-
-
     //================
 }
 
