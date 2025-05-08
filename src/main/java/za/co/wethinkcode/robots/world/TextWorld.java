@@ -30,6 +30,44 @@ public class TextWorld extends AbstractWorld{
         return instance;
     }
 
+    public Position getRandomFreePosition() {
+        Random rand = new Random();
+        int minX = TOP_LEFT.getX();
+        int maxX = BOTTOM_RIGHT.getX();
+        int minY = BOTTOM_RIGHT.getY();
+        int maxY = TOP_LEFT.getY();
+
+        Position pos;
+
+        do {
+            int x = rand.nextInt(maxX - minX + 1) + minX;
+            int y = rand.nextInt(maxY - minY + 1) + minY;
+            pos = new Position(x, y);
+        } while (blocksPosition(pos));  // Retry if blocked
+
+        return pos;
+    }
+
+
+    public boolean blocksPosition(Position pos) {
+        // Check obstacles
+        for (Obstacle obstacle : this.obstacles) {
+            if (obstacle.blocksPosition(pos)) {
+                return true;
+            }
+        }
+
+        // Check other robots
+        for (Robot robot : getAllRobots()) {
+            if (robot.getPosition().equals(pos)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     public void addRobot(Robot robot) {
         robots.put(robot.getName(), robot);
     }

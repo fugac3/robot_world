@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 //  allows handling multiple clients at the same time
 public class ClientHandler implements Runnable {
@@ -120,14 +121,23 @@ public class ClientHandler implements Runnable {
                                 response = new Response("ERROR", data, null);
                             } else {
                                 // 4. All good, launch the robot
-                                this.robot = new Robot(name, world);
                                 this.robotName = name;
+                                Position startPos = world.getRandomFreePosition();
                                 world.addRobot(this.robot);
+//                                world.addRobot(robot);
                                 data.put("message", "Robot successfully launched.");
                                 Position pos = robot.getPosition();
                                 data.put("position", new int[]{pos.getX(), pos.getY()});
-                                response = new Response("OK", data, null);
+
+//                                robot.setPosition(pos); // or constructor if you can pass it
+//                                this.robot = new Robot(robotName, world, startPos);
+                                response = new Response("OK", data, robot);
                             }
+
+
+
+
+
 
                         }
                     }
@@ -164,6 +174,7 @@ public class ClientHandler implements Runnable {
             System.out.println("Client handler exiting.");
         }
     }
+
 
     private void sendResponse(BufferedWriter writer, Response response) throws IOException {
         String json = new Gson().toJson(response);
