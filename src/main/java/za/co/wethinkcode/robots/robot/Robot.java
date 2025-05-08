@@ -3,8 +3,11 @@ package za.co.wethinkcode.robots.robot;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.Bullet;
 import za.co.wethinkcode.robots.world.IWorld;
+import za.co.wethinkcode.robots.world.Obstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
+import za.co.wethinkcode.robots.server.FireData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +27,8 @@ public class Robot {
     private String lastMoveReason = "";
     private int ammo = 5; // starting ammo
     private int shotsFired = 0;
+    private static final int bulletMaxDistance = 3;
+    private List<Bullet> bullets = new ArrayList<>();
 
 
 
@@ -56,9 +61,26 @@ public class Robot {
 
         ammo--; // consuming a bullet
         shotsFired++;
-        boolean hit = false;
+
+        // Create a new bullet travelling in the current direction
+        Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance);
+        bullets.add(bullet);
+
+        boolean hit = false; // boolean hit = world.isBulletBlocked(bullet.getPosition()); (for later use)
         status = "NORMAL";
         return hit;
+//        return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired));
+    }
+
+    public void updateBullets() {
+        List<Bullet> activeBullets = new ArrayList<>();
+
+        for (Bullet bullet : bullets) {
+            if (bullet.move()) {
+                activeBullets.add(bullet); // Keep only moving bullets
+            }
+        }
+        bullets = activeBullets; // Remove bullets that have stopped moving
     }
 
     public int getShotsFired() {
