@@ -34,6 +34,7 @@ public class TextWorld extends AbstractWorld{
     }
 
     public void addRobot(Robot robot) {
+
         robots.put(robot.getName(), robot);
     }
 

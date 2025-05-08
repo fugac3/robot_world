@@ -109,6 +109,13 @@ public class Robot {
             lastMoveReason = "Edge of world";
             return false;
         }
+
+        for (Robot robot : TextWorld.getInstance().getAllRobots()){ //making sure robots don't share position
+            if (robot.getPosition() == newPosition){
+                return false;
+            }
+        }
+
         this.position = newPosition;
         return true;
     }
