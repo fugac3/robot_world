@@ -10,14 +10,12 @@ import za.co.wethinkcode.robots.world.TextWorld;
 import za.co.wethinkcode.robots.server.FireData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Robot {
     public static final Position CENTRE = new Position(0,0);
 
-//    private Position position;
+    //    private Position position;
     private Direction currentDirection = Direction.NORTH;
 
     private final String name;
@@ -34,7 +32,6 @@ public class Robot {
 
     private final List<String> commands;
 
-//    public Robot(String name) {
     public Robot(String name,IWorld world,Position position) {
         this.name = name;
         this.position = position;
@@ -151,6 +148,12 @@ public class Robot {
     public Position getPosition() {
         return this.position;
     }
+
+    public void setPosition(Position newPosition) {
+        this.position = newPosition;
+    }
+
+
 
 
     public IWorld getWorld() {

@@ -9,9 +9,15 @@ public abstract class AbstractWorld implements IWorld {
     protected List<Obstacle> obstacles = new ArrayList<>();
     private Map<Direction, Artefact> visibleArea;
 
+
+
     @Override
     public List<Obstacle> getObstacles() {
         return obstacles;
+    }
+
+    public void setObstacles(List<Obstacle> newObstacle){
+        this.obstacles = newObstacle;
     }
 
     @Override
@@ -38,8 +44,10 @@ public abstract class AbstractWorld implements IWorld {
         int minX = TextWorld.TOP_LEFT.getX();
 
         // List of obstacle types to choose from
-        Class<?>[] obstacleTypes = {MountainObstacle.class, LakesObsticle.class, BottomlessPit.class};
+        Class<?>[] obstacleTypes = {MountainObstacle.class, LakesObstacle.class, BottomlessPit.class};
 
+//        SquareObstacle obstacle = new SquareObstacle(2,2);
+//        obstacles.add(obstacle);
         for (int i = 0; i < numObstacles; i++){
             // Random position for obstacle
             //between ~300 - ~200 + 1 + the min again to stay in bounds
@@ -49,7 +57,7 @@ public abstract class AbstractWorld implements IWorld {
             int x =5;
             int y = 5;
 
-            SquareObstacle obstacle = new SquareObstacle(x,y);
+//            SquareObstacle obstacle = new SquareObstacle(x,y);
 //            obstacles.add(obstacle);
 
 //             Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
@@ -59,32 +67,18 @@ public abstract class AbstractWorld implements IWorld {
             try {
                 if (obstacleType == MountainObstacle.class) {
                     obstacles.add(new MountainObstacle(x, y));
-                } else if (obstacleType == LakesObsticle.class) {
-                    obstacles.add(new LakesObsticle(x, y));
+                } else if (obstacleType == LakesObstacle.class) {
+                    obstacles.add(new LakesObstacle(x, y));
                 } else if (obstacleType == BottomlessPit.class) {
                     obstacles.add(new BottomlessPit(x, y));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
-
         }
-
-
-
-
     }
-//
-//    public boolean isBulletBlocked(Position bulletPosition) {
-//        for (Obstacle obstacle : obstacles) {
-//            if (obstacle.blocksPosition(bulletPosition)) {
-//                return true; // bullet hits an obstacle
-//            }
-//        }
-//        return false; // bullet is still moving
-//    }
+
+//    public  void Obb (String newO)
 
 
 
