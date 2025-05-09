@@ -79,5 +79,17 @@ class RobotTest {
         assertEquals(new Position(0, -5), robot.getPosition());
     }
 
+    void testTurnRight(){
+        assertEquals(Direction.NORTH, robot.getCurrentDirection()); //should face North initially
+
+        robot.turnRight();
+        assertEquals(Direction.EAST, robot.getCurrentDirection());
+
+        robot.turnRight();
+        assertEquals(Direction.SOUTH, robot.getCurrentDirection());
+
+        robot.turnRight();
+        assertEquals(Direction.WEST, robot.getCurrentDirection());
+    }
 
 }
