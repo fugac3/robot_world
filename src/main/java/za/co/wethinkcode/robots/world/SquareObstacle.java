@@ -14,8 +14,6 @@ public class SquareObstacle implements Obstacle {
     private boolean lake = false;
     private boolean bottomlessPit = false;
 
-
-
     public SquareObstacle(int bottomLeftX, int bottomLeftY) {
         this.bottomLeftX = bottomLeftX;
         this.bottomLeftY = bottomLeftY;
@@ -40,18 +38,6 @@ public class SquareObstacle implements Obstacle {
         return bottomLeftY + size - 1;
     }
 
-//    public boolean getMountain(){
-//        return mountain;
-//    }
-//
-//    public boolean getLake(){
-//        return lake;
-//    }
-//
-//    public boolean getBottomlessPit(){
-//        return bottomlessPit;
-//    }
-
     @Override
     public int getSize() {
         return size;
@@ -64,6 +50,16 @@ public class SquareObstacle implements Obstacle {
         return pos.getX() >= bottomLeftX && pos.getX() < bottomLeftX + size &&
                 pos.getY() >= bottomLeftY && pos.getY() < bottomLeftY + size;
     }
+
+    /**
+     * Checks if this obstacle blocks the path that goes from coordinate (x1, y1) to (x2, y2).
+     * Since our robot can only move in horizontal or vertical lines (no diagonals yet), we can assume that either x1==x2 or y1==y2.
+     *
+     * @param a           first position
+     * @param b           second position
+
+     * @return `true` if this obstacle is in the way
+     */
 
     @Override
     public boolean blocksPath(Position a, Position b) {
@@ -103,9 +99,14 @@ public class SquareObstacle implements Obstacle {
     }
 
     @Override
-    public Boolean getTypeObsticle() {
+    public boolean contains(Position targetPosition) {
         return false;
     }
+
+//    @Override
+//    public Boolean getTypeObsticle() {
+//        return false;
+//    }
 
     public Object getType() {
         return mountain;

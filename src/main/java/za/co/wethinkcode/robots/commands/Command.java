@@ -1,12 +1,15 @@
 package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
+import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.IWorld;
 
 public abstract class Command {
     private String name;
     public String argument;
+    private IWorld world;
 
-    public abstract boolean execute(Robot target);
+    public abstract Response execute(Robot robot);
 
     public Command(String name){
         this.name = name.trim().toLowerCase();
@@ -18,7 +21,7 @@ public abstract class Command {
         this.argument = argument.trim();
     }
 
-    public String getName() {                                                                           //<2>
+    public String getName() {
         return name;
     }
 
@@ -30,36 +33,60 @@ public abstract class Command {
         return this.argument;
     }
 
-    public static Command create(String instruction) {
-        String[] args = instruction.toLowerCase().trim().split(" ");
+    public void setWorld(IWorld world) {
+        this.world = world;
+    }
 
-        switch (args[0]){
-            case "shutdown":
-            case "off":
-                return new ShutdownCommand();
-            case "help":
-                return new HelpCommand();
+    public IWorld getWorld() {
+        return world;
+    }
+
+    public static Command create(String instruction) {
+        if (instruction == null || instruction.isBlank()) {
+            throw new IllegalArgumentException("Empty command received.");
+        }
+
+        String[] args = instruction.trim().split("\\s+");
+
+        switch (args[0]) {
+            case "launch":
+                if (args.length < 2 || args[1].isBlank()) {
+                    throw new IllegalArgumentException("Launch command needs a name.");
+                }
+                return new LaunchCommand(args[1].trim());
+            case "robots":
+                return new RobotsCommand();
+            case "quit":
+                return new QuitCommand();
             case "forward":
+                if (args.length < 2 || args[1].isBlank()) {
+                    throw new IllegalArgumentException("Forward command needs steps.");
+                }
                 return new ForwardCommand(args[1]);
-            case "sprint":
-                return new SprintCommand(args[1]);
             case "back":
+                if (args.length < 2 || args[1].isBlank()) {
+                    throw new IllegalArgumentException("Back command needs steps.");
+                }
                 return new BackCommand(args[1]);
             case "right":
                 return new RightCommand();
             case "left":
                 return new LeftCommand();
-            case "replay":
-                if (args.length > 1) {
-                    return new ReplayCommand(args[1]);
-                } else {
-                    return new ReplayCommand();
-                }
+            case "fire":
+                return new FireCommand();
+            case "reload":
+                return new ReloadCommand();
+            case "dump":
+                return new DumpCommand();
+            case "look":
+                return new LookCommand();
             case "state":
                 return new StateCommand();
             default:
-                throw new IllegalArgumentException("Unsupported command: " + instruction);
+                return null;
         }
+
+
     }
 }
 

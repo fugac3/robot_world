@@ -2,25 +2,33 @@ package za.co.wethinkcode.robots.robot;
 
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
+import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.Bullet;
 import za.co.wethinkcode.robots.world.IWorld;
+import za.co.wethinkcode.robots.world.Obstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
+import za.co.wethinkcode.robots.server.FireData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Robot {
-    private final Position TOP_LEFT = new Position(-200,100);
-    private final Position BOTTOM_RIGHT = new Position(100,-200);
-
     public static final Position CENTRE = new Position(0,0);
 
 //    private Position position;
     private Direction currentDirection = Direction.NORTH;
-    private String status;
-    private String response;
+
     private final String name;
     private final IWorld world;
     private Position position;
+    private String status;
+    private String lastMoveReason = "";
+    private int ammo = 5; // starting ammo
+    private int shotsFired = 0;
+    private static final int bulletMaxDistance = 3;
+    private List<Bullet> bullets = new ArrayList<>();
 
 
 
@@ -29,49 +37,113 @@ public class Robot {
 //    public Robot(String name) {
     public Robot(String name,IWorld world) {
         this.name = name;
-        this.status = "OK";
-        this.response = "Ready";
         this.commands = new ArrayList<>();
         this.world = world;
         this.position = new Position(0, 0); // start at center
-//        this.world = new TextWorld();
+    }
+
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+
+
+    public boolean fire() {
+        if (ammo <= 0) {
+            status = "NORMAL";
+            return false;
+        }
+
+        ammo--; // consuming a bullet
+        shotsFired++;
+
+        // Create a new bullet travelling in the current direction
+        Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance);
+        bullets.add(bullet);
+
+        boolean hit = false; // boolean hit = world.isBulletBlocked(bullet.getPosition()); (for later use)
+        status = "NORMAL";
+        return hit;
+//        return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired));
+    }
+
+    public void updateBullets() {
+        List<Bullet> activeBullets = new ArrayList<>();
+
+        for (Bullet bullet : bullets) {
+            if (bullet.move()) {
+                activeBullets.add(bullet); // Keep only moving bullets
+            }
+        }
+        bullets = activeBullets; // Remove bullets that have stopped moving
+    }
+
+    public int getShotsFired() {
+        return shotsFired;
+    }
+
+    public boolean reload() {
+        ammo = 5; // reset to full ammo
+        status = "RELOAD";
+        return true;
+    }
+
+    public int getAmmo() {
+        return ammo;
     }
 
     public boolean updatePosition(int nrSteps){
+
+
         int newY = this.position.getY();
         int newX = this.position.getX();
 
         switch (currentDirection){
-            case Direction.NORTH:
+            case NORTH:
                 newY += nrSteps;
                 break;
-            case Direction.SOUTH:
+            case SOUTH:
                 newY -= nrSteps;
                 break;
-            case Direction.EAST:
+            case EAST:
                 newX += nrSteps;
                 break;
-            case Direction.WEST:
+            case WEST:
                 newX -= nrSteps;
                 break;
             default:
-                status = "Invalid direction" + currentDirection;
+                status = "ERROR" ;
         }
 
         Position newPosition = new Position(newX,  newY);
 
         if (world.blocksPath(this.position, newPosition)) {
-            this.setStatus("Sorry, there's an obstacle in the way.");
+            lastMoveReason = "Obstructed";
             return false;
         }
 
-        if (newPosition.isIn(TOP_LEFT,BOTTOM_RIGHT)){
-            this.position = newPosition;
-//            this.world.setPosition(newPosition);
-            this.setStatus("Moved forward by " + nrSteps + " steps.");
-            return true;
+        if (!newPosition.isIn(TextWorld.TOP_LEFT,TextWorld.BOTTOM_RIGHT)){
+            lastMoveReason = "Edge of world";
+            return false;
         }
-        return false;
+
+        for (Robot robot : TextWorld.getInstance().getAllRobots()){ //making sure robots don't share position
+            if (robot.getPosition() == newPosition){
+                return false;
+            }
+        }
+
+        this.position = newPosition;
+        return true;
+    }
+
+    public String getLastMoveReason() {
+        return lastMoveReason;
     }
 
 
@@ -85,22 +157,16 @@ public class Robot {
     }
 
 
-    public String getStatus() {
-        return this.status;
-    }
 
-    public String getResponse() {
-        return this.response;
-    }
 
     public Direction getCurrentDirection() {
         return this.currentDirection;
     }
 
-    public boolean handleCommand(Command command) {
-        boolean result = command.execute(this);
+    public Response handleCommand(Command command) {
+        Response response = command.execute(this);
         addCommand(command.getName() + " " + command.getArgument().trim());
-        return result;
+        return response;
     }
 
     public void addCommand(String command) {
@@ -125,16 +191,6 @@ public class Robot {
     public String toString() {
         return "[" + this.position.getX() + "," + this.position.getY() + "] "
                 + this.name + "> " + this.status;
-    }
-
-
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
     }
 
     public String getName() {

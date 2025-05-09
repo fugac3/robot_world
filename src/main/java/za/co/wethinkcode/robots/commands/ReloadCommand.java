@@ -3,20 +3,17 @@ package za.co.wethinkcode.robots.commands;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
 
-import java.lang.annotation.Repeatable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RightCommand extends Command {
-    public RightCommand() {
-        super("right");
-    }
+public class ReloadCommand extends Command {
+    public ReloadCommand() {super("reload");}
 
     @Override
     public Response execute(Robot robot) {
         Map<String, Object> data = new HashMap<>();
-        robot.turnRight();
-        data.put("message","Done");
-        return new Response("OK", data, robot);
+        boolean reloaded = robot.reload();
+        data.put("message", "Done");
+        return reloaded ? new Response("OK", data, robot) : new Response("FAILED", data, robot);
     }
 }

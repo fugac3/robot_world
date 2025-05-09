@@ -1,20 +1,23 @@
 package za.co.wethinkcode.robots.commands;
-import za.co.wethinkcode.robots.robot.Robot;
 
-public class StateCommand extends Command{
-    public StateCommand() {super("state");}
+import za.co.wethinkcode.robots.robot.Robot;
+import za.co.wethinkcode.robots.server.Response;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class StateCommand extends Command {
+    public StateCommand() {
+        super("state");
+    }
 
     @Override
-    public boolean execute(Robot target){
-        target.setResponse(
-                "state: {\n" +
-                "position: " + target.getPosition() + "\n" +
-                "direction: " + target.getCurrentDirection() + "\n" +
-                "shields: 3" + "\n" +
-                "shots: 5" + "\n" +
-                "status: NORMAL" + "\n}"
-        );
-        target.setStatus("OK");
-        return true;
-    };
+    public Response execute(Robot robot) {
+//        Map<String, Object> data = new HashMap<>();
+
+//        data.put("Position",robot.getPosition());
+//        data.put("Direction", robot.getCurrentDirection());
+
+        return new Response(null, null,robot);
+    }
 }

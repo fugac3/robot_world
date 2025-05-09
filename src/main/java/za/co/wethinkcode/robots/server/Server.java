@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robots.server;
 
+import za.co.wethinkcode.flow.Recorder;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.io.IOException;
@@ -9,21 +10,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//    ================ HOW TO RUN ======================   //
-//    use to run in terminal
-//    in: /path/to/oop-ex-toy-robot-group$
-//    java -cp target/classes za.co.wethinkcode.robots.server.Server
-//    java -cp target/classes za.co.wethinkcode.robots.server.Client
-//    ==================================================   //
 
 
 public class Server {
     private static boolean running = true;
+//    private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
     private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
     private static ServerSocket serverSocket;
 
-    private static final TextWorld world = new TextWorld();
-
+//    private static final TextWorld world = new TextWorld();
+    private static final TextWorld world = TextWorld.getInstance();
     public static void main(String[] args) {
         int port = 4433;
         try {
@@ -31,6 +27,12 @@ public class Server {
             System.out.println("Server started. Listening on port " + port);
 
             while (running) {
+                //Socket object :
+                //is the individual connection between server and one specific client.
+                //The ServerSocket is listening for new connections.
+                //When client connects, serverSocket.accept():
+                //returns Socket object that represents the connection to that client.
+                //clientSocket is used to read and write from server to that specific client.
                 Socket clientSocket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(clientSocket, world);
                 clients.add(handler);
@@ -63,11 +65,13 @@ public class Server {
             e.printStackTrace();
         }
 
-        //Close all client handlers
-        for (ClientHandler handler : clients) {
-            handler.stop();
-        }
 
         System.out.println("Server and all clients shut down.");
     }
+    // The following initialisation is REQUIRED for `flow` monitoring.
+    // DO NOT REMOVE OR MODIFY THIS CODE.
+    static {
+        new Recorder().logRun();
+    }
+
 }
