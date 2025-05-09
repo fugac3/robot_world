@@ -3,13 +3,14 @@ package za.co.wethinkcode.robots.robot;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.Bullet;
 import za.co.wethinkcode.robots.world.IWorld;
+import za.co.wethinkcode.robots.world.Obstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
+import za.co.wethinkcode.robots.server.FireData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Robot {
     public static final Position CENTRE = new Position(0,0);
@@ -24,17 +25,19 @@ public class Robot {
     private String lastMoveReason = "";
     private int ammo = 5; // starting ammo
     private int shotsFired = 0;
+    private static final int bulletMaxDistance = 3;
+    private List<Bullet> bullets = new ArrayList<>();
 
 
 
     private final List<String> commands;
 
-    //    public Robot(String name) {
-    public Robot(String name,IWorld world) {
+    public Robot(String name,IWorld world,Position position) {
         this.name = name;
+        this.position = position;
         this.commands = new ArrayList<>();
         this.world = world;
-        this.position = new Position(0, 0); // start at center
+//        this.position = new Position(0, 0); // start at center
     }
 
 
@@ -56,9 +59,26 @@ public class Robot {
 
         ammo--; // consuming a bullet
         shotsFired++;
-        boolean hit = false;
+
+        // Create a new bullet travelling in the current direction
+        Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance);
+        bullets.add(bullet);
+
+        boolean hit = false; // boolean hit = world.isBulletBlocked(bullet.getPosition()); (for later use)
         status = "NORMAL";
         return hit;
+//        return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired));
+    }
+
+    public void updateBullets() {
+        List<Bullet> activeBullets = new ArrayList<>();
+
+        for (Bullet bullet : bullets) {
+            if (bullet.move()) {
+                activeBullets.add(bullet); // Keep only moving bullets
+            }
+        }
+        bullets = activeBullets; // Remove bullets that have stopped moving
     }
 
     public int getShotsFired() {
@@ -109,6 +129,13 @@ public class Robot {
             lastMoveReason = "Edge of world";
             return false;
         }
+
+        for (Robot robot : TextWorld.getInstance().getAllRobots()){ //making sure robots don't share position
+            if (robot.getPosition() == newPosition){
+                return false;
+            }
+        }
+
         this.position = newPosition;
         return true;
     }
@@ -121,6 +148,12 @@ public class Robot {
     public Position getPosition() {
         return this.position;
     }
+
+    public void setPosition(Position newPosition) {
+        this.position = newPosition;
+    }
+
+
 
 
     public IWorld getWorld() {
