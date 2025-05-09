@@ -96,4 +96,21 @@ class RobotTest {
         assertEquals(Direction.NORTH, robot.getCurrentDirection());
     }
 
+    @Test
+    void testTurnLeft(){
+        assertEquals(Direction.NORTH, robot.getCurrentDirection());
+
+        robot.turnLeft();
+        assertEquals(Direction.WEST, robot.getCurrentDirection());
+
+        robot.turnLeft();
+        assertEquals(Direction.SOUTH, robot.getCurrentDirection());
+
+        robot.turnLeft();
+        assertEquals(Direction.EAST, robot.getCurrentDirection());
+
+        robot.turnLeft();
+        assertEquals(Direction.NORTH, robot.getCurrentDirection());
+    }
+
 }
