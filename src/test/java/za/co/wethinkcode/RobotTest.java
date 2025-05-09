@@ -17,17 +17,26 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RobotTest {
-        private TextWorld world;
-        private Robot robot;
+    private TextWorld world;
+    private Robot robot;
 
-        @BeforeEach
-        void setUp(){
-            //Creating a controlled environment with no obstacles and defined position to make testing easier
-            world = TextWorld.getInstance();
-            world.getObstacles().clear(); //get rid of all obstacles in world
-            robot = new Robot("Robo", world, new Position(0,0));
-            robot.setStatus("NORMAL");
-        }
+    @BeforeEach
+    void setUp(){
+        //Creating a controlled environment with no obstacles and defined position to make testing easier
+        world = TextWorld.getInstance();
+        world.getObstacles().clear(); //get rid of all obstacles in world
+        robot = new Robot("Robo", world, new Position(0,0));
+        robot.setStatus("NORMAL");
+    }
+
+    @Test
+    void testInitialPosition() {
+        assertEquals(new Position(0, 0), robot.getPosition());
+        assertEquals(Direction.NORTH, robot.getCurrentDirection());
+        assertEquals("TestRobot", robot.getName());
+        assertEquals("NORMAL", robot.getStatus());
+        assertEquals(5, robot.getAmmo());
+    }
 
 
 }
