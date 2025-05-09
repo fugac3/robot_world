@@ -123,4 +123,21 @@ class RobotTest {
         assertEquals(new Position(7,5), robot.getPosition());
     }
 
+    @Test
+    void testForwardCommandWithObstacleInPath() {
+        //Add obstacle in the robot's path
+        world.getObstacles().add(new MountainObstacle(0, 3));
+
+        ForwardCommand forwardCommand = new ForwardCommand("5");
+        Response response = forwardCommand.execute(robot);
+
+        //Check response format
+        assertEquals("FAILED", response.getResult());
+        Map<String, Object> data = response.getData();
+        assertEquals("Obstructed", data.get("message"));
+
+        // Robot should not have moved
+        assertEquals(new Position(0, 0), robot.getPosition());
+    }
+
 }
