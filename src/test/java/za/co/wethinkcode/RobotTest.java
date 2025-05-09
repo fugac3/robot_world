@@ -31,7 +31,7 @@ class RobotTest {
     void testInitialPosition() {
         assertEquals(new Position(0, 0), robot.getPosition());
         assertEquals(Direction.NORTH, robot.getCurrentDirection());
-        assertEquals("TestRobot", robot.getName());
+        assertEquals("Robo", robot.getName());
         assertEquals("NORMAL", robot.getStatus());
         assertEquals(5, robot.getAmmo());
     }
