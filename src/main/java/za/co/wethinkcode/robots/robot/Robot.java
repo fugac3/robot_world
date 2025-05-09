@@ -15,7 +15,7 @@ import java.util.List;
 public class Robot {
     public static final Position CENTRE = new Position(0,0);
 
-//    private Position position;
+    //    private Position position;
     private Direction currentDirection = Direction.NORTH;
 
     private final String name;
@@ -32,8 +32,8 @@ public class Robot {
 
     private final List<String> commands;
 
-//    public Robot(String name) {
-    public Robot(String name,IWorld world,Position position) {
+    //    public Robot(String name) {
+    public Robot(String name,IWorld world) {
         this.name = name;
         this.position = position;
         this.commands = new ArrayList<>();

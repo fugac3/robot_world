@@ -9,9 +9,15 @@ public abstract class AbstractWorld implements IWorld {
     protected List<Obstacle> obstacles = new ArrayList<>();
     private Map<Direction, Artefact> visibleArea;
 
+
+
     @Override
     public List<Obstacle> getObstacles() {
         return obstacles;
+    }
+
+    public void setObstacles(List<Obstacle> newObstacle){
+        this.obstacles = newObstacle;
     }
 
     @Override
@@ -48,8 +54,11 @@ public abstract class AbstractWorld implements IWorld {
             // (100 - (-200) + 1 = 301), shift by -200
 //            int x = random.nextInt(maxX - minX + 1) + minX;
 //            int y = random.nextInt(maxY - minY + 1) + minY;
-            int x = 2;
-            int y = 2;
+            int x =5;
+            int y = 5;
+
+//            SquareObstacle obstacle = new SquareObstacle(x,y);
+//            obstacles.add(obstacle);
 
 //             Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
 //            Class<?> obstacleType = obstacleTypes["Mountain"];
@@ -68,4 +77,9 @@ public abstract class AbstractWorld implements IWorld {
             }
         }
     }
+
+//    public  void Obb (String newO)
+
+
+
 }
