@@ -140,4 +140,18 @@ class RobotTest {
         assertEquals(new Position(0, 0), robot.getPosition());
     }
 
+    @Test
+    void testForwardCommandWithWorldEdge() {
+        //Try to move forward past edge
+        ForwardCommand forwardCommand = new ForwardCommand("1000");
+        Response response = forwardCommand.execute(robot);
+
+        assertEquals("FAILED", response.getResult());
+        Map<String, Object> data = response.getData();
+        assertEquals("Edge of world", data.get("message")); //"Edge of world" as nothing in protocol about it
+
+        //Robot should not have moved
+        assertEquals(new Position(0, 0), robot.getPosition());
+    }
+
 }
