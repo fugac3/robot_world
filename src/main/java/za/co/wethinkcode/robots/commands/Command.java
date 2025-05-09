@@ -2,10 +2,12 @@ package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.IWorld;
 
 public abstract class Command {
     private String name;
     public String argument;
+    private IWorld world;
 
     public abstract Response execute(Robot robot);
 
@@ -31,6 +33,14 @@ public abstract class Command {
         return this.argument;
     }
 
+    public void setWorld(IWorld world) {
+        this.world = world;
+    }
+
+    public IWorld getWorld() {
+        return world;
+    }
+
     public static Command create(String instruction) {
         if (instruction == null || instruction.isBlank()) {
             throw new IllegalArgumentException("Empty command received.");
@@ -41,9 +51,9 @@ public abstract class Command {
         switch (args[0]) {
             case "launch":
                 if (args.length < 2 || args[1].isBlank()) {
-                    throw new IllegalArgumentException("Launch command needs a robot name from cmd class.");
+                    throw new IllegalArgumentException("Launch command needs a name.");
                 }
-                return new LaunchCommand(args[1]);
+                return new LaunchCommand(args[1].trim());
             case "robots":
                 return new RobotsCommand();
             case "quit":
