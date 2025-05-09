@@ -20,7 +20,7 @@ public class TextWorld extends AbstractWorld{
     private final Map<String, Robot> robots = new HashMap<>();
     private Position position;
 
-    private TextWorld() {
+    public TextWorld() {
         this.position = CENTRE;
         generateRandomObstacles();
     }
