@@ -130,7 +130,7 @@ public class LookCommand extends Command {
     private String getObstacleType(Obstacle obstacle) {
         if (obstacle instanceof MountainObstacle) {
             return "MOUNTAIN";
-        } else if (obstacle instanceof LakesObsticle) {
+        } else if (obstacle instanceof LakesObstacle) {
             return "LAKE";
         } else if (obstacle instanceof BottomlessPit) {
             return "BOTTOMLESS PIT";

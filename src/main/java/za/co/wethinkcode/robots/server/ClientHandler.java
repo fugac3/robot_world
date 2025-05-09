@@ -123,14 +123,15 @@ public class ClientHandler implements Runnable {
                                 // 4. All good, launch the robot
                                 this.robotName = name;
                                 Position startPos = world.getRandomFreePosition();
-                                world.addRobot(this.robot);
-//                                world.addRobot(robot);
+
+                                this.robot = new Robot(robotName, world, startPos);
+
                                 data.put("message", "Robot successfully launched.");
                                 Position pos = robot.getPosition();
                                 data.put("position", new int[]{pos.getX(), pos.getY()});
 
 //                                robot.setPosition(pos); // or constructor if you can pass it
-//                                this.robot = new Robot(robotName, world, startPos);
+                                world.addRobot(this.robot);
                                 response = new Response("OK", data, robot);
                             }
 
