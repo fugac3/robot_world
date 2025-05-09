@@ -11,6 +11,8 @@ public class TextWorld extends AbstractWorld{
 
     public static final Position TOP_LEFT = new Position(-200,100);
     public static final Position BOTTOM_RIGHT = new Position(100,-200);
+//    public static final Position TOP_LEFT = new Position(0,5);
+//    public static final Position BOTTOM_RIGHT = new Position(5,0);
     private static TextWorld instance;
 
     public static final Position CENTRE = new Position(0,0);
@@ -29,6 +31,52 @@ public class TextWorld extends AbstractWorld{
         }
         return instance;
     }
+
+//    public Position getNonRandomPosition() {
+//        Position pos = new Position(0, 0);
+//        System.out.println(blocksPosition(pos));
+//        return pos;
+//    }
+
+    public Position getRandomFreePosition() {
+        Random rand = new Random();
+        int minX = TOP_LEFT.getX();
+        int maxX = BOTTOM_RIGHT.getX();
+        int minY = BOTTOM_RIGHT.getY();
+        int maxY = TOP_LEFT.getY();
+
+        Position pos;
+
+        do {
+            int x = rand.nextInt(maxX - minX + 1) + minX;
+            int y = rand.nextInt(maxY - minY + 1) + minY;
+            pos = new Position(x, y);
+        } while (blocksPosition(pos));  // Retry if blocked
+            // cant tell if the world is full
+        return pos;
+    }
+
+
+    public boolean blocksPosition(Position pos) {
+        // Check obstacles
+        for (Obstacle obstacle : this.obstacles) {
+            if (obstacle.blocksPosition(pos)) {
+                System.out.println("Obstacle stuck");
+                return true;
+            }
+        }
+
+        // Check other robots
+        for (Robot robot : getAllRobots()) {
+            if (robot.getPosition().equals(pos)) {
+                System.out.println("Robot stuck");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     public void addRobot(Robot robot) {
 

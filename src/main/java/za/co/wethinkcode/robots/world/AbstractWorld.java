@@ -38,19 +38,18 @@ public abstract class AbstractWorld implements IWorld {
         int minX = TextWorld.TOP_LEFT.getX();
 
         // List of obstacle types to choose from
-        Class<?>[] obstacleTypes = {MountainObstacle.class, LakesObsticle.class, BottomlessPit.class};
+        Class<?>[] obstacleTypes = {MountainObstacle.class, LakesObstacle.class, BottomlessPit.class};
 
+//        SquareObstacle obstacle = new SquareObstacle(2,2);
+//        obstacles.add(obstacle);
         for (int i = 0; i < numObstacles; i++){
             // Random position for obstacle
             //between ~300 - ~200 + 1 + the min again to stay in bounds
             // (100 - (-200) + 1 = 301), shift by -200
 //            int x = random.nextInt(maxX - minX + 1) + minX;
 //            int y = random.nextInt(maxY - minY + 1) + minY;
-            int x =5;
-            int y = 5;
-
-            SquareObstacle obstacle = new SquareObstacle(x,y);
-//            obstacles.add(obstacle);
+            int x = 2;
+            int y = 2;
 
 //             Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
 //            Class<?> obstacleType = obstacleTypes["Mountain"];
@@ -59,33 +58,14 @@ public abstract class AbstractWorld implements IWorld {
             try {
                 if (obstacleType == MountainObstacle.class) {
                     obstacles.add(new MountainObstacle(x, y));
-                } else if (obstacleType == LakesObsticle.class) {
-                    obstacles.add(new LakesObsticle(x, y));
+                } else if (obstacleType == LakesObstacle.class) {
+                    obstacles.add(new LakesObstacle(x, y));
                 } else if (obstacleType == BottomlessPit.class) {
                     obstacles.add(new BottomlessPit(x, y));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
-
         }
-
-
-
-
     }
-//
-//    public boolean isBulletBlocked(Position bulletPosition) {
-//        for (Obstacle obstacle : obstacles) {
-//            if (obstacle.blocksPosition(bulletPosition)) {
-//                return true; // bullet hits an obstacle
-//            }
-//        }
-//        return false; // bullet is still moving
-//    }
-
-
-
 }

@@ -1,7 +1,7 @@
 package za.co.wethinkcode.robots.world;
 
-public class LakesObsticle extends SquareObstacle{
-    public LakesObsticle(int bottomLeftX, int bottomLeftY) {
+public class LakesObstacle extends RectangleObstacle{
+    public LakesObstacle(int bottomLeftX, int bottomLeftY) {
         super(bottomLeftX, bottomLeftY);
     }
 
