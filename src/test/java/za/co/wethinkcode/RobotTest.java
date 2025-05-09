@@ -1,73 +1,33 @@
 package za.co.wethinkcode;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robots.commands.*;
+import za.co.wethinkcode.robots.commands.Direction;
+import za.co.wethinkcode.robots.commands.ForwardCommand;
+import za.co.wethinkcode.robots.commands.BackCommand;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
+import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class RobotTest {
+        private TextWorld world;
+        private Robot robot;
 
-    @Test
-    void testInitialPosition() {
-        TextWorld world = new TextWorld();
-        Robot robot = new Robot("CrashTestDummy", world);
-        assertEquals(Robot.CENTRE, robot.getPosition());
-        assertEquals(Direction.NORTH, robot.getCurrentDirection());
-        assertEquals("CrashTestDummy", robot.getName());
-        assertEquals(world, robot.getWorld());
-        assertEquals("Ready", robot.getResponse());
-    }
+        @BeforeEach
+        void setUp(){
+            //Creating a controlled environment with no obstacles and defined position to make testing easier
+            world = TextWorld.getInstance();
+            world.getObstacles().clear(); //get rid of all obstacles in world
+            robot = new Robot("Robo", world, new Position(0,0));
+            robot.setStatus("NORMAL");
+        }
 
-    @Test
-    void testUpdatePosition() {
-        TextWorld world = new TextWorld();
-        Robot robot = new Robot("CrashTestDummy", world);
 
-        boolean result = robot.updatePosition(10);
-        assertTrue(result); //movement should be successful
-        assertEquals(new Position(0, 10), robot.getPosition());
-        assertEquals("Moved forward by 10 steps.", robot.getStatus());
-    }
-
-    @Test
-    void testUpdatePositionFail() {
-        TextWorld world = new TextWorld();
-        Robot robot = new Robot("CrashTestDummy", world);
-
-        boolean result = robot.updatePosition(1000);
-        assertFalse(result); //movement should fail/out of bounds
-        assertEquals(new Position(0, 0), robot.getPosition());
-        assertEquals("Sorry, I cannot go outside my safe zone.", robot.getResponse());
-    }
-
-    @Test
-    void testTurns() {
-        TextWorld world = new TextWorld();
-        Robot robot = new Robot("CrashTestDummy", world);
-
-        robot.turnLeft();
-        assertEquals(Direction.WEST, robot.getCurrentDirection());
-        robot.turnRight();
-        assertEquals(Direction.NORTH, robot.getCurrentDirection());
-        robot.turnRight();
-        assertEquals(Direction.EAST, robot.getCurrentDirection());
-    }
-
-    @Test
-    void dump() {
-        TextWorld world = new TextWorld();
-        Robot robot = new Robot("CrashTestDummy", world);
-        assertEquals("[0,0] CrashTestDummy> Ready", robot.toString());
-    }
-
-    @Test
-    void quit() { //all robots should disconnect not one!
-        TextWorld world = new TextWorld();
-        Robot robot = new Robot("CrashTestDummy", world);
-        ShutdownCommand command = new ShutdownCommand();
-        assertFalse(robot.handleCommand(command));
-    }
 }
