@@ -32,8 +32,7 @@ public class Robot {
 
     private final List<String> commands;
 
-    //    public Robot(String name) {
-    public Robot(String name,IWorld world) {
+    public Robot(String name,IWorld world,Position position) {
         this.name = name;
         this.position = position;
         this.commands = new ArrayList<>();
