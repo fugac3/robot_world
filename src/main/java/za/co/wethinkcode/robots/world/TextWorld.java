@@ -1,12 +1,9 @@
 package za.co.wethinkcode.robots.world;
 
-import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 //import za.co.wethinkcode.robot.position;
 
 
@@ -14,6 +11,8 @@ public class TextWorld extends AbstractWorld{
 
     public static final Position TOP_LEFT = new Position(-200,100);
     public static final Position BOTTOM_RIGHT = new Position(100,-200);
+//    public static final Position TOP_LEFT = new Position(0,5);
+//    public static final Position BOTTOM_RIGHT = new Position(5,0);
     private static TextWorld instance;
 
     public static final Position CENTRE = new Position(0,0);
@@ -23,7 +22,7 @@ public class TextWorld extends AbstractWorld{
 
     private TextWorld() {
         this.position = CENTRE;
-        generateRandomObstacles(TOP_LEFT,BOTTOM_RIGHT);
+        generateRandomObstacles();
     }
 
     public static synchronized TextWorld getInstance() {
@@ -33,36 +32,60 @@ public class TextWorld extends AbstractWorld{
         return instance;
     }
 
+//    public Position getNonRandomPosition() {
+//        Position pos = new Position(0, 0);
+//        System.out.println(blocksPosition(pos));
+//        return pos;
+//    }
+
+    public Position getRandomFreePosition() {
+        Random rand = new Random();
+        int minX = TOP_LEFT.getX();
+        int maxX = BOTTOM_RIGHT.getX();
+        int minY = BOTTOM_RIGHT.getY();
+        int maxY = TOP_LEFT.getY();
+
+        Position pos;
+
+        do {
+            int x = rand.nextInt(maxX - minX + 1) + minX;
+            int y = rand.nextInt(maxY - minY + 1) + minY;
+            pos = new Position(x, y);
+        } while (blocksPosition(pos));  // Retry if blocked
+            // cant tell if the world is full
+        return pos;
+    }
+
+
+    public boolean blocksPosition(Position pos) {
+        // Check obstacles
+        for (Obstacle obstacle : this.obstacles) {
+            if (obstacle.blocksPosition(pos)) {
+                System.out.println("Obstacle stuck");
+                return true;
+            }
+        }
+
+        // Check other robots
+        for (Robot robot : getAllRobots()) {
+            if (robot.getPosition().equals(pos)) {
+                System.out.println("Robot stuck");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     public void addRobot(Robot robot) {
+
         robots.put(robot.getName(), robot);
     }
 
     public Collection<Robot> getAllRobots() {
         return robots.values();
     }
-
-
-//    public boolean registerRobot(Robot robot) {
-//        // returns false if a robot with that name already exists
-//        return robots.putIfAbsent(robot.getName(), robot) == null;
-//    }
-
-//    public Robot getRobotByName(String name) {
-//        return robots.get(name);
-//    }
-//
-//    public int getRobotCount() {
-//        return robots.size();
-//    }
-//
-//    public Map<String, Robot> getRobots() {
-//        return Collections.unmodifiableMap(robots);
-//    }
-
-
-
-
 
     @Override
     public boolean blocksPath(Position start, Position end) {
@@ -74,35 +97,6 @@ public class TextWorld extends AbstractWorld{
         return false;
     }
 
-
-
-    /**
-     * Updates the position of your robot in the world by moving the nrSteps in the robots current direction.
-
-//     * @param nrSteps steps to move in current direction
-//     * @return true if this does not take the robot over the world's limits, or into an obstacle.
-     */
-    @Override
-    public boolean updatePosition(int nrSteps) {
-        return false;
-    }
-
-
-
-    /**
-     * Updates the current direction your robot is facing in the world by cycling through the directions UP, RIGHT, BOTTOM, LEFT.
-     *
-     * @param turnRight if true, then turn 90 degrees to the right, else turn left.
-     */
-    @Override
-    public void updateDirection(boolean turnRight) {
-
-
-    }
-
-
-
-
     public void setPosition(Position pos) {
         this.position = pos;
     }
@@ -111,55 +105,5 @@ public class TextWorld extends AbstractWorld{
     public Map<za.co.wethinkcode.robots.commands.Direction, Artefact> look() {
         return Map.of();
     }
-
-    /**
-     * Gets the current direction the robot is facing in relation to a world edge.
-     *
-     * @return Direction.UP, RIGHT, DOWN, or LEFT
-     */
-    @Override
-    public Direction getCurrentDirection() {
-        return Direction.NORTH;
-    }
-
-    /**
-     * Checks if the new position will be allowed, i.e. falls within the constraints of the world, and does not overlap an obstacle.
-     *
-     * @param position the position to check
-     * @return true if it is allowed, else false
-     */
-    @Override
-    public boolean isNewPositionAllowed(Position position) {
-
-//        if(!position.equals(getObstacles())){
-//            return true;
-//        }
-        return false;
-    }
-
-    /**
-     * Checks if the robot is at one of the edges of the world
-     *
-     * @return true if the robot's current is on one of the 4 edges of the world
-     */
-    @Override
-    public boolean isAtEdge() {
-        return false;
-    }
-
-    /**
-     * Reset the world by:
-     * - moving current robot position to center 0,0 coordinate
-     * - removing all obstacles
-     * - setting current direction to UP
-     */
-    @Override
-    public void reset() {
-
-    }
-
-
-
-
 //==========
 }

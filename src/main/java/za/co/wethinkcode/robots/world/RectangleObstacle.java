@@ -1,23 +1,16 @@
 package za.co.wethinkcode.robots.world;
 
 import za.co.wethinkcode.robots.robot.Position;
-import za.co.wethinkcode.robots.robot.Robot;
 
-import java.util.List;
-
-public class SquareObstacle implements Obstacle {
-
+public class RectangleObstacle implements Obstacle {
     private final int bottomLeftX;
     private final int bottomLeftY;
-    private final int size = 5;
-    private boolean mountain = false;
-    private boolean lake = false;
-    private boolean bottomlessPit = false;
+    private final int height = 5;
+    private final int width = 7;
 
-    public SquareObstacle(int bottomLeftX, int bottomLeftY) {
+    public RectangleObstacle(int bottomLeftX, int bottomLeftY) {
         this.bottomLeftX = bottomLeftX;
         this.bottomLeftY = bottomLeftY;
-
     }
 
     @Override
@@ -31,24 +24,19 @@ public class SquareObstacle implements Obstacle {
     }
 
     public int getTopRightX() {
-        return bottomLeftX + size - 1;
+        return bottomLeftX + width - 1;
     }
 
     public int getTopRightY() {
-        return bottomLeftY + size - 1;
-    }
-
-    @Override
-    public int getSize() {
-        return size;
+        return bottomLeftY + height - 1;
     }
 
     //    Checks if anything moves within its boundaries
     @Override
     public boolean blocksPosition(Position pos) {
         //After or before x/y-axis
-        return pos.getX() >= bottomLeftX && pos.getX() < bottomLeftX + size &&
-                pos.getY() >= bottomLeftY && pos.getY() < bottomLeftY + size;
+        return pos.getX() >= bottomLeftX && pos.getX() < bottomLeftX + width &&
+                pos.getY() >= bottomLeftY && pos.getY() < bottomLeftY + height;
     }
 
     /**
@@ -71,30 +59,13 @@ public class SquareObstacle implements Obstacle {
 
         while (x != b.getX() || y != b.getY()) {
             Position current = new Position(x, y);
-
             // Check for collisions with square obstacle
             if (blocksPosition(current)) {
                 return true;
             }
-
-            // Check for collisions with other robots
-//            for (Robot r : allRobots) {
-//                if (!r.equals(movingRobot) && r.getPosition().equals(current)) {
-//                    return true;
-//                }
-//            }
-
             if (x != b.getX()) x += dx;
             if (y != b.getY()) y += dy;
         }
-
-        // Check destination
-//        for (Robot r : allRobots) {
-//            if (!r.equals(movingRobot) && r.getPosition().equals(b)) {
-//                return true;
-//            }
-//        }
-
         return blocksPosition(b);
     }
 
@@ -103,14 +74,29 @@ public class SquareObstacle implements Obstacle {
         return false;
     }
 
-//    @Override
-//    public Boolean getTypeObsticle() {
-//        return false;
-//    }
 
-    public Object getType() {
-        return mountain;
+    @Override
+    public int getSize() {
+//        Random random = new Random();
+//
+//        int X = 10;
+//        int Y = 10;
+//
+//        while (true) {
+//            int height = random.nextInt(X);
+//            int width = random.nextInt(Y - Y + 1) + Y;
+//
+//            if (height == width){
+//                return size = hw
+//            }
+//        }
+
+
+        return width*height;
     }
+
+
+
 
 
 //========
