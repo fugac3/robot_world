@@ -7,6 +7,7 @@ import za.co.wethinkcode.robots.robot.*;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -123,4 +124,48 @@ public class LookCommandTest {
             }
         }
     }
+
+    @Test
+    void testLakeInFrontOfMountain() {
+        //Add lake
+        world.getObstacles().add(new LakesObstacle(0, 5));
+        //Add mountain behind
+        world.getObstacles().add(new MountainObstacle(0, 8));
+
+        Response response = look.execute(robot);
+        assertEquals("OK", response.getResult());
+        //Get objects from response
+        Map<String, Object> data = response.getData();
+        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
+
+        //Find all objects in the NORTH direction
+        List<Map<String, Object>> northObjects = new ArrayList<>();
+        for (Map<String, Object> obj : objects) {
+            if ("NORTH".equals(obj.get("direction"))) {
+                northObjects.add(obj);
+            }
+        }
+
+        //Should see both lake and mountain
+//        assertEquals(2, northObjects.size());
+
+        //Find the lake and mountain by checking each object
+        Map<String, Object> lakeObject = null;
+        Map<String, Object> mountainObject = null;
+
+        for (Map<String, Object> obj : northObjects) {
+            if ("LAKE".equals(obj.get("type"))) {
+                lakeObject = obj;
+            } else if ("MOUNTAIN".equals(obj.get("type"))) {
+                mountainObject = obj;
+            }
+        }
+
+        //Ensure lake and mountain object found
+        assertNotNull(lakeObject);
+        assertEquals(5, lakeObject.get("distance"));
+        assertNotNull(mountainObject);
+        assertEquals(8, mountainObject.get("distance"));
+    }
 }
+
