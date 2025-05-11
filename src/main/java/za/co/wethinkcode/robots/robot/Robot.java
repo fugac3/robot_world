@@ -132,7 +132,8 @@ public class Robot {
         }
 
         for (Robot robot : TextWorld.getInstance().getAllRobots()){ //making sure robots don't share position
-            if (robot.getPosition() == newPosition){
+            if (robot.getPosition().equals(newPosition)){
+                lastMoveReason = "Robot in the way";
                 return false;
             }
         }

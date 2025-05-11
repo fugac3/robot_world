@@ -23,7 +23,7 @@ public class RobotList {
         for (Robot r : world.getAllRobots()) {
             Map<String, Object> robotInfo = new HashMap<>();
             robotInfo.put("name", r.getName());
-            Position pos = robot.getPosition();
+            Position pos = r.getPosition();
             robotInfo.put("position", new int[]{pos.getX(), pos.getY()});
             robotInfo.put("direction", r.getCurrentDirection());
             robotInfo.put("shots", r.getAmmo());
