@@ -61,4 +61,24 @@ public class LookCommandTest {
         assertEquals(0, position[0]); // x coordinate
         assertEquals(0, position[1]); // y coordinate
     }
+
+    @Test
+    void testLookWithMountainObstacle() {
+        //Add mountain obstacle to the north
+        world.getObstacles().add(new MountainObstacle(0, 5));
+        Response response = look.execute(robot);
+        assertEquals("OK", response.getResult());
+
+        //Get objects from response
+        Map<String, Object> data = response.getData();
+        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
+
+        //Assuming objects are always returned in order: NORTH, EAST, SOUTH, WEST
+        Map<String, Object> northObject = objects.get(0);
+
+        //Check north object is a mountain 5 distances away
+        assertEquals("NORTH", northObject.get("direction"));
+        assertEquals("MOUNTAIN", northObject.get("type"));
+        assertEquals(5, northObject.get("distance"));
+    }
 }
