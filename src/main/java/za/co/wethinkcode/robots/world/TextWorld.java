@@ -9,11 +9,12 @@ import java.util.*;
 
 public class TextWorld extends AbstractWorld{
 
-    public static final Position TOP_LEFT = new Position(-200,100);
-    public static final Position BOTTOM_RIGHT = new Position(100,-200);
+    public static Position TOP_LEFT;
+    public static Position BOTTOM_RIGHT;
 //    public static final Position TOP_LEFT = new Position(0,5);
 //    public static final Position BOTTOM_RIGHT = new Position(5,0);
     private static TextWorld instance;
+    private final WorldConfig config;
 
     public static final Position CENTRE = new Position(0,0);
 
@@ -22,7 +23,10 @@ public class TextWorld extends AbstractWorld{
 
     public TextWorld() {
         this.position = CENTRE;
-        generateRandomObstacles();
+        this.config = ConfigReader.loadConfig();
+        TOP_LEFT = config.topLeft;
+        BOTTOM_RIGHT = config.bottomRight;
+        generateRandomObstacles(config.maxObstacles);
     }
 
     public static synchronized TextWorld getInstance() {
