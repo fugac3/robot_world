@@ -81,4 +81,46 @@ public class LookCommandTest {
         assertEquals("MOUNTAIN", northObject.get("type"));
         assertEquals(5, northObject.get("distance"));
     }
+
+    @Test
+    void testLookWithMultipleObstacles() {
+        //Add multiple obstacles in different directions
+        world.getObstacles().add(new MountainObstacle(0, 5)); //North
+        world.getObstacles().add(new LakesObstacle(5, 0)); //East
+        world.getObstacles().add(new BottomlessPit(0, -5)); //South
+
+        Response response = look.execute(robot);
+        assertEquals("OK", response.getResult());
+
+        //Get objects from response
+        Map<String, Object> data = response.getData();
+        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
+
+        assertEquals(4, objects.size()); //should have 4 directions
+
+        //Check each direction has correct obstacle
+        for (Map<String, Object> object : objects) {
+            String direction = (String) object.get("direction");
+            String type = (String) object.get("type");
+
+            switch (direction) {
+                case "NORTH":
+                    assertEquals("MOUNTAIN", type);
+                    assertEquals(5, object.get("distance"));
+                    break;
+                case "EAST":
+                    assertEquals("LAKE", type);
+                    assertEquals(5, object.get("distance"));
+                    break;
+                case "SOUTH":
+                    assertEquals("BOTTOMLESS PIT", type);
+                    assertEquals(5, object.get("distance"));
+                    break;
+                case "WEST":
+                    //No obstacle in the west
+                    assertTrue(type.equals("EMPTY") || type.equals("EDGE")); //edge depending on world size
+                    break;
+            }
+        }
+    }
 }
