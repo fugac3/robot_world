@@ -40,9 +40,10 @@ public class LookCommand extends Command {
         Position robotPosition = robot.getPosition();
 
         //Create data structure for the response
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>(); //data = "data":{}
         //List to store all found obstacles
-        List<Map<String, Object>> objects = new ArrayList<>();
+        List<Map<String, Object>> objects = new ArrayList<>(); //"objects": [{},{},{},{}]
+        List<String> messages = new ArrayList<>();
 
         // Checks every direction and every coordinate in that direction up to visibility range
         for (Direction direction : Direction.values()) {
@@ -75,8 +76,12 @@ public class LookCommand extends Command {
 
                         //If it's a mountain, we can't see past it
                         if (obstacle instanceof MountainObstacle) {
+                            messages.add("Cannot move or see past a mountain to the " + direction.toString());
                             obstacleFound = true; // so that we can end the loop for direction below (because we can't see past mountains) otherwise loop continues till constraint
                             break;
+                        }
+                        else {
+                            messages.add("There is a " + obstacleType.toLowerCase() + " to the " + direction.toString());
                         }
 
                         //For lakes and pits, we can see through them, so continue loop till we get to constraint
@@ -95,6 +100,7 @@ public class LookCommand extends Command {
                     edgeObject.put("type", "EDGE");
                     edgeObject.put("distance", distance);
                     objects.add(edgeObject);
+                    messages.add("World edge reached to the " + direction.toString());
 
                     obstacleFound = true;
                     break;
@@ -113,6 +119,7 @@ public class LookCommand extends Command {
                             robotObject.put("type", "ROBOT");
                             robotObject.put("distance", distance);
                             objects.add(robotObject);
+                            messages.add("Another robot is blocking the way to the " + direction.toString());
 
                             obstacleFound = true;
                             break;
@@ -138,6 +145,7 @@ public class LookCommand extends Command {
 
         // Add objects to data
         data.put("objects", objects);
+        data.put("messages", messages);
 
         // Return the response with the required format
         return new Response("OK", data, robot);
@@ -157,7 +165,7 @@ public class LookCommand extends Command {
         } else if (obstacle instanceof BottomlessPit) {
             return "BOTTOMLESS PIT";
         } else {
-            return "OBSTACLE"; // Generic fallback
+            return "OBSTACLE";
         }
     }
 
@@ -170,7 +178,7 @@ public class LookCommand extends Command {
      * @return The new position after moving
      */
     public Position moveInDirection(Position start, Direction direction, int steps){
-        //Gets direction from for loop in "look()" and adds/subtracts each no. in visRange from robot's position (eg. (0,0) +- (1-10) for steps to get a new Position
+        //Gets direction from for loop in "execute()" and adds/subtracts each no. in visRange from robot's position (eg. (0,0) +- (1-10) for steps to get a new Position
         switch (direction) {
             case NORTH:
                 return new Position(start.getX(), start.getY() + steps);
