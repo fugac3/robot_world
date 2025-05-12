@@ -11,7 +11,7 @@ public class Client {
     public static void main(String[] args) {
 
 
-        int Port = 4433;
+        int Port = 4401;
 
         Socket socket = null;
 //        InputStreamReader inputStreamReader = null;  //byte based

@@ -21,7 +21,7 @@ public class Server {
 //    private static final TextWorld world = new TextWorld();
     private static final TextWorld world = TextWorld.getInstance();
     public static void main(String[] args) {
-        int port = 4433;
+        int port = 4401;
         try {
             serverSocket = new ServerSocket(port);
             System.out.println("Server started. Listening on port " + port);

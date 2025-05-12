@@ -48,5 +48,5 @@ public interface Obstacle {
 
     boolean contains(Position targetPosition);
 
-//    Boolean getTypeObsticle();
+
 }
