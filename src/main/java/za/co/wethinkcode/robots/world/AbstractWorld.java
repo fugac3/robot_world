@@ -4,22 +4,42 @@ import za.co.wethinkcode.robots.commands.Direction;
 
 import java.util.*;
 
+/**
+ * AbstractWorld provides the basic functionality and data structure for a world
+ * where obstacles can be placed and visualized. It includes methods for managing obstacles
+ * and for generating random obstacles.
+ */
 public abstract class AbstractWorld implements IWorld {
 
+    /** List to hold all obstacles present in the world. */
     protected List<Obstacle> obstacles = new ArrayList<>();
+
+    /** Map representing the area visible in a particular direction. */
     private Map<Direction, Artefact> visibleArea;
 
-
-
+    /**
+     * Get the list of obstacles currently in the world.
+     *
+     * @return a list of Obstacle objects.
+     */
     @Override
     public List<Obstacle> getObstacles() {
         return obstacles;
     }
 
+    /**
+     * Replace the current list of obstacles with a new list.
+     *
+     * @param newObstacle the new list of Obstacle objects.
+     */
     public void setObstacles(List<Obstacle> newObstacle){
         this.obstacles = newObstacle;
     }
 
+    /**
+     * Display all obstacles currently in the world.
+     * If no obstacles are present, prints a message saying so.
+     */
     @Override
     public void showObstacles() {
         if (obstacles.isEmpty()) {
@@ -34,6 +54,10 @@ public abstract class AbstractWorld implements IWorld {
         }
     }
 
+    /**
+     * Generate a random obstacle at a random location within the bounds defined by TextWorld.
+     * Randomly selects an obstacle type from MountainObstacle, LakesObstacle, or BottomlessPit.
+     */
     protected void generateRandomObstacles(){
         Random random = new Random();
         int numObstacles = 1;
@@ -43,25 +67,12 @@ public abstract class AbstractWorld implements IWorld {
         int maxY = TextWorld.TOP_LEFT.getY();
         int minX = TextWorld.TOP_LEFT.getX();
 
-        // List of obstacle types to choose from
         Class<?>[] obstacleTypes = {MountainObstacle.class, LakesObstacle.class, BottomlessPit.class};
 
-//        SquareObstacle obstacle = new SquareObstacle(2,2);
-//        obstacles.add(obstacle);
         for (int i = 0; i < numObstacles; i++){
-            // Random position for obstacle
-            //between ~300 - ~200 + 1 + the min again to stay in bounds
-            // (100 - (-200) + 1 = 301), shift by -200
-//            int x = random.nextInt(maxX - minX + 1) + minX;
-//            int y = random.nextInt(maxY - minY + 1) + minY;
-            int x =5;
-            int y = 5;
+            int x = random.nextInt(maxX - minX + 1) + minX;
+            int y = random.nextInt(maxY - minY + 1) + minY;
 
-//            SquareObstacle obstacle = new SquareObstacle(x,y);
-//            obstacles.add(obstacle);
-
-//             Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
-//            Class<?> obstacleType = obstacleTypes["Mountain"];
             Class<?> obstacleType = obstacleTypes[random.nextInt(obstacleTypes.length)];
 
             try {
@@ -77,9 +88,4 @@ public abstract class AbstractWorld implements IWorld {
             }
         }
     }
-
-//    public  void Obb (String newO)
-
-
-
 }

@@ -2,53 +2,94 @@ package za.co.wethinkcode.robots.world;
 
 import za.co.wethinkcode.robots.robot.Position;
 
+/**
+ * Represents a rectangular obstacle in the robot world.
+ * This class implements the {@link Obstacle} interface and defines a fixed-size
+ * rectangle that can block robot movement and pathfinding.
+ */
 public class RectangleObstacle implements Obstacle {
+
+    /** The X-coordinate of the bottom-left corner of the rectangle. */
     private final int bottomLeftX;
+
+    /** The Y-coordinate of the bottom-left corner of the rectangle. */
     private final int bottomLeftY;
+
+    /** The fixed height of the rectangle. */
     private final int height = 5;
+
+    /** The fixed width of the rectangle. */
     private final int width = 7;
 
+    /**
+     * Constructs a RectangleObstacle with a given bottom-left corner.
+     *
+     * @param bottomLeftX the X-coordinate of the bottom-left corner
+     * @param bottomLeftY the Y-coordinate of the bottom-left corner
+     */
     public RectangleObstacle(int bottomLeftX, int bottomLeftY) {
         this.bottomLeftX = bottomLeftX;
         this.bottomLeftY = bottomLeftY;
     }
 
+    /**
+     * Gets the X-coordinate of the bottom-left corner.
+     *
+     * @return the X-coordinate
+     */
     @Override
     public int getBottomLeftX() {
         return bottomLeftX;
     }
 
+    /**
+     * Gets the Y-coordinate of the bottom-left corner.
+     *
+     * @return the Y-coordinate
+     */
     @Override
     public int getBottomLeftY() {
         return bottomLeftY;
     }
 
+    /**
+     * Gets the X-coordinate of the top-right corner.
+     *
+     * @return the top-right X-coordinate
+     */
     public int getTopRightX() {
         return bottomLeftX + width - 1;
     }
 
+    /**
+     * Gets the Y-coordinate of the top-right corner.
+     *
+     * @return the top-right Y-coordinate
+     */
     public int getTopRightY() {
         return bottomLeftY + height - 1;
     }
 
-    //    Checks if anything moves within its boundaries
+    /**
+     * Checks if a given position is within the obstacle.
+     *
+     * @param pos the position to check
+     * @return {@code true} if the position is inside the obstacle, {@code false} otherwise
+     */
     @Override
     public boolean blocksPosition(Position pos) {
-        //After or before x/y-axis
         return pos.getX() >= bottomLeftX && pos.getX() < bottomLeftX + width &&
                 pos.getY() >= bottomLeftY && pos.getY() < bottomLeftY + height;
     }
 
     /**
-     * Checks if this obstacle blocks the path that goes from coordinate (x1, y1) to (x2, y2).
-     * Since our robot can only move in horizontal or vertical lines (no diagonals yet), we can assume that either x1==x2 or y1==y2.
+     * Checks whether this obstacle blocks the straight-line path between two positions.
+     * Only horizontal or vertical paths are supported.
      *
-     * @param a           first position
-     * @param b           second position
-
-     * @return `true` if this obstacle is in the way
+     * @param a the starting position
+     * @param b the ending position
+     * @return {@code true} if any part of the path crosses the obstacle
      */
-
     @Override
     public boolean blocksPath(Position a, Position b) {
         int dx = Integer.compare(b.getX(), a.getX());
@@ -59,7 +100,6 @@ public class RectangleObstacle implements Obstacle {
 
         while (x != b.getX() || y != b.getY()) {
             Position current = new Position(x, y);
-            // Check for collisions with square obstacle
             if (blocksPosition(current)) {
                 return true;
             }
@@ -69,35 +109,25 @@ public class RectangleObstacle implements Obstacle {
         return blocksPosition(b);
     }
 
+    /**
+     * Checks whether the obstacle contains a given position.
+     * Currently always returns {@code false}.
+     *
+     * @param targetPosition the position to check
+     * @return {@code false}
+     */
     @Override
     public boolean contains(Position targetPosition) {
         return false;
     }
 
-
+    /**
+     * Returns the size of the obstacle (area = width × height).
+     *
+     * @return the total number of grid cells covered by this obstacle
+     */
     @Override
     public int getSize() {
-//        Random random = new Random();
-//
-//        int X = 10;
-//        int Y = 10;
-//
-//        while (true) {
-//            int height = random.nextInt(X);
-//            int width = random.nextInt(Y - Y + 1) + Y;
-//
-//            if (height == width){
-//                return size = hw
-//            }
-//        }
-
-
-        return width*height;
+        return width * height;
     }
-
-
-
-
-
-//========
 }
