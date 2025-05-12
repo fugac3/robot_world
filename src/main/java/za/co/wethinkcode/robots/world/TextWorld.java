@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robots.world;
 
+import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
@@ -9,11 +10,12 @@ import java.util.*;
 
 public class TextWorld extends AbstractWorld{
 
-    public static final Position TOP_LEFT = new Position(-200,100);
-    public static final Position BOTTOM_RIGHT = new Position(100,-200);
+    public static Position TOP_LEFT = new Position(-200,100);
+    public static Position BOTTOM_RIGHT = new Position(100,-200);
 //    public static final Position TOP_LEFT = new Position(0,5);
 //    public static final Position BOTTOM_RIGHT = new Position(5,0);
     private static TextWorld instance;
+    private WorldConfig config;
 
     public static final Position CENTRE = new Position(0,0);
 
@@ -22,7 +24,11 @@ public class TextWorld extends AbstractWorld{
 
     public TextWorld() {
         this.position = CENTRE;
-        generateRandomObstacles();
+        this.config = ConfigReader.loadConfig();
+        TOP_LEFT = config.topLeft;
+        BOTTOM_RIGHT = config.bottomRight;
+        generateRandomObstacles(config.maxObstacles);
+        this.config = ConfigReader.loadConfig();
     }
 
     public static synchronized TextWorld getInstance() {
@@ -102,7 +108,7 @@ public class TextWorld extends AbstractWorld{
     }
 
     @Override
-    public Map<za.co.wethinkcode.robots.commands.Direction, Artefact> look() {
+    public Map<Direction, Artefact> look() {
         return Map.of();
     }
 //==========
