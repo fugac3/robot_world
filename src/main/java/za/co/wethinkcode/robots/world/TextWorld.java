@@ -28,7 +28,6 @@ public class TextWorld extends AbstractWorld{
         TOP_LEFT = config.topLeft;
         BOTTOM_RIGHT = config.bottomRight;
         generateRandomObstacles(config.maxObstacles);
-        this.config = ConfigReader.loadConfig();
     }
 
     public static synchronized TextWorld getInstance() {

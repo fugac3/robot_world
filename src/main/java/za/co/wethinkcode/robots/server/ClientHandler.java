@@ -76,6 +76,7 @@ public class ClientHandler implements Runnable {
                         Map<String, Object> args = new HashMap<>();
                         String arg = command.getArgument();
 
+                        //assign args based on cmd name
                         if (arg != null && !arg.isEmpty()) {
                             switch (command.getName()) {
                                 case "forward":
@@ -105,22 +106,21 @@ public class ClientHandler implements Runnable {
 
                         String name = (String) request.getArguments().get("name");
 
-                        // 1. Block clients trying to launch more than one robot
+                        //Block clients trying to launch more than one robot
                         if (this.robot != null) {
                             data.put("message", "A robot has already been launched for this client.");
                             response = new Response("ERROR", data, null);
                         } else {
-                            // 2. Basic name check using LaunchCommand
+                            //Basic name check using LaunchCommand
                             LaunchCommand launchCommand = new LaunchCommand(name);
                             response = launchCommand.execute(null);  // Validates name
-                            // 3. Check world for duplicate robot names
-                            boolean nameTaken = world.getAllRobots().stream()
-                                    .anyMatch(r -> r.getName().equalsIgnoreCase(name));
+                            //Check world for duplicate robot names
+                            boolean nameTaken = world.getAllRobots().stream().anyMatch(r -> r.getName().equalsIgnoreCase(name));
                             if (nameTaken) {
-                                data.put("message", "A robot with this name already exists in the world.");
+                                data.put("message", "Too many of you in this world");
                                 response = new Response("ERROR", data, null);
                             } else {
-                                // 4. All good, launch the robot
+                                //If all good, launch the robot
                                 this.robotName = name;
                                 Position startPos = world.getRandomFreePosition();
 
@@ -129,30 +129,22 @@ public class ClientHandler implements Runnable {
                                 data.put("message", "Robot successfully launched.");
                                 Position pos = robot.getPosition();
                                 data.put("position", new int[]{pos.getX(), pos.getY()});
-
-//                                robot.setPosition(pos); // or constructor if you can pass it
                                 world.addRobot(this.robot);
                                 response = new Response("OK", data, robot);
                             }
-
-
-
-
-
-
                         }
                     }
                     else if ("quit".equalsIgnoreCase(cmdName)) {
                         Server.shutdownServer();
                         connectionManager.stop();
                         break;
-
                     } else {
                         // All other commands after launch
                         Object stepsArg = request.getArguments().get("steps");
                         String reconstructed = cmdName + (stepsArg != null ? " " + stepsArg : "");
                         command = Command.create(reconstructed);
 
+                        //If robot has not been launched yet
                         if (robot == null) {
                             data.put("message", "Please launch a robot first using: launch robot-name");
                             response = new Response("ERROR", data, null);
@@ -179,7 +171,7 @@ public class ClientHandler implements Runnable {
 
     private void sendResponse(BufferedWriter writer, Response response) throws IOException {
         String json = new Gson().toJson(response);
-        System.out.println(clientName+": "+json); // Optional: debug log
+        System.out.println(clientName+": "+json);//prints all input to server
         writer.write(json);
         writer.newLine();
         writer.flush();
