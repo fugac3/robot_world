@@ -28,9 +28,8 @@ public abstract class AbstractWorld implements IWorld {
         }
     }
 
-    protected void generateRandomObstacles(){
+    protected void generateRandomObstacles(int numObstacles){
         Random random = new Random();
-        int numObstacles = 1;
 
         int maxX = TextWorld.BOTTOM_RIGHT.getX();
         int minY = TextWorld.BOTTOM_RIGHT.getY();
@@ -46,10 +45,10 @@ public abstract class AbstractWorld implements IWorld {
             // Random position for obstacle
             //between ~300 - ~200 + 1 + the min again to stay in bounds
             // (100 - (-200) + 1 = 301), shift by -200
-//            int x = random.nextInt(maxX - minX + 1) + minX;
-//            int y = random.nextInt(maxY - minY + 1) + minY;
-            int x = 2;
-            int y = 2;
+            int x = random.nextInt(maxX - minX + 1) + minX;
+            int y = random.nextInt(maxY - minY + 1) + minY;
+//            int x = 2;
+//            int y = 2;
 
 //             Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
 //            Class<?> obstacleType = obstacleTypes["Mountain"];
