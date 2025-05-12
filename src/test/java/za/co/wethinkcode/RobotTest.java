@@ -9,7 +9,6 @@ import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
