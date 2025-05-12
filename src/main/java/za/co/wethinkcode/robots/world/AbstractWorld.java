@@ -58,9 +58,8 @@ public abstract class AbstractWorld implements IWorld {
      * Generate a random obstacle at a random location within the bounds defined by TextWorld.
      * Randomly selects an obstacle type from MountainObstacle, LakesObstacle, or BottomlessPit.
      */
-    protected void generateRandomObstacles(){
+    protected void generateRandomObstacles(int numObstacles){
         Random random = new Random();
-        int numObstacles = 1;
 
         int maxX = TextWorld.BOTTOM_RIGHT.getX();
         int minY = TextWorld.BOTTOM_RIGHT.getY();

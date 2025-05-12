@@ -22,7 +22,7 @@ public class LookCommand extends Command {
         Position robotPosition = robot.getPosition();
         Map<String, Object> data = new HashMap<>();
         List<Map<String, Object>> objects = new ArrayList<>();
-        List<String> messages = new ArrayList<>();
+//        List<String> messages = new ArrayList<>();
 
         for (Direction direction : Direction.values()) {
             if (direction == Direction.UP || direction == Direction.DOWN || direction == Direction.LEFT || direction == Direction.RIGHT) {
@@ -46,11 +46,11 @@ public class LookCommand extends Command {
 
                         // Add message for obstacle
                         if (obstacle instanceof MountainObstacle) {
-                            messages.add("Cannot move or see past a mountain to the " + direction.toString());
+//                            messages.add("Cannot see past a mountain to the " + direction);
                             obstacleFound = true;
                             break;
                         } else {
-                            messages.add("There is a " + obstacleType.toLowerCase() + " to the " + direction.toString());
+//                            messages.add("There is a " + obstacleType.toLowerCase() + " to the " + direction);
                         }
                     }
                 }
@@ -63,7 +63,7 @@ public class LookCommand extends Command {
                     edgeObject.put("type", "EDGE");
                     edgeObject.put("distance", distance);
                     objects.add(edgeObject);
-                    messages.add("World edge reached to the " + direction.toString());
+//                    messages.add("World edge reached to the " + direction);
                     obstacleFound = true;
                     break;
                 }
@@ -76,7 +76,7 @@ public class LookCommand extends Command {
                             robotObject.put("type", "ROBOT");
                             robotObject.put("distance", distance);
                             objects.add(robotObject);
-                            messages.add("Another robot is blocking the way to the " + direction.toString());
+//                            messages.add("A robot is in the direction" + direction);
                             obstacleFound = true;
                             break;
                         }
@@ -96,7 +96,7 @@ public class LookCommand extends Command {
         }
 
         data.put("objects", objects);
-        data.put("messages", messages);
+//        data.put("messages", messages);
         return new Response("OK", data, robot);
     }
 
@@ -128,8 +128,8 @@ public class LookCommand extends Command {
     }
 
     private boolean isInWorld(Position position) {
-        Position topLeft = new Position(-200, 100);
-        Position bottomRight = new Position(100, -200);
+        Position topLeft = TextWorld.TOP_LEFT;
+        Position bottomRight = TextWorld.BOTTOM_RIGHT;
         return position.isIn(topLeft, bottomRight);
     }
 }

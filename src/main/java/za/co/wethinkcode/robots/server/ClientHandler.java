@@ -154,7 +154,7 @@ public class ClientHandler implements Runnable {
                         }
                     }
                 } catch (IllegalArgumentException e) {
-                    data.put("message", e.getMessage());
+                    data.put("message",e.getMessage());
                     response = new Response("ERROR", data, null);
                 }
 

@@ -16,10 +16,10 @@ import java.util.*;
 public class TextWorld extends AbstractWorld {
 
     /** Top-left corner of the world boundary. */
-    public static final Position TOP_LEFT = new Position(-200, 100);
+    public static Position TOP_LEFT;
 
     /** Bottom-right corner of the world boundary. */
-    public static final Position BOTTOM_RIGHT = new Position(100, -200);
+    public static Position BOTTOM_RIGHT;
 
     /** Central starting position in the world. */
     public static final Position CENTRE = new Position(0, 0);
@@ -33,12 +33,18 @@ public class TextWorld extends AbstractWorld {
     /** A position field (not frequently used in this context). */
     private Position position;
 
+    private WorldConfig config;
+
     /**
      * Constructs a new TextWorld with the center position and generates random obstacles.
      */
     public TextWorld() {
         this.position = CENTRE;
-        generateRandomObstacles();
+        this.config = ConfigReader.loadConfig();
+        TOP_LEFT = config.topLeft;
+        BOTTOM_RIGHT = config.bottomRight;
+        generateRandomObstacles(config.maxObstacles);
+
     }
 
     /**
@@ -73,7 +79,7 @@ public class TextWorld extends AbstractWorld {
             int y = rand.nextInt(maxY - minY + 1) + minY;
             pos = new Position(x, y);
         } while (blocksPosition(pos));  // Retry if blocked
-
+        // cant tell if the world is full
         return pos;
     }
 
@@ -99,7 +105,6 @@ public class TextWorld extends AbstractWorld {
                 return true;
             }
         }
-
         return false;
     }
 
