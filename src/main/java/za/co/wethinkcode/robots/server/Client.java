@@ -46,7 +46,7 @@ public class Client {
 
             while (true) {
                 System.out.print("> "); // prompt for input
-                // Consume any leftover new line after sending name
+                // Takes any leftover new line after sending name
                 String msgToSend = scanner.nextLine();
 
                 if (msgToSend.isEmpty()) {
@@ -57,18 +57,29 @@ public class Client {
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
 
-                String response = bufferedReader.readLine();
-                if (response == null) {
+                StringBuilder fullResponse = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    fullResponse.append(line).append("\n");
+                    if (line.trim().equals("}")) {
+                        break; // end of JSON object
+                    }
+                }
+
+                // Wait for server to close connection after "quit"
+                line = bufferedReader.readLine();  // Will return null when socket is closed
+                if (line == null) {
                     System.out.println("Server closed the connection.");
                     break;
                 }
 
-                System.out.println("Server: " + response);
-
                 if (msgToSend.equalsIgnoreCase("BYE")) {
-                    System.out.println("Bye"+clientName);
+                    System.out.println("Bye "+clientName);
                     break;
                 }
+
+                System.out.println("Server:\n" + fullResponse);
             }
         } catch (IOException e) {
             System.out.println("Unable to connect to server. Is it running?");

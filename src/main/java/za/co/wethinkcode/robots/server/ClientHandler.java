@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robots.server;
 
+import com.google.gson.GsonBuilder;
 import za.co.wethinkcode.robots.world.TextWorld;
 import com.google.gson.Gson;
 import java.io.*;
@@ -22,12 +23,11 @@ public class ClientHandler implements Runnable {
     public void run() {
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionManager.getSocket().getOutputStream()))
+                PrintWriter writer = new PrintWriter(connectionManager.getSocket().getOutputStream(), true);  // autoFlush = true
         ) {
             this.clientName = reader.readLine();
             System.out.println("Client " + clientName + " has connected.");
-            writer.write("Welcome, " + this.clientName + "!");
-            writer.newLine();
+            writer.println("Welcome, " + this.clientName + "!");
             writer.flush();
 
             String msgFromClient;
@@ -56,18 +56,20 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void sendResponse(BufferedWriter writer, Response response) throws IOException {
-        String json = new Gson().toJson(response);
-        System.out.println(clientName+": "+json); // Optional: debug log
-        writer.write(json);
-        writer.newLine();
+    private void sendResponse(PrintWriter writer, Response response) throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonResponse = gson.toJson(response);
+        System.out.println(jsonResponse);
+        for (String line : jsonResponse.split("\n")) {
+            writer.println(line);
+        }
         writer.flush();
+
     }
 
-    private void sendError(BufferedWriter writer, String errorMessage) throws IOException {
+    private void sendError(PrintWriter writer, String errorMessage) throws IOException {
         Response errorResponse = new Response("ERROR", Map.of("message", errorMessage), null);
         sendResponse(writer, errorResponse);
     }
-
     //================
 }
