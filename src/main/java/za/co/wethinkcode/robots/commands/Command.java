@@ -25,10 +25,6 @@ public abstract class Command {
         return name;
     }
 
-    public void setName(String newName){
-        this.name = newName;
-    }
-
     public String getArgument() {
         return this.argument;
     }
@@ -42,16 +38,14 @@ public abstract class Command {
     }
 
     public static Command create(String instruction) {
-        if (instruction == null || instruction.isBlank()) {
-            throw new IllegalArgumentException("Empty command received.");
-        }
 
+        String emptySteps = "Could not parse arguments: Steps cannot be null.";
         String[] args = instruction.trim().split("\\s+");
 
         switch (args[0]) {
             case "launch":
                 if (args.length < 2 || args[1].isBlank()) {
-                    throw new IllegalArgumentException("Launch command needs a name.");
+                    throw new IllegalArgumentException("Could not parse arguments: Launch command needs a name.");
                 }
                 return new LaunchCommand(args[1].trim());
             case "robots":
@@ -60,12 +54,12 @@ public abstract class Command {
                 return new QuitCommand();
             case "forward":
                 if (args.length < 2 || args[1].isBlank()) {
-                    throw new IllegalArgumentException("Forward command needs steps.");
+                    throw new IllegalArgumentException(emptySteps);
                 }
                 return new ForwardCommand(args[1]);
             case "back":
                 if (args.length < 2 || args[1].isBlank()) {
-                    throw new IllegalArgumentException("Back command needs steps.");
+                    throw new IllegalArgumentException(emptySteps);
                 }
                 return new BackCommand(args[1]);
             case "right":

@@ -1,43 +1,25 @@
 package za.co.wethinkcode.robots.server;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import za.co.wethinkcode.robots.commands.Command;
-import za.co.wethinkcode.robots.commands.LaunchCommand;
-import za.co.wethinkcode.robots.commands.QuitCommand;
-import za.co.wethinkcode.robots.robot.Position;
-import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.world.TextWorld;
 import com.google.gson.Gson;
-
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 //  allows handling multiple clients at the same time
 public class ClientHandler implements Runnable {
     private final ConnectionManager connectionManager;
-    private volatile boolean running = true;
-    private final TextWorld world;
-    private Robot robot;
+    private final boolean running = true;
     private String clientName;
-    private String robotName;
+    private final CommandHandler commandHandler;
 
     public ClientHandler(Socket socket, TextWorld world) {
         this.connectionManager = new ConnectionManager(socket);
-        this.world = world;
+        this.commandHandler = new CommandHandler(world, connectionManager);
     }
-
-    public String getClientName(){
-        return this.clientName;
-    }
-
 
     @Override
     public void run() {
-        Gson gson = new Gson();
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionManager.getSocket().getOutputStream()))
@@ -55,115 +37,13 @@ public class ClientHandler implements Runnable {
                     connectionManager.stop();
                     break;
                 }
-
-                Request request = null;
-                Command command = null;
-
-                try {
-                    if (msgFromClient.trim().startsWith("{")) {
-                        try {
-                            request = gson.fromJson(msgFromClient, Request.class);
-                        } catch (Exception e) {
-                            sendError(writer, "Malformed JSON request.");
-                            continue;
-                        }
-                    } else {
-                        command = Command.create(msgFromClient.toLowerCase());
-                        if (command == null) {
-                            throw new IllegalArgumentException("Unknown command: " + msgFromClient);
-                        }
-
-                        Map<String, Object> args = new HashMap<>();
-                        String arg = command.getArgument();
-
-                        if (arg != null && !arg.isEmpty()) {
-                            switch (command.getName()) {
-                                case "forward":
-                                case "back":
-                                    args.put("steps", arg);
-                                    break;
-                                case "launch":
-                                    args.put("name", arg);
-                                    break;
-                            }
-                        }
-
-                        request = new Request(command.getName(), args);
-                    }
-                } catch (IllegalArgumentException e) {
-                    sendError(writer, e.getMessage());
-                    continue;
-                }
-
+                //Takes the user input and executes the command if possible and returns a response
                 Response response;
-
-                Map<String, Object> data = new HashMap<>();
-
                 try {
-                    String cmdName = request.getCommand();
-                    if ("launch".equalsIgnoreCase(cmdName)) {
-
-                        String name = (String) request.getArguments().get("name");
-
-                        // 1. Block clients trying to launch more than one robot
-                        if (this.robot != null) {
-                            data.put("message", "A robot has already been launched for this client.");
-                            response = new Response("ERROR", data, null);
-                        } else {
-                            // 2. Basic name check using LaunchCommand
-                            LaunchCommand launchCommand = new LaunchCommand(name);
-                            response = launchCommand.execute(null);  // Validates name
-                            // 3. Check world for duplicate robot names
-                            boolean nameTaken = world.getAllRobots().stream()
-                                    .anyMatch(r -> r.getName().equalsIgnoreCase(name));
-                            if (nameTaken) {
-                                data.put("message", "A robot with this name already exists in the world.");
-                                response = new Response("ERROR", data, null);
-                            } else {
-                                // 4. All good, launch the robot
-                                this.robotName = name;
-                                Position startPos = world.getRandomFreePosition();
-
-                                this.robot = new Robot(robotName, world, startPos);
-
-                                data.put("message", "Robot successfully launched.");
-                                Position pos = robot.getPosition();
-                                data.put("position", new int[]{pos.getX(), pos.getY()});
-
-//                                robot.setPosition(pos); // or constructor if you can pass it
-                                world.addRobot(this.robot);
-                                response = new Response("OK", data, robot);
-                            }
-
-
-
-
-
-
-                        }
-                    }
-                    else if ("quit".equalsIgnoreCase(cmdName)) {
-                        Server.shutdownServer();
-                        connectionManager.stop();
-                        break;
-
-                    } else {
-                        // All other commands after launch
-                        Object stepsArg = request.getArguments().get("steps");
-                        String reconstructed = cmdName + (stepsArg != null ? " " + stepsArg : "");
-                        command = Command.create(reconstructed);
-
-                        if (robot == null) {
-                            data.put("message", "Please launch a robot first using: launch robot-name");
-                            response = new Response("ERROR", data, null);
-                        } else {
-                            assert command != null;
-                            response = robot.handleCommand(command);
-                        }
-                    }
-                } catch (IllegalArgumentException e) {
-                    data.put("message", e.getMessage());
-                    response = new Response("ERROR", data, null);
+                    response = commandHandler.handleClientCommand(msgFromClient);
+                } catch (Exception e) {
+                    sendError(writer, "Internal error: " + e.getMessage());
+                    continue;
                 }
 
                 sendResponse(writer, response);
@@ -175,7 +55,6 @@ public class ClientHandler implements Runnable {
             System.out.println("Client handler exiting.");
         }
     }
-
 
     private void sendResponse(BufferedWriter writer, Response response) throws IOException {
         String json = new Gson().toJson(response);
@@ -189,6 +68,6 @@ public class ClientHandler implements Runnable {
         Response errorResponse = new Response("ERROR", Map.of("message", errorMessage), null);
         sendResponse(writer, errorResponse);
     }
+
     //================
 }
-

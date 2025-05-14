@@ -4,12 +4,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-import static java.lang.System.in;
-
-
 public class Client {
     public static void main(String[] args) {
-
 
         int Port = 4433;
 
@@ -19,7 +15,7 @@ public class Client {
         BufferedReader bufferedReader = null;    // large block/array of char at a time.
         BufferedWriter bufferedWriter = null;    // Not good for files of text
 //        Scanner scanner = new Scanner(in);
-        String clientName = null;
+        String clientName;
 
         try {
             socket = new Socket("localhost",Port);
@@ -54,8 +50,7 @@ public class Client {
                 String msgToSend = scanner.nextLine();
 
                 if (msgToSend.isEmpty()) {
-                    System.out.println("(Please enter a command.)");
-                    continue;
+                    msgToSend = "null";
                 }
 
                 bufferedWriter.write(msgToSend);
