@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.world.AbstractWorld;
-import za.co.wethinkcode.robots.world.IWorld;
+//import za.co.wethinkcode.robots.world.IWorld;
 import za.co.wethinkcode.robots.world.TextWorld;
 import java.util.Random;
 

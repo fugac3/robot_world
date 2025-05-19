@@ -9,7 +9,7 @@ import java.util.*;
  * where obstacles can be placed and visualized. It includes methods for managing obstacles
  * and for generating random obstacles.
  */
-public abstract class AbstractWorld implements IWorld {
+public abstract class AbstractWorld  {
 
     /**
      * List to hold all obstacles present in the world.
@@ -26,7 +26,7 @@ public abstract class AbstractWorld implements IWorld {
      *
      * @return a list of Obstacle objects.
      */
-    @Override
+
     public List<Obstacle> getObstacles() {
         return obstacles;
     }
@@ -44,7 +44,7 @@ public abstract class AbstractWorld implements IWorld {
      * Display all obstacles currently in the world.
      * If no obstacles are present, prints a message saying so.
      */
-    @Override
+
     public void showObstacles() {
         if (obstacles.isEmpty()) {
             System.out.println("No obstacles in the world.");

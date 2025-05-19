@@ -2,14 +2,15 @@ package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.world.IWorld;
+import za.co.wethinkcode.robots.world.TextWorld;
+import za.co.wethinkcode.robots.world.TextWorld;
 
 public abstract class Command {
     private String name;
     public String argument;
 
     /** The world context in which the command is executed. */
-    private IWorld world;
+    private TextWorld world;
 
     /**
      * Executes the command on the specified robot.
@@ -72,7 +73,7 @@ public abstract class Command {
      *
      * @param world the world in which this command will be executed
      */
-    public void setWorld(IWorld world) {
+    public void setWorld(TextWorld world) {
         this.world = world;
     }
 
@@ -81,7 +82,7 @@ public abstract class Command {
      *
      * @return the world associated with this command
      */
-    public IWorld getWorld() {
+    public TextWorld getWorld() {
         return world;
     }
 

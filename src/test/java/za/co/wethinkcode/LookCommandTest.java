@@ -86,8 +86,8 @@ public class LookCommandTest {
     @Test
     void testLookWithMultipleObstacles() {
         //Add multiple obstacles in different directions
-        world.getObstacles().add(new MountainObstacle(0, 5)); //North
-        world.getObstacles().add(new LakesObstacle(5, 0)); //East
+        world.getObstacles().add(new MountainObstacle(0, 6)); //North
+        world.getObstacles().add(new LakesObstacle(6, 0)); //East
         world.getObstacles().add(new BottomlessPit(0, -5)); //South
 
         Response response = look.execute(robot);
@@ -107,15 +107,15 @@ public class LookCommandTest {
             switch (direction) {
                 case "NORTH":
                     assertEquals("MOUNTAIN", type);
-                    assertEquals(5, object.get("distance"));
+                    assertEquals(6, object.get("distance"));
                     break;
                 case "EAST":
                     assertEquals("LAKE", type);
-                    assertEquals(5, object.get("distance"));
+                    assertEquals(6, object.get("distance"));
                     break;
                 case "SOUTH":
                     assertEquals("BOTTOMLESS PIT", type);
-                    assertEquals(5, object.get("distance"));
+                    assertEquals(6, object.get("distance"));
                     break;
                 case "WEST":
                     //No obstacle in the west
@@ -128,7 +128,7 @@ public class LookCommandTest {
     @Test
     void testLakeInFrontOfMountain() {
         //Add lake
-        world.getObstacles().add(new LakesObstacle(0, 5));
+        world.getObstacles().add(new LakesObstacle(0, 6));
         //Add mountain behind
         world.getObstacles().add(new MountainObstacle(0, 8));
 
@@ -163,7 +163,7 @@ public class LookCommandTest {
 
         //Ensure lake and mountain object found
         assertNotNull(lakeObject);
-        assertEquals(5, lakeObject.get("distance"));
+        assertEquals(8, lakeObject.get("distance"));
         assertNotNull(mountainObject);
         assertEquals(8, mountainObject.get("distance"));
     }

@@ -4,11 +4,7 @@ import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.Bullet;
-import za.co.wethinkcode.robots.world.IWorld;
-import za.co.wethinkcode.robots.world.Obstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
-import za.co.wethinkcode.robots.server.FireData;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +15,7 @@ public class Robot {
     private Direction currentDirection = Direction.NORTH;
 
     private final String name;
-    private final IWorld world;
+    private final TextWorld world;
     private Position position;
     private String status;
     private String lastMoveReason = "";
@@ -32,7 +28,7 @@ public class Robot {
 
     private final List<String> commands;
 
-    public Robot(String name,IWorld world,Position position) {
+    public Robot(String name,TextWorld world,Position position) {
         this.name = name;
         this.position = position;
         this.commands = new ArrayList<>();
@@ -157,7 +153,7 @@ public class Robot {
 
 
 
-    public IWorld getWorld() {
+    public TextWorld getWorld() {
         return this.world;
     }
 

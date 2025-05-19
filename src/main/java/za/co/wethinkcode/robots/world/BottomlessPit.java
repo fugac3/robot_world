@@ -2,10 +2,10 @@ package za.co.wethinkcode.robots.world;
 
 /**
  * Represents a Bottomless Pit obstacle in the world.
- * This type of obstacle extends {@link RectangleObstacle} and
+ * This type of obstacle extends {@link Obstacle} and
  * is typically impassable by the robot.
  */
-public class BottomlessPit extends RectangleObstacle {
+public class BottomlessPit extends Obstacle {
 
     /**
      * Creates a BottomlessPit obstacle at the specified bottom-left coordinates.
