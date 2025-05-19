@@ -6,15 +6,34 @@ import za.co.wethinkcode.robots.server.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Command to move the robot backwards.
+ * This command moves the robot backward by the specified number of steps in the direction opposite to what it is facing.
+ */
+
 public class BackCommand extends Command {
 
     private final String argument;
 
+    /**
+     * Creates a new BackCommand instance.
+     *
+     * @param argument The number of steps to move backward
+     */
     public BackCommand(String argument) {
         super("back", argument);
         this.argument = argument;
     }
 
+    /**
+     * Executes the back command, moving the robot backward by the specified number of steps.
+     *
+     * @param robot The robot to move backward
+     * @return A response indicating whether it was a success or failure:
+     *         - OK if the robot moved successfully
+     *         - FAILED if the robot was obstructed or reached the edge of the world
+     *         - ERROR if the steps argument is not a valid number
+     */
     @Override
     public Response execute(Robot robot) {
         boolean moved;

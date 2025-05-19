@@ -5,10 +5,10 @@ import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.IWorld;
 
 /**
- * Abstract class that represents a command in the robot simulation.
- * All specific commands (e.g., launching a robot, moving it, firing, etc.)
- * will extend this class and implement the `execute()` method.
+ * Abstract base class for all robot commands.
+ * This class defines the common structure and behaviour for commands that can be executed by robots in the world.
  */
+
 public abstract class Command {
     /** The name of the command, typically used for identification. */
     private String name;
@@ -20,28 +20,28 @@ public abstract class Command {
     private IWorld world;
 
     /**
-     * Executes the command on the given robot.
+     * Executes the command on the specified robot.
      *
-     * @param robot the {@link Robot} on which the command is executed
-     * @return the result of executing the command in the form of a {@link Response}
+     * @param robot The robot that will execute the command
+     * @return A response indicating the result of the command execution
      */
     public abstract Response execute(Robot robot);
 
     /**
-     * Constructs a new command with the given name.
+     * Creates a new command with the specified name and no arguments.
      *
-     * @param name the name of the command (e.g., "forward", "launch")
+     * @param name The name of the command
      */
-    public Command(String name) {
+    public Command(String name){
         this.name = name.trim().toLowerCase();
         this.argument = "";
     }
 
     /**
-     * Constructs a new command with the given name and argument.
+     * Creates a new command with the specified name and argument.
      *
-     * @param name the name of the command (e.g., "forward", "launch")
-     * @param argument the argument for the command (e.g., number of steps)
+     * @param name The name of the command
+     * @param argument The argument for the command
      */
     public Command(String name, String argument) {
         this(name);
@@ -94,12 +94,11 @@ public abstract class Command {
     }
 
     /**
-     * Creates a command instance based on the input instruction string.
-     * The instruction is parsed and the corresponding command is returned.
+     * Factory method to create a command from an instruction string.
      *
-     * @param instruction the instruction string to parse (e.g., "launch robotName")
-     * @return the created {@link Command} instance
-     * @throws IllegalArgumentException if the instruction is invalid or incomplete
+     * @param instruction The instruction string (e.g., "forward 10")
+     * @return A command object corresponding to the instruction, or null if the command is not recognized
+     * @throws IllegalArgumentException If the instruction is empty or invalid
      */
     public static Command create(String instruction) {
         if (instruction == null || instruction.isBlank()) {
