@@ -11,10 +11,14 @@ import java.util.*;
  */
 public abstract class AbstractWorld implements IWorld {
 
-    /** List to hold all obstacles present in the world. */
+    /**
+     * List to hold all obstacles present in the world.
+     */
     protected List<Obstacle> obstacles = new ArrayList<>();
 
-    /** Map representing the area visible in a particular direction. */
+    /**
+     * Map representing the area visible in a particular direction.
+     */
     private Map<Direction, Artefact> visibleArea;
 
     /**
@@ -32,7 +36,7 @@ public abstract class AbstractWorld implements IWorld {
      *
      * @param newObstacle the new list of Obstacle objects.
      */
-    public void setObstacles(List<Obstacle> newObstacle){
+    public void setObstacles(List<Obstacle> newObstacle) {
         this.obstacles = newObstacle;
     }
 
@@ -58,7 +62,7 @@ public abstract class AbstractWorld implements IWorld {
      * Generate a random obstacle at a random location within the bounds defined by TextWorld.
      * Randomly selects an obstacle type from MountainObstacle, LakesObstacle, or BottomlessPit.
      */
-    protected void generateRandomObstacles(int numObstacles){
+    protected void generateRandomObstacles(int numObstacles) {
         Random random = new Random();
 
         int maxX = TextWorld.BOTTOM_RIGHT.getX();
@@ -69,18 +73,14 @@ public abstract class AbstractWorld implements IWorld {
         // List of obstacle types to choose from
         Class<?>[] obstacleTypes = {MountainObstacle.class, LakesObstacle.class, BottomlessPit.class};
 
-        for (int i = 0; i < numObstacles; i++){
-        for (int i = 0; i < numOfObstacles; i++){
+        for (int i = 0; i < numObstacles; i++) {
             // Random position for obstacle
             //between ~300 - ~200 + 1 + the min again to stay in bounds
             // (100 - (-200) + 1 = 301), shift by -200
             int x = random.nextInt(maxX - minX + 1) + minX;
             int y = random.nextInt(maxY - minY + 1) + minY;
-//            int x = 2;
-//            int y = 2;
 
-//             Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
-//            Class<?> obstacleType = obstacleTypes["Mountain"];
+            //Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
             Class<?> obstacleType = obstacleTypes[random.nextInt(obstacleTypes.length)];
 
             try {

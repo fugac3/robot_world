@@ -62,7 +62,7 @@ public class CommandHandler{
                 boolean nameTaken = world.getAllRobots().stream()
                         .anyMatch(r -> r.getName().equalsIgnoreCase(name));
                 if (nameTaken) {
-                    data.put("message", "A robot with this name already exists in the world.");
+                    data.put("message", "Too many of you in this world (name taken)");
                     return new Response("ERROR", data, null);
                 }
 

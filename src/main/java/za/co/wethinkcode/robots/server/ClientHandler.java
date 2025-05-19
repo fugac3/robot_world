@@ -59,12 +59,15 @@ public class ClientHandler implements Runnable {
     private void sendResponse(PrintWriter writer, Response response) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonResponse = gson.toJson(response);
+        System.out.print(clientName+": ");
         System.out.println(jsonResponse);
         for (String line : jsonResponse.split("\n")) {
             writer.println(line);
         }
+        // When non arg cmds are called state is not read by client until further inputs,
+        //this creates a clear end of response.
+        writer.println("===END===");
         writer.flush();
-
     }
 
     private void sendError(PrintWriter writer, String errorMessage) throws IOException {
