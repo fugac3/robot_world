@@ -9,7 +9,7 @@ import java.util.List;
  * Represents a mountain obstacle in the robot world.
  * This type of obstacle extends {@link RectangleObstacle} and typically blocks robot movement.
  */
-public class MountainObstacle extends RectangleObstacle {
+public class MountainObstacle extends Obstacle {
 
     /**
      * Creates a MountainObstacle at the specified bottom-left coordinates.

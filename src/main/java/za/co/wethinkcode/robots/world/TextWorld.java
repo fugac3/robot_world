@@ -36,6 +36,8 @@ public class TextWorld extends AbstractWorld {
 
     private WorldConfig config;
 
+
+
     /**
      * Constructs a new TextWorld with the center position and generates random obstacles.
      */
@@ -134,7 +136,7 @@ public class TextWorld extends AbstractWorld {
      * @param end the ending position
      * @return {@code true} if the path is blocked, otherwise {@code false}
      */
-    @Override
+
     public boolean blocksPath(Position start, Position end) {
         for (Obstacle o : obstacles) {
             if (o.blocksPath(start, end)) {
@@ -159,7 +161,6 @@ public class TextWorld extends AbstractWorld {
      *
      * @return a map of directions to artefacts
      */
-    @Override
     public Map<Direction, Artefact> look() {
         return Map.of();
     }
