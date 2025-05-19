@@ -1,4 +1,4 @@
-//package za.co.wethinkcode;
+package za.co.wethinkcode;//package za.co.wethinkcode;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,9 +78,5 @@ public class SquareObstacleTest {
 
         assertTrue(boolBlockPosition);
     }
-
-    @Test
-    public void
-
 
 }

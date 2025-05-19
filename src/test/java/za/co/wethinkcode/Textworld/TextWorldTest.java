@@ -32,7 +32,8 @@ public class TextWorldTest {
     @Test
     public void testAddRobot() {
         // Create a new robot
-        Robot robot = new Robot("bot", textWorld);
+        Position pos = new Position(0,0);
+        Robot robot = new Robot("bot", textWorld,pos);
 
         // Add the robot to the world
         textWorld.addRobot(robot);
@@ -43,7 +44,8 @@ public class TextWorldTest {
 
     @Test
     public void testgetAllRobots(){
-        Robot robot = new Robot("bot", textWorld);
+        Position pos = new Position(0,0);
+        Robot robot = new Robot("bot", textWorld,pos);
 
         textWorld.getAllRobots();
 
@@ -53,8 +55,8 @@ public class TextWorldTest {
     @Test
     public void testBlocksPath() {
         // Create a new world and a robot
-        TextWorld textWorld = TextWorld.getInstance();
-        Robot block = new Robot("bot", textWorld);
+        Position pos = new Position(0,0);
+        Robot robot = new Robot("bot", textWorld,pos);
 
         // Set up some obstacles (this should be done in your world setup)
         textWorld.blocksPath(new Position(5, 5), new Position(9, 9)); // Example, actual obstacle setup needed

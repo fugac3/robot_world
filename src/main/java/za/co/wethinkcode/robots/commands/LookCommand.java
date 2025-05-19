@@ -11,81 +11,123 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Command to look around in the world.
+ * This command allows the robot to see obstacles, other robots, and the edge of the world
+ * within its visibility range in all four directions.
+ */
 public class LookCommand extends Command {
 
+    /**
+     * Creates a new LookCommand instance.
+     */
     public LookCommand() {
         super("look");
     }
 
+    /**
+     * Executes the look command, returning information about what the robot can see.
+     * The robot looks in all four directions (NORTH, EAST, SOUTH, WEST) up to its visibility range.
+     * It can see obstacles, other robots, and the edge of the world.
+     * Mountains block vision, but lakes and pits do not.
+     *
+     * @param robot The robot that is looking around
+     * @return A response containing information about what the robot can see
+     */
     @Override
     public Response execute(Robot robot) {
+        // Get the robot's position
         Position robotPosition = robot.getPosition();
-        Map<String, Object> data = new HashMap<>();
-        List<Map<String, Object>> objects = new ArrayList<>();
-        List<String> messages = new ArrayList<>();
 
+        //Create data structure for the response
+        Map<String, Object> data = new HashMap<>(); //data = "data":{}
+        //List to store all found obstacles
+        List<Map<String, Object>> objects = new ArrayList<>(); //"objects": [{},{},{},{}]
+
+        // Checks every direction and every coordinate in that direction up to visibility range
         for (Direction direction : Direction.values()) {
+
+            //skip over the code if up, down, left or right
             if (direction == Direction.UP || direction == Direction.DOWN || direction == Direction.LEFT || direction == Direction.RIGHT) {
                 continue;
             }
-
-            int visibilityConstraint = 10;
+            int visibilityConstraint = 10; //robot's visibility range
             boolean obstacleFound = false;
 
+            // Check each position in that direction up to visibility range
             for (int distance = 0; distance < visibilityConstraint; distance++) {
+                //currentPosition is the current position being checked in the robot's line of view eg. (1,0)/(2,0)
                 Position currentPosition = moveInDirection(robotPosition, direction, distance);
 
-                for (Obstacle obstacle : robot.getWorld().getObstacles()) {
+                // Check for obstacles
+                for (Obstacle obstacle : robot.getWorld().getObstacles()) { //AbstractWorld method to get obstacles
                     if (obstacle.blocksPosition(currentPosition)) {
+                        //Create obstacle object/dict
                         Map<String, Object> obstacleObject = new HashMap<>();
-                        obstacleObject.put("direction", direction.toString());
-                        String obstacleType = getObstacleType(obstacle);
-                        obstacleObject.put("type", obstacleType);
-                        obstacleObject.put("distance", distance);
-                        objects.add(obstacleObject);
 
-                        // Add message for obstacle
+                        //OBSTACLE DETAILS IN RIGHT FORMAT
+                        obstacleObject.put("direction", direction.toString());
+                        //Determine type of obstacle
+                        String obstacleType = getObstacleType(obstacle); //method below
+                        obstacleObject.put("type", obstacleType); //returns pit/lake/mountain
+                        obstacleObject.put("distance", distance);
+                        objects.add(obstacleObject); //add the obstacle to objects list
+
+                        //If it's a mountain, we can't see past it
                         if (obstacle instanceof MountainObstacle) {
-                            messages.add("Cannot move or see past a mountain to the " + direction.toString());
-                            obstacleFound = true;
+
+                            obstacleFound = true; // so that we can end the loop for direction below (because we can't see past mountains) otherwise loop continues till constraint
                             break;
-                        } else {
-                            messages.add("There is a " + obstacleType.toLowerCase() + " to the " + direction.toString());
                         }
+
+                        //For lakes and pits, we can see through them, so continue loop till we get to constraint
                     }
                 }
 
-                if (obstacleFound) break;
+                //Only applies for mountains
+                if (obstacleFound) {
+                    break; // Stop checking further in this direction if we found a mountain
+                }
 
-                if (!isInWorld(currentPosition)) {
+                // Check for world edges
+                if (!isInWorld(currentPosition)) { //if currentPos is out of bounds
                     Map<String, Object> edgeObject = new HashMap<>();
                     edgeObject.put("direction", direction.toString());
                     edgeObject.put("type", "EDGE");
                     edgeObject.put("distance", distance);
                     objects.add(edgeObject);
-                    messages.add("World edge reached to the " + direction.toString());
+
                     obstacleFound = true;
                     break;
                 }
 
+                // Check for other robots
+                // This would require access to all robots in the world
                 if (robot.getWorld() instanceof TextWorld world) {
+                    //TextWorld world = (TextWorld) robot.getWorld();
+
                     for (Robot otherRobot : world.getAllRobots()) {
+                        //if robot diff from our robot and its on a position we are looking at, add it to the objects list
                         if (!otherRobot.equals(robot) && otherRobot.getPosition().equals(currentPosition)) {
                             Map<String, Object> robotObject = new HashMap<>();
                             robotObject.put("direction", direction.toString());
                             robotObject.put("type", "ROBOT");
                             robotObject.put("distance", distance);
                             objects.add(robotObject);
-                            messages.add("Another robot is blocking the way to the " + direction.toString());
+
                             obstacleFound = true;
                             break;
                         }
                     }
                 }
 
-                if (obstacleFound) break;
+                //stop looking in current direction as you can't see past robot
+                if (obstacleFound) {
+                    break;
+                }
             }
 
+            //If nothing was found in this direction and we at max visibility
             if (!obstacleFound) {
                 Map<String, Object> emptyObject = new HashMap<>();
                 emptyObject.put("direction", direction.toString());
@@ -95,11 +137,19 @@ public class LookCommand extends Command {
             }
         }
 
+        // Add objects to data
         data.put("objects", objects);
-        data.put("messages", messages);
+
+        // Return the response with the required format
         return new Response("OK", data, robot);
     }
 
+    /**
+     * Gets the specific type of obstacle.
+     *
+     * @param obstacle The obstacle to identify
+     * @return A string representing the type of obstacle
+     */
     private String getObstacleType(Obstacle obstacle) {
         if (obstacle instanceof MountainObstacle) {
             return "MOUNTAIN";
@@ -112,7 +162,16 @@ public class LookCommand extends Command {
         }
     }
 
+    /**
+     * Calculates a position by moving in a specific direction from robot's starting position.
+     *
+     * @param start The starting position
+     * @param direction The direction to move
+     * @param steps The number of steps to move
+     * @return The new position after moving
+     */
     public Position moveInDirection(Position start, Direction direction, int steps){
+        //Gets direction from for loop in "execute()" and adds/subtracts each no. in visRange from robot's position (eg. (0,0) +- (1-10) for steps to get a new Position
         switch (direction) {
             case NORTH:
                 return new Position(start.getX(), start.getY() + steps);
@@ -127,6 +186,12 @@ public class LookCommand extends Command {
         }
     }
 
+    /**
+     * Checks if a position is within the world boundaries.
+     *
+     * @param position The position to check
+     * @return true if the position is within the world, false otherwise
+     */
     private boolean isInWorld(Position position) {
         Position topLeft = new Position(-200, 100);
         Position bottomRight = new Position(100, -200);

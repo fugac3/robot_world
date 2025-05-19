@@ -2,15 +2,59 @@ package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.TextWorld;
 
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * The LaunchCommand class represents the action of launching a robot in the world.
+ * The robot is identified by its name, and the command ensures that the name is provided before the launch.
+ */
 public class LaunchCommand extends Command {
+    private final String robotName;
+    private Robot robot;
 
+    /**
+     * Constructs a new LaunchCommand with the given robot name.
+     *
+     * @param robotName the name of the robot to launch
+     */
     public LaunchCommand(String robotName) {
         super("launch", robotName);
+        this.robotName = robotName;
     }
 
+    /**
+     * Executes the launch command, ensuring that the robot name is valid.
+     * If the robot name is not provided, it returns an error message.
+     * Otherwise, it returns a success message indicating the command was executed.
+     *
+     * @param robot the robot executing the command (currently not used)
+     * @return a {@link Response} object indicating the result of the command execution
+     */
     @Override
     public Response execute(Robot robot) {
-        return null;
+        Map<String, Object> data = new HashMap<>();
+
+        // Check if robot name is null or empty
+        if (robotName == null || robotName.trim().isEmpty()) {
+            data.put("message", "Launch command needs a name.");
+            return new Response("ERROR", data, null);
+        }
+
+        // Assuming further robot launch logic will be handled later
+        // For now, returning a successful response
+        data.put("message", "Launch successful for robot: " + robotName);
+        return new Response("OK", data, null);
+    }
+
+    /**
+     * Gets the name of the robot to be launched.
+     *
+     * @return the name of the robot
+     */
+    public String getRobotName() {
+        return robotName;
     }
 }

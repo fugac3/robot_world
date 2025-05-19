@@ -4,16 +4,42 @@ import za.co.wethinkcode.robots.commands.Direction;
 
 import java.util.*;
 
+/**
+ * AbstractWorld provides the basic functionality and data structure for a world
+ * where obstacles can be placed and visualized. It includes methods for managing obstacles
+ * and for generating random obstacles.
+ */
 public abstract class AbstractWorld implements IWorld {
 
+    /** List to hold all obstacles present in the world. */
     protected List<Obstacle> obstacles = new ArrayList<>();
+
+    /** Map representing the area visible in a particular direction. */
     private Map<Direction, Artefact> visibleArea;
 
+    /**
+     * Get the list of obstacles currently in the world.
+     *
+     * @return a list of Obstacle objects.
+     */
     @Override
     public List<Obstacle> getObstacles() {
         return obstacles;
     }
 
+    /**
+     * Replace the current list of obstacles with a new list.
+     *
+     * @param newObstacle the new list of Obstacle objects.
+     */
+    public void setObstacles(List<Obstacle> newObstacle){
+        this.obstacles = newObstacle;
+    }
+
+    /**
+     * Display all obstacles currently in the world.
+     * If no obstacles are present, prints a message saying so.
+     */
     @Override
     public void showObstacles() {
         if (obstacles.isEmpty()) {
@@ -28,7 +54,11 @@ public abstract class AbstractWorld implements IWorld {
         }
     }
 
-    protected void generateRandomObstacles(int numOfObstacles){
+    /**
+     * Generate a random obstacle at a random location within the bounds defined by TextWorld.
+     * Randomly selects an obstacle type from MountainObstacle, LakesObstacle, or BottomlessPit.
+     */
+    protected void generateRandomObstacles(int numObstacles){
         Random random = new Random();
 
         int maxX = TextWorld.BOTTOM_RIGHT.getX();
@@ -39,8 +69,7 @@ public abstract class AbstractWorld implements IWorld {
         // List of obstacle types to choose from
         Class<?>[] obstacleTypes = {MountainObstacle.class, LakesObstacle.class, BottomlessPit.class};
 
-//        SquareObstacle obstacle = new SquareObstacle(2,2);
-//        obstacles.add(obstacle);
+        for (int i = 0; i < numObstacles; i++){
         for (int i = 0; i < numOfObstacles; i++){
             // Random position for obstacle
             //between ~300 - ~200 + 1 + the min again to stay in bounds

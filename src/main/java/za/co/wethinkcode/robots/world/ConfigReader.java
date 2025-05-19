@@ -6,6 +6,8 @@ import java.util.Properties;
 
 public class ConfigReader {
     public static WorldConfig loadConfig() {
+        //load all key=value pairs from the file into memory.
+        //A subclass of Hashtable designed for string key-value pairs
         Properties props = new Properties();
         try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
