@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robots.world;
 
+import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
@@ -159,7 +160,8 @@ public class TextWorld extends AbstractWorld {
      * @return a map of directions to artefacts
      */
     @Override
-    public Map<za.co.wethinkcode.robots.commands.Direction, Artefact> look() {
-        return Map.of();  // Placeholder
+    public Map<Direction, Artefact> look() {
+        return Map.of();
     }
+//==========
 }

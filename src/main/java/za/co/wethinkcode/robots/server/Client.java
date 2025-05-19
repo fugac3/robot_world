@@ -4,14 +4,10 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-import static java.lang.System.in;
-
-
 public class Client {
     public static void main(String[] args) {
 
-
-        int Port = 4401;
+        int Port = 4433;
 
         Socket socket = null;
 //        InputStreamReader inputStreamReader = null;  //byte based
@@ -19,7 +15,7 @@ public class Client {
         BufferedReader bufferedReader = null;    // large block/array of char at a time.
         BufferedWriter bufferedWriter = null;    // Not good for files of text
 //        Scanner scanner = new Scanner(in);
-        String clientName = null;
+        String clientName;
 
         try {
             socket = new Socket("localhost",Port);
@@ -50,28 +46,31 @@ public class Client {
 
             while (true) {
                 System.out.print("> "); // prompt for input
-                // Consume any leftover new line after sending name
                 String msgToSend = scanner.nextLine();
 
                 if (msgToSend.isEmpty()) {
-                    System.out.println("(Please enter a command.)");
-                    continue;
+                    msgToSend = "null";
                 }
 
                 bufferedWriter.write(msgToSend);
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
 
-                String response = bufferedReader.readLine();
-                if (response == null) {
-                    System.out.println("Server closed the connection.");
-                    break;
+                StringBuilder fullResponse = new StringBuilder();
+                String line;
+
+                // Read until the "===END===" marker
+                while ((line = bufferedReader.readLine()) != null) {
+                    if (line.equals("===END===")) {
+                        break;
+                    }
+                    fullResponse.append(line).append("\n");
                 }
 
-                System.out.println("Server: " + response);
+                System.out.println("Server:\n" + fullResponse);
 
-                if (msgToSend.equalsIgnoreCase("BYE")) {
-                    System.out.println("Bye"+clientName);
+                if (msgToSend.equalsIgnoreCase("QUIT")) {
+                    System.out.println("Bye " + clientName);
                     break;
                 }
             }

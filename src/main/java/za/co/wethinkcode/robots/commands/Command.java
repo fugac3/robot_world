@@ -4,16 +4,8 @@ import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.IWorld;
 
-/**
- * Abstract base class for all robot commands.
- * This class defines the common structure and behaviour for commands that can be executed by robots in the world.
- */
-
 public abstract class Command {
-    /** The name of the command, typically used for identification. */
     private String name;
-
-    /** The argument or parameter for the command (e.g., number of steps, robot name). */
     public String argument;
 
     /** The world context in which the command is executed. */
@@ -101,59 +93,45 @@ public abstract class Command {
      * @throws IllegalArgumentException If the instruction is empty or invalid
      */
     public static Command create(String instruction) {
-        if (instruction == null || instruction.isBlank()) {
-            throw new IllegalArgumentException("Empty command received.");
-        }
 
+        String emptySteps = "Could not parse arguments: Steps cannot be null.";
         String[] args = instruction.trim().split("\\s+");
 
         // Switch-case to create different commands based on the instruction
         switch (args[0]) {
             case "launch":
                 if (args.length < 2 || args[1].isBlank()) {
-                    throw new IllegalArgumentException("Launch command needs a name.");
+                    throw new IllegalArgumentException("Could not parse arguments: Launch command needs a name.");
                 }
                 return new LaunchCommand(args[1].trim());
-
             case "robots":
                 return new RobotsCommand();
-
             case "quit":
                 return new QuitCommand();
-
             case "forward":
                 if (args.length < 2 || args[1].isBlank()) {
-                    throw new IllegalArgumentException("Forward command needs steps.");
+                    throw new IllegalArgumentException(emptySteps);
                 }
                 return new ForwardCommand(args[1]);
-
             case "back":
                 if (args.length < 2 || args[1].isBlank()) {
-                    throw new IllegalArgumentException("Back command needs steps.");
+                    throw new IllegalArgumentException(emptySteps);
                 }
                 return new BackCommand(args[1]);
-
             case "right":
                 return new RightCommand();
-
             case "left":
                 return new LeftCommand();
-
             case "fire":
                 return new FireCommand();
-
             case "reload":
                 return new ReloadCommand();
-
             case "dump":
                 return new DumpCommand();
-
             case "look":
                 return new LookCommand();
-
             case "state":
                 return new StateCommand();
-
             default:
                 return null;  // Unknown command
         }
