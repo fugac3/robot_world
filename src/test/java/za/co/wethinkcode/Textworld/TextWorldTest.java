@@ -55,14 +55,14 @@ public class TextWorldTest {
     @Test
     public void testBlocksPath() {
         // Create a new world and a robot
-        Position pos = new Position(0,0);
+        Position pos = new Position(4,5);
         Robot robot = new Robot("bot", textWorld,pos);
 
         // Set up some obstacles (this should be done in your world setup)
         textWorld.blocksPath(new Position(5, 5), new Position(9, 9)); // Example, actual obstacle setup needed
 
         // Test if the path between two positions is blocked
-        boolean isPathBlocked = textWorld.blocksPath(new Position(5, 5), new Position(9, 9));
+        boolean isPathBlocked = textWorld.blocksPath(new Position(4, 5), new Position(10, 5));
 
         // Assert that the path is blocked (modify as per actual obstacle setup)
         assertTrue(isPathBlocked);

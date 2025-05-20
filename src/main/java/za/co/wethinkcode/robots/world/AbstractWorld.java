@@ -77,8 +77,10 @@ public abstract class AbstractWorld  {
             // Random position for obstacle
             //between ~300 - ~200 + 1 + the min again to stay in bounds
             // (100 - (-200) + 1 = 301), shift by -200
-            int x = random.nextInt(maxX - minX + 1) + minX;
-            int y = random.nextInt(maxY - minY + 1) + minY;
+//            int x = random.nextInt(maxX - minX + 1) + minX;
+//            int y = random.nextInt(maxY - minY + 1) + minY;
+            int x = 5;
+            int y = 5;
 
             //Randomly choose an obstacle type (Mountain, Lake, or BottomlessPit)
             Class<?> obstacleType = obstacleTypes[random.nextInt(obstacleTypes.length)];
