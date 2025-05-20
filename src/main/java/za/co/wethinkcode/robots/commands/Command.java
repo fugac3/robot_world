@@ -133,6 +133,8 @@ public abstract class Command {
                 return new LookCommand();
             case "state":
                 return new StateCommand();
+            case "orientation":
+                return new CurrentDirectionCommand();
             default:
                 return null;  // Unknown command
         }

@@ -33,8 +33,8 @@ public class ClientHandler implements Runnable {
             String msgFromClient;
             while (running && (msgFromClient = reader.readLine()) != null) {
                 if (msgFromClient.equalsIgnoreCase("quit")) {
-                    Server.shutdownServer();
-                    connectionManager.stop();
+                    writer.println("Bye, " + this.clientName + "!");
+                    writer.flush();
                     break;
                 }
                 //Takes the user input and executes the command if possible and returns a response
