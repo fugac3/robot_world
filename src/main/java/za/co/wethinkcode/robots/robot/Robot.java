@@ -58,7 +58,7 @@ public class Robot {
 
         // Create a new bullet travelling in the current direction
         Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance);
-        bullets.add(bullet);
+        world.addBullet(bullet);
 
         boolean hit = false; // boolean hit = world.isBulletBlocked(bullet.getPosition()); (for later use)
         status = "NORMAL";

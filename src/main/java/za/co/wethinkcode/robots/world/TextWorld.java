@@ -3,6 +3,7 @@ package za.co.wethinkcode.robots.world;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
+import za.co.wethinkcode.robots.world.Bullet;
 
 import java.util.*;
 
@@ -35,6 +36,8 @@ public class TextWorld extends AbstractWorld {
     private Position position;
 
     private WorldConfig config;
+
+    private final List<Bullet> bullets = new ArrayList<>();
 
 
 
@@ -163,6 +166,32 @@ public class TextWorld extends AbstractWorld {
      */
     public Map<Direction, Artefact> look() {
         return Map.of();
+    }
+
+    /**
+     * Adds a bullet to the world.
+      * @param bullet the bullet to add
+     */
+    public void addBullet(Bullet bullet) {
+        bullets.add(bullet);
+    }
+
+    /**
+     * Moves all bullets in the world one step forward.
+     * Removes bullets that have stopped moving.
+     */
+    public void updateBullets() {
+        Iterator<Bullet> it = bullets.iterator();
+        while (it.hasNext()) {
+            Bullet bullet = it.next();
+            if (!bullet.move()) {
+                it.remove(); // bullet has stopped moving
+            }
+        }
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets; // return the list of bullets
     }
 //==========
 }
