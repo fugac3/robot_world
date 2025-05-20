@@ -1,52 +1,133 @@
 package za.co.wethinkcode.robots.world;
 
 import za.co.wethinkcode.robots.robot.Position;
-import za.co.wethinkcode.robots.robot.Robot;
-
-import java.util.List;
 
 /**
- * Defines an interface for obstacles you want to place in your world.
+ * Represents a rectangular obstacle in the robot world.
+ * This class implements the {@link Obstacle} interface and defines a fixed-size
+ * rectangle that can block robot movement and pathfinding.
  */
-public interface Obstacle {
-    /**
-     * Get X coordinate of bottom left corner of obstacle.
-     * @return x coordinate
-     */
-    int getBottomLeftX();
+public class Obstacle {
 
-    int getTopRightX();
+    /** The X-coordinate of the bottom-left corner of the rectangle. */
+    private final int bottomLeftX;
 
-    /**
-     * Get Y coordinate of bottom left corner of obstacle.
-     * @return y coordinate
-     */
-    int getBottomLeftY();
+    /** The Y-coordinate of the bottom-left corner of the rectangle. */
+    private final int bottomLeftY;
 
-    int getTopRightY();
-    /**
-     * Gets the side of an obstacle (assuming square obstacles)
-     * @return the length of one side in nr of steps
-     */
-    int getSize();
+    /** The fixed height of the rectangle. */
+    private final int height = 5;
+
+    /** The fixed width of the rectangle. */
+    private final int width = 7;
 
     /**
-     * Checks if this obstacle blocks access to the specified position.
-     * @param position the position to check
-     * @return return `true` if the x,y coordinate falls within the obstacle's area
+     * Constructs a RectangleObstacle with a given bottom-left corner.
+     *
+     * @param bottomLeftX the X-coordinate of the bottom-left corner
+     * @param bottomLeftY the Y-coordinate of the bottom-left corner
      */
-    boolean blocksPosition(Position position);
+    public Obstacle(int bottomLeftX, int bottomLeftY) {
+        this.bottomLeftX = bottomLeftX;
+        this.bottomLeftY = bottomLeftY;
+    }
 
     /**
-     * Checks if this obstacle blocks the path that goes from coordinate (x1, y1) to (x2, y2).
-     * Since our robot can only move in horizontal or vertical lines (no diagonals yet), we can assume that either x1==x2 or y1==y2.
-     * @param a first position
-     * @param b second position
-     * @return `true` if this obstacle is in the way
+     * Gets the X-coordinate of the bottom-left corner.
+     *
+     * @return the X-coordinate
      */
-    boolean blocksPath(Position a, Position b);
+    
+    public int getBottomLeftX() {
+        return bottomLeftX;
+    }
 
-    boolean contains(Position targetPosition);
+    /**
+     * Gets the Y-coordinate of the bottom-left corner.
+     *
+     * @return the Y-coordinate
+     */
+    
+    public int getBottomLeftY() {
+        return bottomLeftY;
+    }
 
+    /**
+     * Gets the X-coordinate of the top-right corner.
+     *
+     * @return the top-right X-coordinate
+     */
+    public int getTopRightX() {
+        return bottomLeftX + width - 1;
+    }
 
+    /**
+     * Gets the Y-coordinate of the top-right corner.
+     *
+     * @return the top-right Y-coordinate
+     */
+    public int getTopRightY() {
+        return bottomLeftY + height - 1;
+    }
+
+    /**
+     * Checks if a given position is within the obstacle.
+     *
+     * @param pos the position to check
+     * @return {@code true} if the position is inside the obstacle, {@code false} otherwise
+     */
+    
+    public boolean blocksPosition(Position pos) {
+        return pos.getX() >= bottomLeftX && pos.getX() < bottomLeftX + width &&
+                pos.getY() >= bottomLeftY && pos.getY() < bottomLeftY + height;
+    }
+
+    /**
+     * Checks whether this obstacle blocks the straight-line path between two positions.
+     * Only horizontal or vertical paths are supported.
+     *
+     * @param a the starting position
+     * @param b the ending position
+     * @return {@code true} if any part of the path crosses the obstacle
+     */
+    
+    public boolean blocksPath(Position a, Position b) {
+        int dx = Integer.compare(b.getX(), a.getX());
+        int dy = Integer.compare(b.getY(), a.getY());
+
+        int x = a.getX();
+        int y = a.getY();
+
+        while (x != b.getX() || y != b.getY()) {
+            Position current = new Position(x, y);
+            if (blocksPosition(current)) {
+                return true;
+            }
+            if (x != b.getX()) x += dx;
+            if (y != b.getY()) y += dy;
+        }
+        return blocksPosition(b);
+    }
+
+    /**
+     * Checks whether the obstacle contains a given position.
+     * Currently always returns {@code false}.
+     *
+     * @param targetPosition the position to check
+     * @return {@code false}
+     */
+    
+    public boolean contains(Position targetPosition) {
+        return false;
+    }
+
+    /**
+     * Returns the size of the obstacle (area = width × height).
+     *
+     * @return the total number of grid cells covered by this obstacle
+     */
+    
+    public int getSize() {
+        return width * height;
+    }
 }

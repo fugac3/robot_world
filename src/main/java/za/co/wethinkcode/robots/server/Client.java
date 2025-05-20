@@ -70,7 +70,6 @@ public class Client {
                 System.out.println("Server:\n" + fullResponse);
 
                 if (msgToSend.equalsIgnoreCase("QUIT")) {
-                    System.out.println("Bye " + clientName);
                     break;
                 }
             }

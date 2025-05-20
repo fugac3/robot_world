@@ -36,7 +36,7 @@ public class TextWorld extends AbstractWorld {
 
     private WorldConfig config;
 
-    private final List<Bullet> bullets = new ArrayList<>();
+
 
     /**
      * Constructs a new TextWorld with the center position and generates random obstacles.
@@ -136,7 +136,7 @@ public class TextWorld extends AbstractWorld {
      * @param end the ending position
      * @return {@code true} if the path is blocked, otherwise {@code false}
      */
-    @Override
+
     public boolean blocksPath(Position start, Position end) {
         for (Obstacle o : obstacles) {
             if (o.blocksPath(start, end)) {
@@ -161,32 +161,8 @@ public class TextWorld extends AbstractWorld {
      *
      * @return a map of directions to artefacts
      */
-    @Override
     public Map<Direction, Artefact> look() {
         return Map.of();
-    }
-
-    /**
-     * Adds a bullet to the world's list of active bullets.
-     *
-     * @param bullet the {@link Bullet} to add
-     */
-    public void addBullet(Bullet bullet) {
-        bullets.add(bullet);
-    }
-
-    public void updateBullets() {
-        Iterator<Bullet> it = bullets.iterator();
-        while (it.hasNext()) {
-            Bullet bullet = it.next();
-            if (!bullet.move()) {
-                it.remove(); // Remove bullet if it has stopped
-            }
-        }
-    }
-
-    public List<Bullet> getBullets() {
-        return bullets;
     }
 //==========
 }

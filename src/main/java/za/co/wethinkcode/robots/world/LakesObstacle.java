@@ -4,7 +4,7 @@ package za.co.wethinkcode.robots.world;
  * Represents a lake obstacle in the robot world.
  * This type of obstacle extends {@link RectangleObstacle} and may affect robot movement or behavior.
  */
-public class LakesObstacle extends RectangleObstacle {
+public class LakesObstacle extends Obstacle {
 
     /**
      * Creates a LakesObstacle at the specified bottom-left coordinates.
