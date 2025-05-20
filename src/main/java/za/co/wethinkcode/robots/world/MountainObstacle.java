@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Represents a mountain obstacle in the robot world.
- * This type of obstacle extends {@link RectangleObstacle} and typically blocks robot movement.
+ * This type of obstacle extends {@link Obstacle} and typically blocks robot movement.
  */
 public class MountainObstacle extends Obstacle {
 
