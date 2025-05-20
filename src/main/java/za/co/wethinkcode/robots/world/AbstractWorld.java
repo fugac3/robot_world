@@ -41,24 +41,6 @@ public abstract class AbstractWorld  {
     }
 
     /**
-     * Display all obstacles currently in the world.
-     * If no obstacles are present, prints a message saying so.
-     */
-
-    public void showObstacles() {
-        if (obstacles.isEmpty()) {
-            System.out.println("No obstacles in the world.");
-        } else {
-            System.out.println("There are some obstacles:");
-            for (Obstacle o : obstacles) {
-                System.out.printf("- At position (%d, %d) to (%d, %d) \n",
-                        o.getBottomLeftX(), o.getBottomLeftY(),
-                        o.getTopRightX(), o.getTopRightY());
-            }
-        }
-    }
-
-    /**
      * Generate a random obstacle at a random location within the bounds defined by TextWorld.
      * Randomly selects an obstacle type from MountainObstacle, LakesObstacle, or BottomlessPit.
      */
