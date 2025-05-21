@@ -37,15 +37,15 @@ public class WorldTest {
     @Test
     void testObstacleBlocksPath() {
         TextWorld world = new TextWorld();
-        Robot robo = new Robot("Robo", world,new Position(0,0));
-        TextWorld obstacle = new TextWorld();
+        Robot robot = new Robot("Robo", world,new Position(0,0));
+//        TextWorld obstacle = new TextWorld();
         Position pastObstacle = new Position(7, 11);
         //Blocked
-        assertFalse(obstacle.blocksPath(robo.getPosition(),pastObstacle));
+        assertFalse(world.blocksPath(robot.getPosition(),pastObstacle));
 
         //Obstacle doesn't block path
         Position notBlocked = new Position(7,4);
-        assertFalse(obstacle.blocksPath(robo.getPosition(),notBlocked));
+        assertFalse(world.blocksPath(robot.getPosition(),notBlocked));
     }
 
 
