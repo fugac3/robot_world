@@ -103,17 +103,6 @@ public class Robot {
         return ammo;
     }
 
-    public int getDefence(){
-        return defence;
-    }
-
-    public void defence(){
-        if (shotsFired > 2 ){
-            status = "shield disarmed";
-            return ;
-        }
-        shotsFired ++;
-    }
 
     public boolean repairing(){
         if (isRepairing){
