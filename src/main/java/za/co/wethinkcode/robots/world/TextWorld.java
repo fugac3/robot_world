@@ -169,7 +169,7 @@ public class TextWorld extends AbstractWorld {
     }
 
     /**
-     * Adds a bullet to the world.
+     * This method adds a Bullet object to the bullets list. The list holds all bullets currently in the world.
       * @param bullet the bullet to add
      */
     public void addBullet(Bullet bullet) {
@@ -179,19 +179,21 @@ public class TextWorld extends AbstractWorld {
     /**
      * Moves all bullets in the world one step forward.
      * Removes bullets that have stopped moving.
+     * Side notes to be removed if needed.***
      */
     public void updateBullets() {
-        Iterator<Bullet> it = bullets.iterator();
-        while (it.hasNext()) {
-            Bullet bullet = it.next();
+        Iterator<Bullet> it = bullets.iterator(); // Iterator allows for looping
+                                                // without causing ConcurrentModificationException.
+        while (it.hasNext()) {  // Loops as long as there are more bullets in the list.
+            Bullet bullet = it.next(); // Gets the next bullet in the list.
             if (!bullet.move()) {
-                it.remove(); // bullet has stopped moving
+                it.remove(); // If the bullet can no longer move, remove it from the list using the iterator.
             }
         }
     }
 
     public List<Bullet> getBullets() {
-        return bullets; // return the list of bullets
+        return bullets; // returns the current list of bullets
     }
 //==========
 }
