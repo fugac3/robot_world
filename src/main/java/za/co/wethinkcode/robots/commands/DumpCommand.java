@@ -58,7 +58,12 @@ public class DumpCommand extends Command {
         robot.setStatus("NORMAL");
 
         // Add the obstacle and robot data to the response data
-        data.put("Obstacles", obstacleData);
+//        data.put("Obstacles", obstacleData);
+        if (obstacleData.isEmpty()) {
+            data.put("obstacles", "None");
+        } else {
+            data.put("Obstacles", obstacleData);
+        }
         data.put("robots", robotList);
 
         // Return the response with the gathered data

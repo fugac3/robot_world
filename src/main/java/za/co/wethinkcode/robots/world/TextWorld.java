@@ -10,7 +10,6 @@ import java.util.*;
  * The TextWorld class defines a grid-based world for robots to operate in.
  * It extends {@link AbstractWorld} and uses a singleton pattern to ensure
  * only one world instance exists at a time.
- *
  * The world is bounded by a top-left and bottom-right position and supports
  * obstacle generation, position validation, and robot tracking.
  */
@@ -96,7 +95,7 @@ public class TextWorld extends AbstractWorld {
         // Check for obstacles
         for (Obstacle obstacle : this.obstacles) {
             if (obstacle.blocksPosition(pos)) {
-                System.out.println("Obstacle stuck");
+//                System.out.println("Obstacle stuck");
                 return true;
             }
         }
@@ -104,7 +103,7 @@ public class TextWorld extends AbstractWorld {
         // Check for other robots
         for (Robot robot : getAllRobots()) {
             if (robot.getPosition().equals(pos)) {
-                System.out.println("Robot stuck");
+//                System.out.println("Robot stuck");
                 return true;
             }
         }

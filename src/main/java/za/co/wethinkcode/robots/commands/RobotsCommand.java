@@ -53,6 +53,6 @@ public class RobotsCommand extends Command {
         robot.setStatus("NORMAL");
 
         // Return the response with the robot list
-        return new Response("OK", state, robot);
+        return new Response("OK", state, null);
     }
 }
