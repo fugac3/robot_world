@@ -5,6 +5,7 @@ import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.Bullet;
 import za.co.wethinkcode.robots.world.TextWorld;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +19,17 @@ public class Robot {
     private final TextWorld world;
     private Position position;
     private String status;
-    private String lastMoveReason = "";
+    private String lastMoveReason ;
     private int ammo = 5; // starting ammo
     private int shotsFired = 0;
     private static final int bulletMaxDistance = 3;
     private List<Bullet> bullets = new ArrayList<>();
+    private int defence = 2;
+    private boolean isRepairing;
+    private int maxShieldStrength = 100; // Or some other meaningful value
+    private int currentShieldStrength = 100; // Or some other starting value
+    private int repairTime = 5;  // Set a default repair time (in seconds)
+
 
 
 
@@ -33,6 +40,9 @@ public class Robot {
         this.position = position;
         this.commands = new ArrayList<>();
         this.world = world;
+        this.maxShieldStrength = maxShieldStrength;
+        this.currentShieldStrength = currentShieldStrength;
+        this.isRepairing = isRepairing;
 //        this.position = new Position(0, 0); // start at center
     }
 
@@ -66,6 +76,8 @@ public class Robot {
 //        return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired));
     }
 
+
+
     public void updateBullets() {
         List<Bullet> activeBullets = new ArrayList<>();
 
@@ -90,6 +102,47 @@ public class Robot {
     public int getAmmo() {
         return ammo;
     }
+
+    public int getDefence(){
+        return defence;
+    }
+
+    public void defence(){
+        if (shotsFired > 2 ){
+            status = "shield disarmed";
+            return ;
+        }
+        shotsFired ++;
+    }
+
+    public boolean repairing(){
+        if (isRepairing){
+            System.out.println("reloading in progress...");
+            return false;
+        }
+//        checking if the robot is on max health.
+        if (maxShieldStrength == currentShieldStrength){
+            System.out.println("shield already in max");
+            return false;
+        }
+
+        isRepairing = true;
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(repairTime * 1000); // Sleep for repairTime seconds (converted to milliseconds)
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                // Once repair time is over, set the shield strength to the max value
+                currentShieldStrength = maxShieldStrength;
+                isRepairing = false;
+                System.out.println("Shields repaired to maximum strength.");
+            }
+        }).start();
+        return false;
+    }
+
 
     public boolean updatePosition(int nrSteps){
 

@@ -133,6 +133,10 @@ public abstract class Command {
                 return new LookCommand();
             case "state":
                 return new StateCommand();
+            case "defend":
+                return new DefendCommand();
+            case "repair":
+                return new RepairCommand();
             default:
                 return null;  // Unknown command
         }
