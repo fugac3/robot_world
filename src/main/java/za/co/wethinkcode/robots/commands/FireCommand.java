@@ -45,6 +45,9 @@ public class FireCommand extends Command {
         // Try to fire the weapon
         boolean fired = robot.fire();
 
+        // Update all bullets in the world after firing
+        robot.getWorld().updateBullets();
+
         // Prepare the response data based on whether the shot was successful
         Map<String, Object> data = new HashMap<>();
         data.put("message", fired ? "Hit" : "Miss");

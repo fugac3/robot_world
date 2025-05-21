@@ -69,4 +69,11 @@ public class Bullet {
     public boolean hasStopped() {
         return distanceLeft <= 0;
     }
+
+    // toString added for debugging purposes. Can be removed if needed.
+    public String toString() {
+        return "Bullet{pos=" + position +
+                ", dir=" + direction +
+                ", distLeft=" + distanceLeft + "}";
+    }
 }
