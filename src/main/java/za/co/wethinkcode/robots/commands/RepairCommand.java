@@ -13,23 +13,25 @@ public class RepairCommand extends Command {
 
     @Override
     public Response execute(Robot robot) {
-        if (robot.repairing()) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("message", "repairing");
+        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> state = new HashMap<>();
 
-            Map<String, Object> state = new HashMap<>();
-            state.put("repairingTime", robot.getAmmo());  // You may want to track the time to repair as well.
-
+        if (robot.getIsRepairing()) {
+            data.put("message", "Repair in progress");
+            state.put("repairingTime", 5); // or dynamically tracked time if implemented
             return new Response("FAILED", data, robot);
         }
 
-        // Proceed to repair completion
-        boolean repaired = robot.repairing();
-        Map<String, Object> data = new HashMap<>();
-        data.put("message", repaired ? "Repairing" : "Repaired");
+        if (robot.getMaxShieldStrength() == robot.getCurrentShieldStrength()) {
+            data.put("message", "Shield already at max strength");
+            state.put("shieldStrength", robot.getCurrentShieldStrength());
+            return new Response("FAILED", data, robot);
+        }
 
-        Map<String, Object> state = new HashMap<>();
-        state.put("shieldStrength", robot.getDefence());
+        boolean startedRepair = robot.repairing();
+
+        data.put("message", startedRepair ? "Repair started" : "Could not start repair");
+        state.put("shieldStrength", robot.getCurrentShieldStrength());
 
         return new Response("OK", data, robot);
     }

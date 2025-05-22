@@ -108,41 +108,44 @@ public class Robot {
         return defence;
     }
 
-    public void defence(){
-        if (shotsFired > 2 ){
-            status = "shield disarmed";
-            return ;
-        }
-        shotsFired ++;
+    public boolean getIsRepairing(){
+        return isRepairing;
     }
 
-    public boolean repairing(){
-        if (isRepairing){
-            System.out.println("reloading in progress...");
-            return false;
-        }
-//        checking if the robot is on max health.
-        if (maxShieldStrength == currentShieldStrength){
-            System.out.println("shield already in max");
-            return false;
+    public int getMaxShieldStrength(){
+        return maxShieldStrength;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public int getCurrentShieldStrength() {
+        return currentShieldStrength;
+    }
+
+
+    public boolean repairing() {
+        if (isRepairing || currentShieldStrength == maxShieldStrength) {
+            return false; // Already repairing or fully repaired
         }
 
         isRepairing = true;
-
         new Thread(() -> {
             try {
-                Thread.sleep(repairTime * 1000); // Sleep for repairTime seconds (converted to milliseconds)
+                Thread.sleep(repairTime * 1000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                // Once repair time is over, set the shield strength to the max value
                 currentShieldStrength = maxShieldStrength;
                 isRepairing = false;
                 System.out.println("Shields repaired to maximum strength.");
             }
         }).start();
-        return false;
+
+        return true; // Repair started
     }
+
 
 
     public boolean updatePosition(int nrSteps){

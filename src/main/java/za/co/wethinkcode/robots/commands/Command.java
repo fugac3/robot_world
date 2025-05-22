@@ -135,6 +135,8 @@ public abstract class Command {
                 return new StateCommand();
             case "orientation":
                 return new CurrentDirectionCommand();
+            case "repair":
+                return new RepairCommand();
             default:
                 return null;  // Unknown command
         }
