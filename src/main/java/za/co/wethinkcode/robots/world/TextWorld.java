@@ -3,6 +3,7 @@ package za.co.wethinkcode.robots.world;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
+import za.co.wethinkcode.robots.world.Bullet;
 
 import java.util.*;
 
@@ -34,6 +35,8 @@ public class TextWorld extends AbstractWorld {
     private Position position;
 
     private WorldConfig config;
+
+    private final List<Bullet> bullets = new ArrayList<>();
 
 
 
@@ -162,6 +165,74 @@ public class TextWorld extends AbstractWorld {
      */
     public Map<Direction, Artefact> look() {
         return Map.of();
+    }
+
+    /**
+     * This method adds a Bullet object to the bullets list. The list holds all bullets currently in the world.
+      * @param bullet the bullet to add
+     */
+    public void addBullet(Bullet bullet) {
+        bullets.add(bullet);
+    }
+
+    /**
+     * Moves all bullets in the world one step forward.
+     * Removes bullets that have stopped moving.
+     * Side notes to be removed if needed.***
+     */
+    public void updateBullets() {
+        Iterator<Bullet> it = bullets.iterator(); // Iterator allows for looping
+                                                // without causing ConcurrentModificationException.
+        while (it.hasNext()) {  // Loops as long as there are more bullets in the list.
+            Bullet bullet = it.next(); // Gets the next bullet in the list.
+            Position nextPos = bullet.getPosition();
+
+            // Check for obstacle collision
+            boolean hitObstacle = false;
+            for (Obstacle obstacle : obstacles) {
+                if (obstacle.blocksPosition(nextPos)) {
+                    System.out.println("Bullet hit obstacle at: " + nextPos);
+                    hitObstacle = true;
+                    break;
+                }
+            }
+
+            // Check for robot collision
+            boolean hitRobot = false;
+            for (Robot robot : getAllRobots()) {
+                if (robot == bullet.getShooter()) continue;
+                if (robot.getPosition().equals(nextPos)) {
+                    System.out.println("Bullet hit robot: " + robot.getName());
+                    hitRobot = true;
+                    // Optionally update robot status here
+                    break;
+                }
+            }
+
+            if (hitObstacle || hitRobot || !bullet.move()) {
+                it.remove();
+                System.out.println("Removed bullet: " + bullet);
+            }
+        }
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets; // returns the current list of bullets
+    }
+
+    public boolean addBulletAndCheckHit(Bullet bullet) {
+        bullets.add(bullet);
+        // Move the bullet and check for collision with robots
+        while (!bullet.hasStopped()) {
+            bullet.move();
+            for (Robot robot : getAllRobots()) {
+                if (!robot.equals(bullet.getShooter()) && robot.getPosition().equals(bullet.getPosition())) {
+                    // Handle robot being hit (e.g., update status, health, shields, etc.)
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 //==========
 }

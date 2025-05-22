@@ -2,6 +2,7 @@ package za.co.wethinkcode.robots.world;
 
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
+import za.co.wethinkcode.robots.robot.Robot;
 
 /**
  * Represents a bullet fired in the world.
@@ -17,17 +18,27 @@ public class Bullet {
     /** The remaining distance the bullet can travel. */
     private int distanceLeft;
 
+    /** The robot that will be shooting the bullet. */
+    private final Robot shooter;
+
+
     /**
      * Constructs a new Bullet with a starting position, direction, and maximum travel distance.
      *
      * @param startPosition the initial position of the bullet
      * @param direction the direction in which the bullet will move
      * @param maxDistance the maximum number of steps the bullet can move
+     * @param shooter the shooter who shot the bullet
      */
-    public Bullet(Position startPosition, Direction direction, int maxDistance) {
+    public Bullet(Position startPosition, Direction direction, int maxDistance, Robot shooter) {
         this.position = startPosition;
         this.direction = direction;
         this.distanceLeft = maxDistance;
+        this.shooter = shooter;
+    }
+
+    public Robot getShooter() {
+        return shooter;
     }
 
     /**
@@ -68,5 +79,12 @@ public class Bullet {
      */
     public boolean hasStopped() {
         return distanceLeft <= 0;
+    }
+
+    // toString added for debugging purposes. Can be removed if needed.
+    public String toString() {
+        return "Bullet{pos=" + position +
+                ", dir=" + direction +
+                ", distLeft=" + distanceLeft + "}";
     }
 }
