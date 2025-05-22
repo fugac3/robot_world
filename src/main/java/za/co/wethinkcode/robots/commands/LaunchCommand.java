@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class LaunchCommand extends Command {
     private final String robotName;
-    private Robot robot;
+//    private Robot robot;
 
     /**
      * Constructs a new LaunchCommand with the given robot name.
@@ -40,7 +40,6 @@ public class LaunchCommand extends Command {
         // Check if robot name is null or empty
         if (robotName == null || robotName.trim().isEmpty()) {
             data.put("message", "Launch command needs a name.");
-            return new Response("ERROR", data, null);
         }
 
         // Assuming further robot launch logic will be handled later
