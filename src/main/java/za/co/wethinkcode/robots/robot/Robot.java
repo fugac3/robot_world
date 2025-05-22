@@ -20,19 +20,25 @@ public class Robot {
     private String status;
     private String lastMoveReason = "";
     private int ammo = 5; // starting ammo
+    private int maxAmmo; //starting/max ammo robot has
+    private int shieldStrength; //current shield strength
+    private int maxShieldStrength; //max shield strength of type of robot
+    private int shootingRange; //how far robot can fire bullets
     private int shotsFired = 0;
     private static final int bulletMaxDistance = 3;
     private List<Bullet> bullets = new ArrayList<>();
+    private final RobotType type;
 
 
 
     private final List<String> commands;
 
-    public Robot(String name,TextWorld world,Position position) {
+    public Robot(String name,TextWorld world,Position position, RobotType type) {
         this.name = name;
         this.position = position;
         this.commands = new ArrayList<>();
         this.world = world;
+        this.type = type;
 //        this.position = new Position(0, 0); // start at center
     }
 
