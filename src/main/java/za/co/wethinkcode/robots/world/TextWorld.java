@@ -220,5 +220,20 @@ public class TextWorld extends AbstractWorld {
     public List<Bullet> getBullets() {
         return bullets; // returns the current list of bullets
     }
+
+    public boolean addBulletAndCheckHit(Bullet bullet) {
+        bullets.add(bullet);
+        // Move the bullet and check for collision with robots
+        while (!bullet.hasStopped()) {
+            bullet.move();
+            for (Robot robot : getAllRobots()) {
+                if (!robot.equals(bullet.getShooter()) && robot.getPosition().equals(bullet.getPosition())) {
+                    // Handle robot being hit (e.g., update status, health, shields, etc.)
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 //==========
 }

@@ -7,6 +7,7 @@ import za.co.wethinkcode.robots.world.Bullet;
 import za.co.wethinkcode.robots.world.TextWorld;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Robot {
     public static final Position CENTRE = new Position(0,0);
@@ -47,10 +48,10 @@ public class Robot {
 
 
 
-    public boolean fire() {
+    public Response fire() {
         if (ammo <= 0) {
             status = "NORMAL";
-            return false;
+            return new Response("ERROR", Map.of("message", "No ammo"), this);
         }
 
         ammo--; // consuming a bullet
@@ -58,16 +59,12 @@ public class Robot {
 
         // Create a new bullet travelling in the current direction
         Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance, this);
-        world.addBullet(bullet);
+        boolean hit = world.addBulletAndCheckHit(bullet);
 
-        boolean hit = false; // boolean hit = world.isBulletBlocked(bullet.getPosition()); (for later use)
         status = "NORMAL";
+        String message = hit ? "Hit" : "Miss";
 
-        System.out.println("All bullet in world: " + getWorld().getBullets());
-
-        return hit;
-//        return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired));
-
+        return new Response("OK", Map.of("message", message, "shotsFired", shotsFired), this);
     }
 
     public void updateBullets() {

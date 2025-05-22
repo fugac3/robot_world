@@ -35,26 +35,11 @@ public class FireCommand extends Command {
             // If no ammo, return a "Miss" response with the remaining shots count
             Map<String, Object> data = new HashMap<>();
             data.put("message", "Miss");
-
-            Map<String, Object> state = new HashMap<>();
-            state.put("shots", robot.getAmmo());
-
             return new Response("FAILED", data, robot);
         }
 
-        // Try to fire the weapon
-        boolean fired = robot.fire();
-
-        // Update all bullets in the world after firing
+        Response fireResponse = robot.fire();
         robot.getWorld().updateBullets();
-
-        // Prepare the response data based on whether the shot was successful
-        Map<String, Object> data = new HashMap<>();
-        data.put("message", fired ? "Hit" : "Miss");
-
-        Map<String, Object> state = new HashMap<>();
-        state.put("shots", robot.getAmmo());
-
-        return new Response("OK", data, robot);
+        return fireResponse;
     }
 }
