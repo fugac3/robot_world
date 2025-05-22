@@ -10,7 +10,7 @@ public class RobotType {
     public RobotType(String typeName, int maxShieldStrength, int maxShots, int shootingRange){
         this.typeName = typeName;
         this.maxShieldStrength = maxShieldStrength;
-        this.maxShots = maxShots;
+        this.maxShots = maxShots; //ammo
         this.shootingRange = shootingRange;
     }
 

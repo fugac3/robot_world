@@ -19,11 +19,11 @@ public class Robot {
     private Position position;
     private String status;
     private String lastMoveReason = "";
-    private int ammo = 5; // starting ammo
-    private int maxAmmo; //starting/max ammo robot has
+    private int ammo; // current ammo
+    private final int maxAmmo; //starting/max ammo robot has
     private int shieldStrength; //current shield strength
-    private int maxShieldStrength; //max shield strength of type of robot
-    private int shootingRange; //how far robot can fire bullets
+    private final int maxShieldStrength; //max shield strength of type of robot
+    private final int shootingRange; //how far robot can fire bullets
     private int shotsFired = 0;
     private static final int bulletMaxDistance = 3;
     private List<Bullet> bullets = new ArrayList<>();
@@ -39,7 +39,14 @@ public class Robot {
         this.commands = new ArrayList<>();
         this.world = world;
         this.type = type;
-//        this.position = new Position(0, 0); // start at center
+        this.status = "NORMAL"; //initialized status
+
+        this.maxAmmo = type.getMaxShots();
+        this.ammo = maxAmmo;
+        this.maxShieldStrength = type.getMaxShieldStrength();
+        this.shieldStrength = maxShieldStrength;
+        this.shootingRange = type.getShootingRange();
+
     }
 
 
@@ -63,7 +70,7 @@ public class Robot {
         shotsFired++;
 
         // Create a new bullet travelling in the current direction
-        Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance);
+        Bullet bullet = new Bullet(position, currentDirection, shootingRange); //use robot type's shooting range
         bullets.add(bullet);
 
         boolean hit = false; // boolean hit = world.isBulletBlocked(bullet.getPosition()); (for later use)
@@ -88,7 +95,7 @@ public class Robot {
     }
 
     public boolean reload() {
-        ammo = 5; // reset to full ammo
+        ammo = maxAmmo; // reset to full ammo
         status = "RELOAD";
         return true;
     }
@@ -197,10 +204,26 @@ public class Robot {
     @Override
     public String toString() {
         return "[" + this.position.getX() + "," + this.position.getY() + "] "
-                + this.name + "> " + this.status;
+                + this.name + " (" + this.type.getTypeName() + ")> "  + this.status;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getMaxAmmo() {
+        return maxAmmo;
+    }
+
+    public int getShieldStrength() {
+        return shieldStrength;
+    }
+
+    public int getMaxShieldStrength() {
+        return maxShieldStrength;
+    }
+
+    public int getShootingRange() {
+        return shootingRange;
     }
 }
