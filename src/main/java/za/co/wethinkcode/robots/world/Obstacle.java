@@ -17,10 +17,10 @@ public abstract class Obstacle {
     private final int bottomLeftY;
 
     /** The fixed height of the rectangle. */
-    private final int height = 5;
+    private final int height = 2;
 
     /** The fixed width of the rectangle. */
-    private final int width = 7;
+    private final int width = 2;
 
     /**
      * Constructs a RectangleObstacle with a given bottom-left corner.

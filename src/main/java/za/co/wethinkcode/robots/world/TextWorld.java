@@ -62,6 +62,14 @@ public class TextWorld extends AbstractWorld {
         return instance;
     }
 
+    public void reset(boolean withObstacles) {
+        this.robots.clear();
+        this.obstacles.clear();
+        if (withObstacles) {
+            generateRandomObstacles(config.maxObstacles);
+        }
+    }
+
     /**
      * Returns a random, unoccupied position within the world's boundaries.
      *

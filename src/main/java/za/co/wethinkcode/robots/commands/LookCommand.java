@@ -61,8 +61,7 @@ public class LookCommand extends Command {
                 if (checkForEdge(currentPosition, direction, distance, objects)) {
                     edgeFound = true;
                     break;
-                }
-                else if (checkForObstacle(currentPosition, direction, distance, robot, objects)) {
+                }else if (checkForObstacle(currentPosition, direction, distance, robot, objects)) {
                     obstacleFound = true;
                     break; // Stop checking further in this direction if we found a mountain
                 }
@@ -143,12 +142,12 @@ public class LookCommand extends Command {
 
     //Obstacle detection methods
 
-    private void emptyDirection(Direction direction, int visibilityConstraint,List<Map<String, Object>> objects) {
+    public void emptyDirection(Direction direction, int visibilityConstraint,List<Map<String, Object>> objects) {
         objects.add(makeObject(VisibleObjectType.EMPTY.name(), direction, visibilityConstraint));
     }
 
     // Check for obstacles
-    private boolean checkForObstacle(Position position, Direction direction, int distance, Robot robot, List<Map<String, Object>> objects) {
+    public boolean checkForObstacle(Position position, Direction direction, int distance, Robot robot, List<Map<String, Object>> objects) {
         for (Obstacle obstacle : robot.getWorld().getObstacles()) {
             if (obstacle.blocksPosition(position)) {
                 VisibleObjectType obstacleType = getObstacleType(obstacle);
