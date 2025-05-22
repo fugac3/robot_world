@@ -180,25 +180,41 @@ public class TextWorld extends AbstractWorld {
      * Moves all bullets in the world one step forward.
      * Removes bullets that have stopped moving.
      * Side notes to be removed if needed.***
-     * All prints added for debugging. Can be removed for code simplicity.
      */
     public void updateBullets() {
-        // debugging code
-        System.out.println("Bullets before update: " + bullets.size());
-        for (Bullet bullet : bullets) {
-            System.out.println("Active bullet: " + bullet);
-        }
-
         Iterator<Bullet> it = bullets.iterator(); // Iterator allows for looping
                                                 // without causing ConcurrentModificationException.
         while (it.hasNext()) {  // Loops as long as there are more bullets in the list.
             Bullet bullet = it.next(); // Gets the next bullet in the list.
-            if (!bullet.move()) {
-                it.remove(); // If the bullet can no longer move, remove it from the list using the iterator.
+            Position nextPos = bullet.getPosition();
+
+            // Check for obstacle collision
+            boolean hitObstacle = false;
+            for (Obstacle obstacle : obstacles) {
+                if (obstacle.blocksPosition(nextPos)) {
+                    System.out.println("Bullet hit obstacle at: " + nextPos);
+                    hitObstacle = true;
+                    break;
+                }
+            }
+
+            // Check for robot collision
+            boolean hitRobot = false;
+            for (Robot robot : getAllRobots()) {
+                if (robot == bullet.getShooter()) continue;
+                if (robot.getPosition().equals(nextPos)) {
+                    System.out.println("Bullet hit robot: " + robot.getName());
+                    hitRobot = true;
+                    // Optionally update robot status here
+                    break;
+                }
+            }
+
+            if (hitObstacle || hitRobot || !bullet.move()) {
+                it.remove();
                 System.out.println("Removed bullet: " + bullet);
             }
         }
-        System.out.println("Bullet after update: " + bullets.size());
     }
 
     public List<Bullet> getBullets() {

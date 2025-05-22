@@ -57,13 +57,17 @@ public class Robot {
         shotsFired++;
 
         // Create a new bullet travelling in the current direction
-        Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance);
+        Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance, this);
         world.addBullet(bullet);
 
         boolean hit = false; // boolean hit = world.isBulletBlocked(bullet.getPosition()); (for later use)
         status = "NORMAL";
+
+        System.out.println("All bullet in world: " + getWorld().getBullets());
+
         return hit;
 //        return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired));
+
     }
 
     public void updateBullets() {
