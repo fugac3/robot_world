@@ -3,6 +3,9 @@ package za.co.wethinkcode.robots.robot;
 public class RobotTypeFactory {
 
     public static RobotType createRobotType(String robotType){
+        if (robotType == null){
+            return null;
+        }
         switch (robotType.toLowerCase()){
             case "cannon":
                 return new CannonRobot();
