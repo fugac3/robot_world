@@ -16,6 +16,7 @@ public abstract class Obstacle {
     /** The Y-coordinate of the bottom-left corner of the rectangle. */
     private final int bottomLeftY;
 
+    //default for tests 7,5
     /** The fixed height of the rectangle. */
     private final int height = 5;
 

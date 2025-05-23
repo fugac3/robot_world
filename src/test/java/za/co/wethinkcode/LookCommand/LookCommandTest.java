@@ -2,75 +2,21 @@ package za.co.wethinkcode;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robots.commands.*;
-import za.co.wethinkcode.robots.robot.Position;
-import za.co.wethinkcode.robots.robot.Robot;
-import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.world.BottomlessPit;
-import za.co.wethinkcode.robots.world.LakesObstacle;
-import za.co.wethinkcode.robots.world.MountainObstacle;
-import za.co.wethinkcode.robots.world.TextWorld;
 import za.co.wethinkcode.robots.commands.LookCommand;
-
+import za.co.wethinkcode.robots.robot.*;
+import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CommandTest {
+public class LookCommandTest {
     private TextWorld world;
     private Robot robot;
     private LookCommand look;
-
-    @Test
-    public void testCreateLaunchCommand() {
-        Command command = Command.create("launch Robo");
-        assertNotNull(command);
-        assertTrue(command instanceof LaunchCommand);
-        assertEquals("robo", command.getArgument().toLowerCase());
-    }
-
-    @Test
-    public void testCreateForwardCommand() {
-        Command command = Command.create("forward 10");
-        assertNotNull(command);
-        assertTrue(command instanceof ForwardCommand);
-        assertEquals("10", command.getArgument());
-    }
-
-    @Test
-    public void testCreateQuitCommand() {
-        Command command = Command.create("quit");
-        assertNotNull(command);
-        assertTrue(command instanceof
-                QuitCommand);
-    }
-
-    @Test
-    public void testInvalidCommandReturnsNull() {
-        Command command = Command.create("dance 5");
-        assertNull(command);
-    }
-
-    @Test
-    public void testCreateThrowsOnEmptySteps() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Command.create("forward ");
-        });
-        assertEquals("Could not parse arguments: Steps cannot be null.", exception.getMessage());
-    }
-
-    @Test
-    public void testCreateThrowsOnMissingLaunchName() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Command.create("launch ");
-        });
-        assertTrue(exception.getMessage().contains("Launch command needs a name"));
-    }
 
     @BeforeEach
     void setUp() {
@@ -221,65 +167,5 @@ public class CommandTest {
         assertNotNull(mountainObject);
         assertEquals(8, mountainObject.get("distance"));
     }
-
-    @Test
-    void testFireCommandWithAmmo() {
-        TextWorld world = TextWorld.getInstance();
-        world.getObstacles().clear();
-        Robot robot = new Robot("Shooter", world, new Position(0, 0));
-        world.addRobot(robot);
-
-        int initialAmmo = robot.getAmmo();
-        FireCommand fireCommand = new FireCommand();
-        Response response = fireCommand.execute(robot);
-
-        assertEquals("OK", response.getResult());
-        assertTrue(response.getData().get("message").toString().matches("Hit|Miss"));
-        assertEquals(initialAmmo - 1, robot.getAmmo());
-    }
-
-    @Test
-    void testFireCommandNoAmmo() {
-        TextWorld world = TextWorld.getInstance();
-        world.getObstacles().clear();
-        Robot robot = new Robot("Shooter", world, new Position(0, 0));
-        world.addRobot(robot);
-
-        // Set ammo to 0
-        while (robot.getAmmo() > 0) {
-            robot.fire();
-        }
-
-        FireCommand fireCommand = new FireCommand();
-        Response response = fireCommand.execute(robot);
-
-        assertEquals("FAILED", response.getResult());
-        assertEquals("Miss", response.getData().get("message"));
-    }
-
-    @Test
-    void testReloadCommand() {
-        TextWorld world = TextWorld.getInstance();
-        world.getObstacles().clear();
-        Robot robot = new Robot("Reloader", world, new Position(0, 0));
-        world.addRobot(robot);
-
-        while (robot.getAmmo() > 0) {
-            robot.fire();
-        }
-        assertEquals(0, robot.getAmmo());
-
-        ReloadCommand reloadCommand = new ReloadCommand();
-        Response response = reloadCommand.execute(robot);
-
-        assertEquals("OK", response.getResult());
-        assertEquals(5, robot.getAmmo());
-        assertEquals("RELOAD", robot.getStatus());
-    }
-
-
-
-
-
-
 }
+

@@ -23,7 +23,7 @@ public class TextWorld extends AbstractWorld {
     public static Position BOTTOM_RIGHT;
 
     /** Central starting position in the world. */
-    public static final Position CENTRE = new Position(0, 0);
+//    public static final Position CENTRE = new Position(0, 0);
 
     /** Singleton instance of the TextWorld. */
     private static TextWorld instance;
@@ -44,12 +44,32 @@ public class TextWorld extends AbstractWorld {
      * Constructs a new TextWorld with the center position and generates random obstacles.
      */
     public TextWorld() {
-        this.position = CENTRE;
+//        this.position = CENTRE;
         this.config = ConfigReader.loadConfig();
         TOP_LEFT = config.topLeft;
         BOTTOM_RIGHT = config.bottomRight;
         generateRandomObstacles(config.maxObstacles);
+    }
 
+    //just for custom sized worlds in tests
+    public TextWorld(Position TOP_LEFT,Position BOTTOM_RIGHT) {
+//        this.position = CENTRE;
+        this.config = ConfigReader.loadConfig();
+        TextWorld.TOP_LEFT = TOP_LEFT;
+        TextWorld.BOTTOM_RIGHT = BOTTOM_RIGHT;
+        generateRandomObstacles(config.maxObstacles);
+    }
+
+    public int setVisibilityConstraint(int newVis) {
+        return newVis;
+    }
+
+    public static Position getTopLeft() {
+        return TOP_LEFT;
+    }
+
+    public static Position getBottomRight() {
+        return BOTTOM_RIGHT;
     }
 
     /**
@@ -63,6 +83,21 @@ public class TextWorld extends AbstractWorld {
             instance = new TextWorld();
         }
         return instance;
+    }
+
+    public static synchronized TextWorld getInstance(Position TOP_LEFT,Position BOTTOM_RIGHT) {
+        if (instance == null) {
+            instance = new TextWorld(TOP_LEFT,BOTTOM_RIGHT);
+        }
+        return instance;
+    }
+
+    public void reset(boolean withObstacles) {
+        this.robots.clear();
+        this.obstacles.clear();
+        if (withObstacles) {
+            generateRandomObstacles(config.maxObstacles);
+        }
     }
 
     /**
@@ -82,6 +117,9 @@ public class TextWorld extends AbstractWorld {
         do {
             int x = rand.nextInt(maxX - minX + 1) + minX;
             int y = rand.nextInt(maxY - minY + 1) + minY;
+//            int x = 0;
+//            int y = 0;
+
             pos = new Position(x, y);
         } while (blocksPosition(pos));  // Retry if blocked
         // cant tell if the world is full
@@ -178,12 +216,12 @@ public class TextWorld extends AbstractWorld {
     /**
      * Moves all bullets in the world one step forward.
      * Removes bullets that have stopped moving.
-     * Side notes to be removed if needed.***
+     * Iterator allows for looping without causing ConcurrentModificationException.
      */
     public void updateBullets() {
-        Iterator<Bullet> it = bullets.iterator(); // Iterator allows for looping
-                                                // without causing ConcurrentModificationException.
-        while (it.hasNext()) {  // Loops as long as there are more bullets in the list.
+        Iterator<Bullet> it = bullets.iterator();
+        // Loops as long as there are more bullets in the list.
+        while (it.hasNext()) {
             Bullet bullet = it.next(); // Gets the next bullet in the list.
             Position nextPos = bullet.getPosition();
 

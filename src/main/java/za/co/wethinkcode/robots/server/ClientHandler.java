@@ -52,7 +52,7 @@ public class ClientHandler implements Runnable {
             System.out.println((clientName != null ? clientName : "Unknown client") + " disconnected: " + e.getMessage());
         } finally {
             connectionManager.stop();
-            System.out.println("Client handler exiting.");
+            System.out.println("Client "+clientName+" exiting.");
         }
     }
 

@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robots.world;
 
+import za.co.wethinkcode.robots.commands.VisibleObjectType;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
@@ -27,6 +28,6 @@ public class MountainObstacle extends Obstacle {
      * @return a string representing the obstacle type: "Mountain"
      */
     public String getType(){
-        return "Mountain";
+        return VisibleObjectType.MOUNTAIN.name();
     }
 }

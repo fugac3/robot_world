@@ -1,5 +1,7 @@
 package za.co.wethinkcode.robots.world;
 
+import za.co.wethinkcode.robots.commands.VisibleObjectType;
+
 /**
  * Represents a lake obstacle in the robot world.
  *
@@ -22,6 +24,6 @@ public class LakesObstacle extends Obstacle {
      * @return a string representing the obstacle type: "Lake"
      */
     public String getType(){
-        return "Lake";
+        return VisibleObjectType.LAKE.name();
     }
 }
