@@ -116,6 +116,14 @@ public class Robot {
         return maxShieldStrength;
     }
 
+    public void applyDamage(int damage) {
+        this.currentShieldStrength -= damage;
+        if (this.currentShieldStrength < 0) {
+            this.currentShieldStrength = 0;
+        }
+    }
+
+
     public List<Bullet> getBullets() {
         return bullets;
     }
@@ -129,6 +137,7 @@ public class Robot {
         if (isRepairing || currentShieldStrength == maxShieldStrength) {
             return false; // Already repairing or fully repaired
         }
+
 
         isRepairing = true;
         new Thread(() -> {
@@ -145,6 +154,7 @@ public class Robot {
 
         return true; // Repair started
     }
+
 
 
 
