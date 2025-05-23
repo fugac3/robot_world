@@ -258,6 +258,7 @@ public class TextWorld extends AbstractWorld {
         return bullets; // returns the current list of bullets
     }
 
+
     public boolean addBulletAndCheckHit(Bullet bullet) {
         bullets.add(bullet);
         // Move the bullet and check for collision with robots
@@ -265,12 +266,15 @@ public class TextWorld extends AbstractWorld {
             bullet.move();
             for (Robot robot : getAllRobots()) {
                 if (!robot.equals(bullet.getShooter()) && robot.getPosition().equals(bullet.getPosition())) {
-                    // Handle robot being hit (e.g., update status, health, shields, etc.)
+                    // Apply damage here!
+                    robot.applyDamage(10);  // Apply 10 damage, adjust as needed
+                    System.out.println("Robot " + robot.getName() + " hit! Shield: " + robot.getCurrentShieldStrength());
                     return true;
                 }
             }
         }
         return false;
     }
+
 //==========
 }

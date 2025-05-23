@@ -2,6 +2,7 @@ package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.world.Bullet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class RepairCommand extends Command {
         }
 
         if (robot.getMaxShieldStrength() == robot.getCurrentShieldStrength()) {
+
             data.put("message", "Shield already at max strength");
             state.put("shieldStrength", robot.getCurrentShieldStrength());
             return new Response("FAILED", data, robot);
@@ -35,5 +37,6 @@ public class RepairCommand extends Command {
 
         return new Response("OK", data, robot);
     }
+
 
 }
