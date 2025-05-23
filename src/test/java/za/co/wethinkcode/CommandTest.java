@@ -222,6 +222,41 @@ public class CommandTest {
         assertEquals(8, mountainObject.get("distance"));
     }
 
+    @Test
+    void testFireCommandWithAmmo() {
+        TextWorld world = TextWorld.getInstance();
+        world.getObstacles().clear();
+        Robot robot = new Robot("Shooter", world, new Position(0, 0));
+        world.addRobot(robot);
+
+        int initialAmmo = robot.getAmmo();
+        FireCommand fireCommand = new FireCommand();
+        Response response = fireCommand.execute(robot);
+
+        assertEquals("OK", response.getResult());
+        assertTrue(response.getData().get("message").toString().matches("Hit|Miss"));
+        assertEquals(initialAmmo - 1, robot.getAmmo());
+    }
+
+    @Test
+    void testFireCommandNoAmmo() {
+        TextWorld world = TextWorld.getInstance();
+        world.getObstacles().clear();
+        Robot robot = new Robot("Shooter", world, new Position(0, 0));
+        world.addRobot(robot);
+
+        // Set ammo to 0
+        while (robot.getAmmo() > 0) {
+            robot.fire();
+        }
+
+        FireCommand fireCommand = new FireCommand();
+        Response response = fireCommand.execute(robot);
+
+        assertEquals("FAILED", response.getResult());
+        assertEquals("Miss", response.getData().get("message"));
+    }
+
 
 
 
