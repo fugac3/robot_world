@@ -54,6 +54,7 @@ public class LookCommand extends Command {
             // Check each position in that direction up to visibility range
             for (int distance = 1; distance <= visibilityConstraint; distance++) {
                 //currentPosition is the current position being checked in the robot's line of view eg. (1,0)/(2,0)
+                //checkPos
                 Position currentPosition = moveInDirection(robotPosition, direction, distance);
 
                 robotFound = checkForOtherRobot(currentPosition, direction, distance, robot, objects);
@@ -126,8 +127,8 @@ public class LookCommand extends Command {
      * @return true if the position is within the world, false otherwise
      */
     private boolean isInWorld(Position position) {
-        Position topLeft = TextWorld.TOP_LEFT;
-        Position bottomRight = TextWorld.BOTTOM_RIGHT;
+        Position topLeft = TextWorld.getTopLeft();
+        Position bottomRight = TextWorld.getBottomRight();
         return position.isIn(topLeft, bottomRight);
     }
 
@@ -147,9 +148,9 @@ public class LookCommand extends Command {
     }
 
     // Check for obstacles
-    public boolean checkForObstacle(Position position, Direction direction, int distance, Robot robot, List<Map<String, Object>> objects) {
+    public boolean checkForObstacle(Position currentPosition, Direction direction, int distance, Robot robot, List<Map<String, Object>> objects) {
         for (Obstacle obstacle : robot.getWorld().getObstacles()) {
-            if (obstacle.blocksPosition(position)) {
+            if (obstacle.blocksPosition(currentPosition)) {
                 VisibleObjectType obstacleType = getObstacleType(obstacle);
                 objects.add(makeObject(obstacleType.name(), direction, distance));
                 // Return true only if vision is blocked (mountain), can't see past it
@@ -160,7 +161,7 @@ public class LookCommand extends Command {
     }
 
     // Check for world edges
-    private boolean checkForEdge(Position currentPosition, Direction direction, int distance, List<Map<String, Object>> objects) {
+    public boolean checkForEdge(Position currentPosition, Direction direction, int distance, List<Map<String, Object>> objects) {
         if (!isInWorld(currentPosition)) {
             objects.add(makeObject(VisibleObjectType.EDGE.name(), direction, distance));
             return true; // Stop checking this direction
@@ -170,7 +171,7 @@ public class LookCommand extends Command {
 
     // Check for other robots
     // This would require access to all robots in the world
-    private boolean checkForOtherRobot(Position currentPosition, Direction direction, int distance, Robot robot, List<Map<String, Object>> objects) {
+    public boolean checkForOtherRobot(Position currentPosition, Direction direction, int distance, Robot robot, List<Map<String, Object>> objects) {
         if (robot.getWorld() instanceof TextWorld world) {
             for (Robot otherRobot : world.getAllRobots()) {
                 //if robot diff from our robot and its on a position we are looking at, add it to the objects list

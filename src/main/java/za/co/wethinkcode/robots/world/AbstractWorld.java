@@ -88,6 +88,8 @@ public abstract class AbstractWorld {
             // (100 - (-200) + 1 = 301), shift by -200
             int x = random.nextInt(maxX - minX + 1) + minX;
             int y = random.nextInt(maxY - minY + 1) + minY;
+//            int x = 8;
+//            int y = 0;
 
             // Create new obstacle to be checked an added
             Obstacle newObstacle = createObstacleOfType(obstacleType, x, y);

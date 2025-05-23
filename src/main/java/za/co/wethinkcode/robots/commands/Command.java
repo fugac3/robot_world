@@ -100,6 +100,7 @@ public abstract class Command {
 
         // Switch-case to create different commands based on the instruction
         switch (args[0]) {
+            case "l":
             case "launch":
                 if (args.length < 2 || args[1].isBlank()) {
                     throw new IllegalArgumentException("Could not parse arguments: Launch command needs a name.");

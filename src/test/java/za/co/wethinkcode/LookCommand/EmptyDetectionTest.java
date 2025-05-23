@@ -22,14 +22,14 @@ public class EmptyDetectionTest {
         // No obstacle placed
         Direction direction = Direction.EAST;
         // Call the method
-        lookCmd.emptyDirection(direction,3, objects);
+        lookCmd.emptyDirection(direction,20, objects);
 
         // Assertions
         assertEquals(1, objects.size(), "Should contain one EMPTY object");
         Map<String, Object> detected = objects.getFirst();
         assertEquals("EMPTY", detected.get("type"));
         assertEquals("EAST", detected.get("direction"));
-        assertEquals(3, detected.get("distance"));
+        assertEquals( 20, detected.get("distance"));
     }
 
 }

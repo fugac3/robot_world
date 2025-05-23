@@ -35,8 +35,6 @@ public class TextWorld extends AbstractWorld {
 
     private WorldConfig config;
 
-
-
     /**
      * Constructs a new TextWorld with the center position and generates random obstacles.
      */
@@ -49,6 +47,24 @@ public class TextWorld extends AbstractWorld {
 
     }
 
+    //just for custom sized worlds in tests
+    public TextWorld(Position TOP_LEFT,Position BOTTOM_RIGHT) {
+        this.position = CENTRE;
+        this.config = ConfigReader.loadConfig();
+        TextWorld.TOP_LEFT = TOP_LEFT;
+        TextWorld.BOTTOM_RIGHT = BOTTOM_RIGHT;
+        generateRandomObstacles(config.maxObstacles);
+
+    }
+
+    public static Position getTopLeft() {
+        return TOP_LEFT;
+    }
+
+    public static Position getBottomRight() {
+        return BOTTOM_RIGHT;
+    }
+
     /**
      * Returns the singleton instance of the TextWorld.
      * If it doesn't exist yet, it will be created.
@@ -58,6 +74,13 @@ public class TextWorld extends AbstractWorld {
     public static synchronized TextWorld getInstance() {
         if (instance == null) {
             instance = new TextWorld();
+        }
+        return instance;
+    }
+
+    public static synchronized TextWorld getInstance(Position TOP_LEFT,Position BOTTOM_RIGHT) {
+        if (instance == null) {
+            instance = new TextWorld(TOP_LEFT,BOTTOM_RIGHT);
         }
         return instance;
     }
@@ -162,14 +185,5 @@ public class TextWorld extends AbstractWorld {
         this.position = pos;
     }
 
-    /**
-     * Returns a map of visible artefacts in each direction from the current robot position.
-     * Currently returns an empty map as placeholder.
-     *
-     * @return a map of directions to artefacts
-     */
-    public Map<Direction, Artefact> look() {
-        return Map.of();
-    }
 //==========
 }
