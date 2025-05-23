@@ -15,13 +15,11 @@ public class ConfigReader {
             }
             props.load(input);
 
-            int topLeftX = Integer.parseInt(props.getProperty("topleft.x"));
-            int topLeftY = Integer.parseInt(props.getProperty("topleft.y"));
-            int bottomRightX = Integer.parseInt(props.getProperty("bottomright.x"));
-            int bottomRightY = Integer.parseInt(props.getProperty("bottomright.y"));
+            int length = Integer.parseInt(props.getProperty("world.length"));
+            int height = Integer.parseInt(props.getProperty("world.height"));
             int maxObstacles = Integer.parseInt(props.getProperty("max.obstacles"));
 
-            return new WorldConfig(topLeftX, topLeftY, bottomRightX, bottomRightY, maxObstacles);
+            return new WorldConfig(length, height, maxObstacles);
         } catch (IOException | NumberFormatException e) {
             throw new RuntimeException("Error loading configuration: " + e.getMessage(), e);
         }

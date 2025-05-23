@@ -49,7 +49,8 @@ public class CommandHandler{
         try {
             String cmdName = request.getCommand();
 
-            if ("launch".equalsIgnoreCase(cmdName)) {
+            if ("launch".equalsIgnoreCase(cmdName)||"l".equalsIgnoreCase(cmdName)) {
+//            if ("launch".equalsIgnoreCase(cmdName)) {
                 String name = (String) request.getArguments().get("name");
 
                 //Block clients trying to launch more than one robot

@@ -3,7 +3,7 @@ package za.co.wethinkcode.robots.commands;
 import java.util.List;
 
 public enum Direction {
-    NORTH,EAST,SOUTH,WEST, UP, DOWN, LEFT, RIGHT;
+    NORTH,EAST,SOUTH,WEST;
 
     private static final List<Direction> ROTATIONAL_DIRECTIONS =
         List.of(NORTH, EAST, SOUTH, WEST);
