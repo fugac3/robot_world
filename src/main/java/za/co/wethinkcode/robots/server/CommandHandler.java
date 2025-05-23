@@ -39,7 +39,14 @@ public class CommandHandler{
                     args.put("steps", arg);
                     break;
                 case "launch":
-                    args.put("name", arg);
+                    String[] parts = arg.split("\\s+"); //take into account robot type
+                    if (parts.length == 2) {
+                    args.put("type", parts[0]);
+                    args.put("name", parts[1]);}
+                    else{
+                        args.put("name", arg);
+                    }
+
                     break;
             }
         }
