@@ -12,7 +12,6 @@ import java.util.*;
  */
 public abstract class AbstractWorld {
 
-
     /**
      * List to hold all obstacles present in the world.
      */

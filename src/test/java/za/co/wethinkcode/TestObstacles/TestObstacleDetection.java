@@ -26,7 +26,7 @@ public class TestObstacleDetection {
     @Test
     public void testObstacleIsDetectedAhead() {
         // Place an obstacle directly in front of the robot
-        TestObstacle obstacle = new TestObstacle(1, 0);
+        TestObstacleHelper obstacle = new TestObstacleHelper(1, 0);
         world.getObstacles().add(obstacle);
 
         Position obstaclePos = new Position(1, 0);

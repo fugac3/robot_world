@@ -51,8 +51,10 @@ public class LookCommand extends Command {
             boolean edgeFound = false;
             boolean obstacleFound = false;
 
+
             // Check each position in that direction up to visibility range
             for (int distance = 1; distance <= visibilityConstraint; distance++) {
+//                int step = (direction==Direction.NORTH) ? 1 : -1;
                 //currentPosition is the current position being checked in the robot's line of view eg. (1,0)/(2,0)
                 //checkPos
                 Position currentPosition = moveInDirection(robotPosition, direction, distance);
