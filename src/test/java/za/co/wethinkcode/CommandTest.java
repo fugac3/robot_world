@@ -257,6 +257,26 @@ public class CommandTest {
         assertEquals("Miss", response.getData().get("message"));
     }
 
+    @Test
+    void testReloadCommand() {
+        TextWorld world = TextWorld.getInstance();
+        world.getObstacles().clear();
+        Robot robot = new Robot("Reloader", world, new Position(0, 0));
+        world.addRobot(robot);
+
+        while (robot.getAmmo() > 0) {
+            robot.fire();
+        }
+        assertEquals(0, robot.getAmmo());
+
+        ReloadCommand reloadCommand = new ReloadCommand();
+        Response response = reloadCommand.execute(robot);
+
+        assertEquals("OK", response.getResult());
+        assertEquals(5, robot.getAmmo());
+        assertEquals("RELOAD", robot.getStatus());
+    }
+
 
 
 
