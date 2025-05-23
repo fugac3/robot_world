@@ -9,6 +9,7 @@ public abstract class Command {
     private String name;
     public String argument;
 
+
     /** The world context in which the command is executed. */
     private TextWorld world;
 

@@ -13,6 +13,7 @@ import java.util.Map;
  */
 public class LaunchCommand extends Command {
     private final String robotName;
+    private final String robotTypeName;
     private Robot robot;
 
     /**
@@ -20,9 +21,10 @@ public class LaunchCommand extends Command {
      *
      * @param robotName the name of the robot to launch
      */
-    public LaunchCommand(String robotName) {
-        super("launch", robotName);
+    public LaunchCommand(String robotTypeName,String robotName) {
+        super("launch", robotTypeName + " " + robotName);
         this.robotName = robotName;
+        this.robotTypeName = robotTypeName;
     }
 
     /**
@@ -40,6 +42,12 @@ public class LaunchCommand extends Command {
         // Check if robot name is null or empty
         if (robotName == null || robotName.trim().isEmpty()) {
             data.put("message", "Launch command needs a name.");
+            return new Response("ERROR", data, null);
+        }
+
+        // Check if robot type is null or empty
+        if (robotTypeName == null || robotTypeName.trim().isEmpty()) {
+            data.put("message", "Launch command needs a robot type.");
             return new Response("ERROR", data, null);
         }
 
