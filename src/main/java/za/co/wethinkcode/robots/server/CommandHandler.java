@@ -3,6 +3,8 @@ package za.co.wethinkcode.robots.server;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
+import za.co.wethinkcode.robots.robot.RobotType;
+import za.co.wethinkcode.robots.robot.RobotTypeFactory;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.HashMap;
@@ -39,7 +41,14 @@ public class CommandHandler{
                     args.put("steps", arg);
                     break;
                 case "launch":
-                    args.put("name", arg);
+                    String[] parts = arg.split("\\s+"); //take into account robot type
+                    if (parts.length == 2) {
+                    args.put("type", parts[0]);
+                    args.put("name", parts[1]);}
+                    else{
+                        args.put("name", arg);
+                    }
+
                     break;
             }
         }
@@ -52,6 +61,12 @@ public class CommandHandler{
             if ("launch".equalsIgnoreCase(cmdName)||"l".equalsIgnoreCase(cmdName)) {
 //            if ("launch".equalsIgnoreCase(cmdName)) {
                 String name = (String) request.getArguments().get("name");
+                String typeName = (String) request.getArguments().get(("type"));
+
+                if (typeName == null) {
+                    data.put("message", "Launch command needs a robot type.");
+                    return new Response("ERROR", data, null);
+                }
 
                 //Block clients trying to launch more than one robot
                 if (this.robot != null) {
@@ -67,14 +82,22 @@ public class CommandHandler{
                     return new Response("ERROR", data, null);
                 }
 
+                RobotType type = RobotTypeFactory.createRobotType(typeName);
+                if (type == null) { //if no robot gets created aka type doesn't exist
+                    data.put("message", "Unknown robot type: " + typeName);
+                    return new Response("ERROR", data, null);
+                }
+
                 // If all good, launch the robot
                 Position startPos = world.getRandomFreePosition();
-                this.robot = new Robot(name, world, startPos);
+                this.robot = new Robot(name, world, startPos, type);
                 world.addRobot(this.robot);
 
                 data.put("message", "Robot successfully launched.");
                 Position pos = robot.getPosition();
                 data.put("position", new int[]{pos.getX(), pos.getY()});
+                data.put("type", type.getTypeName());
+                data.put("shield", type.getMaxShieldStrength());
 
                 return new Response("OK", data, robot);
 
@@ -89,7 +112,7 @@ public class CommandHandler{
 
                 //If robot has not been launched yet
                 if (robot == null) {
-                    return new Response("ERROR", Map.of("message", "Please launch a robot first using: launch robot-name"), null);
+                    return new Response("ERROR", Map.of("message", "Please launch a robot first using: launch <type> <name>"), null);
                 }
 
                 assert command != null;

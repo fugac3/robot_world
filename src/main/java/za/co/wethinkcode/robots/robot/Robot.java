@@ -20,31 +20,36 @@ public class Robot {
     private final TextWorld world;
     private Position position;
     private String status;
-    private String lastMoveReason ;
-    private int ammo = 5; // starting ammo
+    private String lastMoveReason = "";
+    private int ammo; // current ammo
+    private final int maxAmmo; //starting/max ammo robot has
+    private int currentShieldStrength; //current shield strength
+    private final int maxShieldStrength; //max shield strength of type of robot
+    private final int shootingRange; //how far robot can fire bullets
     private int shotsFired = 0;
-    private static final int bulletMaxDistance = 3;
     private List<Bullet> bullets = new ArrayList<>();
-    private int defence = 2;
-    private boolean isRepairing;
-    private int maxShieldStrength = 100; // Or some other meaningful value
-    private int currentShieldStrength = 100; // Or some other starting value
-    private int repairTime = 5;  // Set a default repair time (in seconds)
-
+    private final RobotType type;
+    private boolean isRepairing = false;
+    private int repairTime = 5;
 
 
 
     private final List<String> commands;
 
-    public Robot(String name,TextWorld world,Position position) {
+    public Robot(String name,TextWorld world,Position position, RobotType type) {
         this.name = name;
         this.position = position;
         this.commands = new ArrayList<>();
         this.world = world;
-        this.maxShieldStrength = maxShieldStrength;
-        this.currentShieldStrength = currentShieldStrength;
-        this.isRepairing = isRepairing;
-//        this.position = new Position(0, 0); // start at center
+        this.type = type;
+        this.status = "NORMAL"; //initialized status
+
+        this.maxAmmo = type.getMaxShots();
+        this.ammo = maxAmmo;
+        this.maxShieldStrength = type.getMaxShieldStrength();
+        this.currentShieldStrength = maxShieldStrength;
+        this.shootingRange = type.getShootingRange();
+
     }
 
 
@@ -68,7 +73,7 @@ public class Robot {
         shotsFired++;
 
         // Create a new bullet travelling in the current direction
-        Bullet bullet = new Bullet(position, currentDirection, bulletMaxDistance, this);
+        Bullet bullet = new Bullet(position, currentDirection, shootingRange, this);
         boolean hit = world.addBulletAndCheckHit(bullet);
 
         status = "NORMAL";
@@ -76,7 +81,6 @@ public class Robot {
 
         return new Response("OK", Map.of("message", message, "shotsFired", shotsFired), this);
     }
-
 
 
     public void updateBullets() {
@@ -95,7 +99,7 @@ public class Robot {
     }
 
     public boolean reload() {
-        ammo = 5; // reset to full ammo
+        ammo = maxAmmo; // reset to full ammo
         status = "RELOAD";
         return true;
     }
@@ -104,16 +108,12 @@ public class Robot {
         return ammo;
     }
 
-    public int getDefence(){
-        return defence;
-    }
-
-    public boolean getIsRepairing(){
+    public boolean getIsRepairing() {
         return isRepairing;
     }
 
-    public int getMaxShieldStrength(){
-        return maxShieldStrength;
+    public int getCurrentShieldStrength() {
+        return currentShieldStrength;
     }
 
     public void applyDamage(int damage) {
@@ -123,22 +123,14 @@ public class Robot {
         }
     }
 
-
     public List<Bullet> getBullets() {
         return bullets;
     }
 
-    public int getCurrentShieldStrength() {
-        return currentShieldStrength;
-    }
-
-
     public boolean repairing() {
         if (isRepairing || currentShieldStrength == maxShieldStrength) {
-            return false; // Already repairing or fully repaired
+            return false;
         }
-
-
         isRepairing = true;
         new Thread(() -> {
             try {
@@ -151,12 +143,8 @@ public class Robot {
                 System.out.println("Shields repaired to maximum strength.");
             }
         }).start();
-
-        return true; // Repair started
+        return true;
     }
-
-
-
 
     public boolean updatePosition(int nrSteps){
 
@@ -258,10 +246,22 @@ public class Robot {
     @Override
     public String toString() {
         return "[" + this.position.getX() + "," + this.position.getY() + "] "
-                + this.name + "> " + this.status;
+                + this.name + " (" + this.type.getTypeName() + ")> "  + this.status;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getMaxAmmo() {
+        return maxAmmo;
+    }
+
+    public int getMaxShieldStrength() {
+        return maxShieldStrength;
+    }
+
+    public int getShootingRange() {
+        return shootingRange;
     }
 }

@@ -1,8 +1,10 @@
 package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
+import za.co.wethinkcode.robots.robot.RobotType;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.TextWorld;
+import za.co.wethinkcode.robots.robot.RobotTypeFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,16 +15,18 @@ import java.util.Map;
  */
 public class LaunchCommand extends Command {
     private final String robotName;
-//    private Robot robot;
+    private final String robotTypeName;
+    private Robot robot;
 
     /**
      * Constructs a new LaunchCommand with the given robot name.
      *
      * @param robotName the name of the robot to launch
      */
-    public LaunchCommand(String robotName) {
-        super("launch", robotName);
+    public LaunchCommand(String robotTypeName,String robotName) {
+        super("launch", robotTypeName + " " + robotName);
         this.robotName = robotName;
+        this.robotTypeName = robotTypeName;
     }
 
     /**
@@ -42,9 +46,22 @@ public class LaunchCommand extends Command {
             data.put("message", "Launch command needs a name.");
         }
 
+        // Check if robot type is null or empty
+        if (robotTypeName == null || robotTypeName.trim().isEmpty()) {
+            data.put("message", "Launch command needs a robot type.");
+            return new Response("ERROR", data, null);
+        }
+
+        // Check if robot type is valid
+        RobotType type = RobotTypeFactory.createRobotType(robotTypeName);
+        if (type == null) {
+            data.put("message", "Unknown robot type: " + robotTypeName);
+            return new Response("ERROR", data, null);
+        }
+
         // Assuming further robot launch logic will be handled later
         // For now, returning a successful response
-        data.put("message", "Launch successful for robot: " + robotName);
+        data.put("message", "Launch successful for " + type.getTypeName() + " robot: " + robotName);
         return new Response("OK", data, null);
     }
 
@@ -56,4 +73,11 @@ public class LaunchCommand extends Command {
     public String getRobotName() {
         return robotName;
     }
+
+    /**
+     * Gets the type of robot to be launched.
+     *
+     * @return the type of the robot
+     */
+    public String getRobotTypeName() {return robotTypeName;}
 }

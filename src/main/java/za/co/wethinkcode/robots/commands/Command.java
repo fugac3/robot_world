@@ -9,6 +9,7 @@ public abstract class Command {
     private String name;
     public String argument;
 
+
     /** The world context in which the command is executed. */
     private TextWorld world;
 
@@ -102,10 +103,10 @@ public abstract class Command {
         switch (args[0]) {
             case "l":
             case "launch":
-                if (args.length < 2 || args[1].isBlank()) {
-                    throw new IllegalArgumentException("Could not parse arguments: Launch command needs a name.");
+                if (args.length < 3 || args[1].isBlank() || args[2].isBlank()) {
+                    throw new IllegalArgumentException("Could not parse arguments: Launch command needs a type and name.");
                 }
-                return new LaunchCommand(args[1].trim());
+                return new LaunchCommand(args[1].trim(), args[2].trim());
             case "robots":
                 return new RobotsCommand();
             case "quit":
