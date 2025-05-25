@@ -1,7 +1,9 @@
 package za.co.wethinkcode.robots.commands;
 
+import za.co.wethinkcode.robots.Combat.HitResult;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
+import za.co.wethinkcode.robots.Combat.Bullet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,24 +24,55 @@ public class FireCommand extends Command {
 
     /**
      * Executes the fire command by checking the robot's ammo and attempting to fire.
-     * If the robot has no ammo, it returns a "Miss" message. Otherwise, it tries to fire
      * and returns either "Hit" or "Miss" based on the result.
-     *
-     * @param robot the {@link Robot} that is executing the command
      * @return a {@link Response} object containing the result of the fire attempt
      */
     @Override
     public Response execute(Robot robot) {
         // Check if the robot has ammo to fire
-        if (robot.getAmmo() <= 0) {
-            // If no ammo, return a "Miss" response with the remaining shots count
-            Map<String, Object> data = new HashMap<>();
-            data.put("message", "Miss");
-            return new Response("FAILED", data, robot);
-        }
+        int currentAmmo = robot.getAmmo();
+        if (currentAmmo <= 0) {
+            // If no ammo, return "Out of ammo" response.
+            robot.setStatus("NORMAL");
+            return new Response("ERROR", Map.of("message", "No ammo"), robot);
+        }else {
+            robot.setAmmo(1); // consuming a bullet
+            // Create a new bullet travelling in the current direction
+            Bullet bullet = new Bullet(robot.getPosition(), robot.getCurrentDirection(), robot.getShootingRange(), robot);
+            int distance = bullet.getDistanceLeft();
+            HitResult result = addBulletAndCheckHit(bullet,robot);
 
-        Response fireResponse = robot.fire();
-        robot.getWorld().updateBullets();
-        return fireResponse;
+            robot.setStatus("NORMAL");
+
+            Map<String, Object> data = new HashMap<>();
+
+            data.put("message: ",result.hit ? "Hit" : "Miss");
+            data.put("distance: ",distance);
+
+            //constructing hit bots data
+            if (result.hit) {
+                data.put("robot", result.hitRobot.getName());
+                result.hitRobot.setStatus("HIT");
+                data.put("state", Response.buildState(result.hitRobot));
+            }
+
+            return new Response("OK", data, robot);
+        }
     }
+
+    public HitResult addBulletAndCheckHit(Bullet bullet,Robot robot) {
+        // Move the bullet and check for collision with robots
+        while (!bullet.hasStopped()) {
+            bullet.move();
+            for (Robot listRobot : robot.getWorld().getAllRobots()) {
+                if (!listRobot.equals(bullet.getShooter()) && listRobot.getPosition().equals(bullet.getPosition())) {
+                    // Apply damage here!
+                    listRobot.applyDamage(1);  // Apply damage, adjust as needed
+                    return new HitResult(true, listRobot);
+                }
+            }
+        }
+        return new HitResult(false, null);
+    }
+
 }

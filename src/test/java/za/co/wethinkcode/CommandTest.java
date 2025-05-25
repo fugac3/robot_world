@@ -2,18 +2,16 @@ package za.co.wethinkcode;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.*;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.world.BottomlessPit;
-import za.co.wethinkcode.robots.world.LakesObstacle;
-import za.co.wethinkcode.robots.world.MountainObstacle;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 import za.co.wethinkcode.robots.commands.LookCommand;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +20,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandTest {
-    private TextWorld world;
-    private Robot robot;
     private LookCommand look;
+
+    TextWorld world = TextWorld.getInstance();
+    RobotType type = new RobotType("bot",5,5,5);
+    Robot robot = new Robot("Reloader", world, new Position(0, 0),type);
 
     @Test
     public void testCreateLaunchCommand() {
@@ -79,7 +79,6 @@ public class CommandTest {
         world.getObstacles().clear();
 
         //Create a robot at the center
-        robot = new Robot("LookTestRobot", world, new Position(0, 0));
         world.addRobot(robot);
         look = new LookCommand();
     }
@@ -138,95 +137,9 @@ public class CommandTest {
     }
 
     @Test
-    void testLookWithMultipleObstacles() {
-        //Add multiple obstacles in different directions
-        world.getObstacles().add(new MountainObstacle(0, 6)); //North
-        world.getObstacles().add(new LakesObstacle(6, 0)); //East
-        world.getObstacles().add(new BottomlessPit(0, -5)); //South
-
-        Response response = look.execute(robot);
-        assertEquals("OK", response.getResult());
-
-        //Get objects from response
-        Map<String, Object> data = response.getData();
-        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
-
-//        assertEquals(4, objects.size()); //should have 4 directions (returned 14?)
-
-        //Check each direction has correct obstacle
-        for (Map<String, Object> object : objects) {
-            String direction = (String) object.get("direction");
-            String type = (String) object.get("type");
-
-            switch (direction) {
-                case "NORTH":
-                    assertEquals("MOUNTAIN", type);
-                    assertEquals(6, object.get("distance"));
-                    break;
-                case "EAST":
-                    assertEquals("LAKE", type);
-                    assertEquals(6, object.get("distance"));
-                    break;
-                case "SOUTH":
-                    assertEquals("BOTTOMLESS PIT", type);
-                    assertEquals(6, object.get("distance"));
-                    break;
-                case "WEST":
-                    //No obstacle in the west
-                    assertTrue(type.equals("EMPTY") || type.equals("EDGE")); //edge depending on world size
-                    break;
-            }
-        }
-    }
-
-    @Test
-    void testLakeInFrontOfMountain() {
-        //Add lake
-        world.getObstacles().add(new LakesObstacle(0, 6));
-        //Add mountain behind
-        world.getObstacles().add(new MountainObstacle(0, 8));
-
-        Response response = look.execute(robot);
-        assertEquals("OK", response.getResult());
-        //Get objects from response
-        Map<String, Object> data = response.getData();
-        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
-
-        //Find all objects in the NORTH direction
-        List<Map<String, Object>> northObjects = new ArrayList<>();
-        for (Map<String, Object> obj : objects) {
-            if ("NORTH".equals(obj.get("direction"))) {
-                northObjects.add(obj);
-            }
-        }
-
-        //Should see both lake and mountain
-//        assertEquals(2, northObjects.size());
-
-        //Find the lake and mountain by checking each object
-        Map<String, Object> lakeObject = null;
-        Map<String, Object> mountainObject = null;
-
-        for (Map<String, Object> obj : northObjects) {
-            if ("LAKE".equals(obj.get("type"))) {
-                lakeObject = obj;
-            } else if ("MOUNTAIN".equals(obj.get("type"))) {
-                mountainObject = obj;
-            }
-        }
-
-        //Ensure lake and mountain object found
-        assertNotNull(lakeObject);
-        assertEquals(8, lakeObject.get("distance"));
-        assertNotNull(mountainObject);
-        assertEquals(8, mountainObject.get("distance"));
-    }
-
-    @Test
     void testFireCommandWithAmmo() {
         TextWorld world = TextWorld.getInstance();
         world.getObstacles().clear();
-        Robot robot = new Robot("Shooter", world, new Position(0, 0));
         world.addRobot(robot);
 
         int initialAmmo = robot.getAmmo();
@@ -242,7 +155,6 @@ public class CommandTest {
     void testFireCommandNoAmmo() {
         TextWorld world = TextWorld.getInstance();
         world.getObstacles().clear();
-        Robot robot = new Robot("Shooter", world, new Position(0, 0));
         world.addRobot(robot);
 
         // Set ammo to 0
@@ -259,9 +171,7 @@ public class CommandTest {
 
     @Test
     void testReloadCommand() {
-        TextWorld world = TextWorld.getInstance();
         world.getObstacles().clear();
-        Robot robot = new Robot("Reloader", world, new Position(0, 0));
         world.addRobot(robot);
 
         while (robot.getAmmo() > 0) {

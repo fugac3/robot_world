@@ -1,10 +1,13 @@
 package za.co.wethinkcode.robots.commands;
 
+import za.co.wethinkcode.robots.Obstacles.BottomlessPit;
+import za.co.wethinkcode.robots.Obstacles.LakesObstacle;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
+import za.co.wethinkcode.robots.Obstacles.Obstacle;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.*;
-import za.co.wethinkcode.robots.commands.Direction;
 
 import java.util.ArrayList;
 import java.util.HashMap;

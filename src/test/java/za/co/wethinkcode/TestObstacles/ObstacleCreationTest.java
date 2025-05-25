@@ -3,10 +3,10 @@ package za.co.wethinkcode.TestObstacles;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import za.co.wethinkcode.robots.world.BottomlessPit;
-import za.co.wethinkcode.robots.world.MountainObstacle;
-import za.co.wethinkcode.robots.world.Obstacle;
-import za.co.wethinkcode.robots.world.LakesObstacle;
+import za.co.wethinkcode.robots.Obstacles.BottomlessPit;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
+import za.co.wethinkcode.robots.Obstacles.Obstacle;
+import za.co.wethinkcode.robots.Obstacles.LakesObstacle;
 
 public class ObstacleCreationTest {
 

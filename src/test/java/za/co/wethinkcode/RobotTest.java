@@ -2,11 +2,12 @@ package za.co.wethinkcode;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.*;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.world.MountainObstacle;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.Map;
@@ -22,7 +23,9 @@ class RobotTest {
         //Creating a controlled environment with no obstacles and defined position to make testing easier
         world = TextWorld.getInstance();
         world.getObstacles().clear(); //get rid of all obstacles in world
-        robot = new Robot("Robo", world, new Position(0,0));
+        TextWorld world = new TextWorld();
+        RobotType type = new RobotType("bot",5,5,5);
+        robot = new Robot("Robo", world, new Position(0,0),type);
         robot.setStatus("NORMAL");
     }
 

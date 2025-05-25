@@ -56,13 +56,12 @@ public class ServerClientTest {
             assertTrue(welcome.contains("TestClient"));
 
             // Send launch command
-            writer.write("launch TestBot");
+            writer.write("launch wasp TestBot");
             writer.newLine();
             writer.flush();
 
             String launchResponse = reader.readLine();
-            assertTrue(launchResponse.contains("Robot successfully launched."));
-
+            assertTrue(launchResponse.contains("OK"));
         } catch (IOException e) {
             fail("Client failed to connect or communicate: " + e.getMessage());
         }

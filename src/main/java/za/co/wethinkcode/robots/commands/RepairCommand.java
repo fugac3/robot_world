@@ -2,7 +2,6 @@ package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.world.Bullet;
 
 import java.util.HashMap;
 import java.util.Map;

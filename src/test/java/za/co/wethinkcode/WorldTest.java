@@ -4,9 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 import za.co.wethinkcode.robots.robot.Position;
-import za.co.wethinkcode.robots.world.Obstacle;
+import za.co.wethinkcode.robots.Obstacles.Obstacle;
 import za.co.wethinkcode.robots.robot.Robot;
 
 import java.util.List;
@@ -14,9 +16,15 @@ import java.util.List;
 public class WorldTest {
     private TextWorld textWorld;
 
+    TextWorld world = new TextWorld();
+    RobotType type = new RobotType("bot",5,5,5);
+    Robot robot = new Robot("Robo", world,new Position(0,0),type);
+
     @Test
     void testWorldCreation() { //world should start off with at least one obstacle
         TextWorld world = new TextWorld();
+        Position obstaclePos = new Position(2, 0);
+        world.getObstacles().add(new MountainObstacle(obstaclePos.getX(), obstaclePos.getY()));
         List<Obstacle> obstacles = world.getObstacles(); //get list of obstacles in world
 
         assertFalse(obstacles.isEmpty()); //should not be 0
@@ -39,8 +47,7 @@ public class WorldTest {
 
     @Test
     void testObstacleBlocksPath() {
-        TextWorld world = new TextWorld();
-        Robot robot = new Robot("Robo", world,new Position(0,0));
+
 //        TextWorld obstacle = new TextWorld();
         Position pastObstacle = new Position(7, 11);
         //Blocked
@@ -91,9 +98,6 @@ public class WorldTest {
 
         @Test
         public void testAddRobot() {
-            // Create a new robot
-            Position pos = new Position(0,0);
-            Robot robot = new Robot("bot", textWorld,pos);
 
             // Add the robot to the world
             textWorld.addRobot(robot);
@@ -105,7 +109,7 @@ public class WorldTest {
         @Test
         public void testgetAllRobots(){
             Position pos = new Position(0,0);
-            Robot robot = new Robot("bot", textWorld,pos);
+//            Robot robot = new Robot("bot", textWorld,pos);
 
             textWorld.getAllRobots();
 
@@ -116,7 +120,7 @@ public class WorldTest {
         public void testBlocksPath() {
             // Create a new world and a robot
             Position pos = new Position(4,5);
-            Robot robot = new Robot("bot", textWorld,pos);
+//            Robot robot = new Robot("bot", textWorld,pos);
 
             // Set up some obstacles (this should be done in your world setup)
             textWorld.blocksPath(new Position(5, 5), new Position(9, 9)); // Example, actual obstacle setup needed

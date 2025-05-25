@@ -1,4 +1,4 @@
-package za.co.wethinkcode.robots.world;
+package za.co.wethinkcode.robots.Combat;
 
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
@@ -35,6 +35,11 @@ public class Bullet {
         this.direction = direction;
         this.distanceLeft = maxDistance;
         this.shooter = shooter;
+    }
+
+
+    public int getDistanceLeft() {
+        return distanceLeft;
     }
 
     public Robot getShooter() {
@@ -81,7 +86,7 @@ public class Bullet {
         return distanceLeft <= 0;
     }
 
-    // toString added for debugging purposes. Can be removed if needed.
+    // toString added for debugging purposes.
     public String toString() {
         return "Bullet{pos=" + position +
                 ", dir=" + direction +

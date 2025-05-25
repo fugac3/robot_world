@@ -1,10 +1,9 @@
 package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
-import za.co.wethinkcode.robots.robot.RobotType;
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.world.TextWorld;
-import za.co.wethinkcode.robots.robot.RobotTypeFactory;
+import za.co.wethinkcode.robots.RobotTypes.RobotTypeFactory;
 
 import java.util.HashMap;
 import java.util.Map;

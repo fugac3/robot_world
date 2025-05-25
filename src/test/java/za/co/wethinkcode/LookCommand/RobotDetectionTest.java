@@ -1,6 +1,7 @@
 package za.co.wethinkcode.LookCommand;
 
 import org.junit.jupiter.api.Test;
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.commands.LookCommand;
 import za.co.wethinkcode.robots.robot.Position;
@@ -17,8 +18,9 @@ public class RobotDetectionTest {
     TextWorld world = TextWorld.getInstance();
     Position robotPos1 = new Position(0, 0);
     Position robotPos2 = new Position(1, 0);
-    Robot robot1 = new Robot("TestBot1",world,robotPos1);
-    Robot robot2 = new Robot("TestBot2",world,robotPos2);
+    RobotType type = new RobotType("bot",5,5,5);
+    Robot robot1 = new Robot("TestBot1",world,robotPos1,type);
+    Robot robot2 = new Robot("TestBot2",world,robotPos2,type);
     LookCommand lookCmd = new LookCommand();
 
     @Test

@@ -2,6 +2,10 @@ package za.co.wethinkcode;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import za.co.wethinkcode.robots.Obstacles.BottomlessPit;
+import za.co.wethinkcode.robots.Obstacles.LakesObstacle;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.LookCommand;
 import za.co.wethinkcode.robots.robot.*;
 import za.co.wethinkcode.robots.server.Response;
@@ -17,6 +21,7 @@ public class LookCommandTest {
     private TextWorld world;
     private Robot robot;
     private LookCommand look;
+    RobotType type = new RobotType("bot",5,5,5);
 
     @BeforeEach
     void setUp() {
@@ -25,7 +30,7 @@ public class LookCommandTest {
         world.getObstacles().clear();
 
         //Create a robot at the center
-        robot = new Robot("LookTestRobot", world, new Position(0, 0));
+        robot = new Robot("LookTestRobot", world, new Position(0, 0),type);
         world.addRobot(robot);
         look = new LookCommand();
     }
@@ -38,6 +43,7 @@ public class LookCommandTest {
         //Get objects from response
         Map<String, Object> data = response.getData();
         assertNotNull(data); //shouldn't be null
+        @SuppressWarnings("unchecked")
         List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects"); //list of objects from data dict
         assertNotNull(objects);
 
@@ -136,6 +142,7 @@ public class LookCommandTest {
         assertEquals("OK", response.getResult());
         //Get objects from response
         Map<String, Object> data = response.getData();
+        @SuppressWarnings("unchecked")
         List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
 
         //Find all objects in the NORTH direction

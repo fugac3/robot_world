@@ -1,14 +1,14 @@
 package za.co.wethinkcode.robots.robot;
 
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.world.Bullet;
+import za.co.wethinkcode.robots.Combat.Bullet;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Robot {
     public static final Position CENTRE = new Position(0,0);
@@ -32,8 +32,6 @@ public class Robot {
     private boolean isRepairing = false;
     private int repairTime = 5;
 
-
-
     private final List<String> commands;
 
     public Robot(String name,TextWorld world,Position position, RobotType type) {
@@ -52,7 +50,6 @@ public class Robot {
 
     }
 
-
     public void setStatus(String status) {
         this.status = status;
     }
@@ -60,28 +57,6 @@ public class Robot {
     public String getStatus() {
         return this.status;
     }
-
-
-
-    public Response fire() {
-        if (ammo <= 0) {
-            status = "NORMAL";
-            return new Response("ERROR", Map.of("message", "No ammo"), this);
-        }
-
-        ammo--; // consuming a bullet
-        shotsFired++;
-
-        // Create a new bullet travelling in the current direction
-        Bullet bullet = new Bullet(position, currentDirection, shootingRange, this);
-        boolean hit = world.addBulletAndCheckHit(bullet);
-
-        status = "NORMAL";
-        String message = hit ? "Hit" : "Miss";
-
-        return new Response("OK", Map.of("message", message, "shotsFired", shotsFired), this);
-    }
-
 
     public void updateBullets() {
         List<Bullet> activeBullets = new ArrayList<>();
@@ -106,6 +81,10 @@ public class Robot {
 
     public int getAmmo() {
         return ammo;
+    }
+
+    public void setAmmo(int ammoShot) {
+        this.ammo = ammo - ammoShot;
     }
 
     public boolean getIsRepairing() {
@@ -196,7 +175,6 @@ public class Robot {
         return lastMoveReason;
     }
 
-
     public Position getPosition() {
         return this.position;
     }
@@ -205,15 +183,9 @@ public class Robot {
         this.position = newPosition;
     }
 
-
-
-
     public TextWorld getWorld() {
         return this.world;
     }
-
-
-
 
     public Direction getCurrentDirection() {
         return this.currentDirection;
@@ -240,8 +212,6 @@ public class Robot {
     public void turnLeft() {
         this.currentDirection = this.currentDirection.turnLeft();
     }
-
-
 
     @Override
     public String toString() {
