@@ -1,7 +1,9 @@
 package za.co.wethinkcode.robots.world;
 
-import za.co.wethinkcode.robots.commands.Direction;
-import za.co.wethinkcode.robots.robot.Position;
+import za.co.wethinkcode.robots.Obstacles.BottomlessPit;
+import za.co.wethinkcode.robots.Obstacles.LakesObstacle;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
+import za.co.wethinkcode.robots.Obstacles.Obstacle;
 
 import java.util.*;
 

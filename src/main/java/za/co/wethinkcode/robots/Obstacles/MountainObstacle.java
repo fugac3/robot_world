@@ -1,10 +1,6 @@
-package za.co.wethinkcode.robots.world;
+package za.co.wethinkcode.robots.Obstacles;
 
 import za.co.wethinkcode.robots.commands.VisibleObjectType;
-import za.co.wethinkcode.robots.robot.Position;
-import za.co.wethinkcode.robots.robot.Robot;
-
-import java.util.List;
 
 /**
  * Represents a mountain obstacle in the robot world.

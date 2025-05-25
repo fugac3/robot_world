@@ -1,12 +1,12 @@
 package za.co.wethinkcode.LookCommand;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.commands.LookCommand;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
-import za.co.wethinkcode.robots.world.MountainObstacle;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
@@ -24,10 +24,11 @@ public class EdgeDetectionTest {
     Position TOP_LEFT = new Position(-5,5);
     Position BOTTOM_RIGHT = new Position(5,-5);
     TextWorld world = TextWorld.getInstance(TOP_LEFT,BOTTOM_RIGHT);
+    RobotType type = new RobotType("bot",5,5,5);
     LookCommand lookCmd = new LookCommand();
 
     //Create a robot at the center
-    Robot robot = new Robot("TestBot", world, new Position(0, 0));
+    Robot robot = new Robot("TestBot", world, new Position(0, 0),type);
 
     @Test
     public void testEdgeDetection() {

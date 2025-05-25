@@ -1,13 +1,14 @@
 package za.co.wethinkcode.LookCommand;
 
 import org.junit.jupiter.api.Test;
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.LookCommand;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.commands.Direction;
-import za.co.wethinkcode.robots.world.BottomlessPit;
-import za.co.wethinkcode.robots.world.LakesObstacle;
-import za.co.wethinkcode.robots.world.MountainObstacle;
+import za.co.wethinkcode.robots.Obstacles.BottomlessPit;
+import za.co.wethinkcode.robots.Obstacles.LakesObstacle;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 
@@ -20,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AllObstacleTypeFoundTest {
     TextWorld world = TextWorld.getInstance();
     Position robotPos = new Position(0, 0);
-    Robot robot = new Robot("TestBot",world,robotPos);
+    RobotType type = new RobotType("bot",5,5,5);
+    Robot robot = new Robot("TestBot",world,robotPos,type);
     LookCommand lookCmd = new LookCommand();
 
     @Test

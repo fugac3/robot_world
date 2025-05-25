@@ -1,12 +1,12 @@
 package za.co.wethinkcode.LookCommand;
 
 import org.junit.jupiter.api.Test;
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.LookCommand;
-import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.world.MountainObstacle;
+import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.*;
@@ -21,6 +21,7 @@ public class LookMainTest {
     Position TOP_LEFT = new Position(-5,5);
     Position BOTTOM_RIGHT = new Position(5,-5);
     TextWorld world = TextWorld.getInstance(TOP_LEFT,BOTTOM_RIGHT);
+    RobotType type = new RobotType("bot",5,5,5);
     LookCommand lookCmd = new LookCommand();
 
     @Test
@@ -32,8 +33,8 @@ public class LookMainTest {
         Position robot2Pos = new Position(1, 0);
         Position obstaclePos = new Position(2, 0);
 
-        Robot robot = new Robot("Looker", world, robotPos);
-        Robot other = new Robot("Target", world, robot2Pos);
+        Robot robot = new Robot("Looker", world, robotPos,type);
+        Robot other = new Robot("Target", world, robot2Pos,type);
 
         robot.getWorld().setVisibilityConstraint(10);
 
@@ -68,24 +69,20 @@ public class LookMainTest {
         );
         assertTrue(foundWestEmpty, "Expected an EDGE object in the WEST direction");
 
-        long objectCount = objects.stream().filter(obj ->
-                obj.get("type").equals("EDGE")
-        ).count();
+        long edgeCount = objects.stream().filter(obj ->
+                obj.get("type").equals("EDGE")).count();
 
-        assertEquals(3, objectCount, "Expected 5 objects");
+        long robotCount = objects.stream().filter(obj ->
+                obj.get("type").equals("ROBOT")).count();
 
-//        Map<String, Object> first = objects.get(0);
-//        assertEquals("ROBOT", first.get("type"));
-//        assertEquals("EAST", first.get("direction"));
-//
-//        Map<String, Object> second = objects.get(1);
-//        assertEquals("MOUNTAIN", second.get("type"));
-//        assertEquals("EAST", second.get("direction"));
+        long mountainObstacleCount = objects.stream().filter(obj ->
+                obj.get("type").equals("MOUNTAIN")).count();
 
-//        Map<String, Object> seen = objects.get(0);
-//        assertEquals("ROBOT", seen.get("type"));
-//        assertEquals("EAST", seen.get("direction"));
-//        assertEquals(1, seen.get("distance"));
+        assertEquals(3, edgeCount, "Expected 3 edges");
+
+        assertEquals(1, robotCount, "Expected 1 robot");
+
+        assertEquals(1, mountainObstacleCount, "Expected 1 mountain obstacle");
     }
 
 

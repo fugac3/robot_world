@@ -2,7 +2,7 @@ package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.world.Obstacle;
+import za.co.wethinkcode.robots.Obstacles.Obstacle;
 
 import java.util.ArrayList;
 import java.util.HashMap;

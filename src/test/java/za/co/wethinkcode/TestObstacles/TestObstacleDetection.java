@@ -2,6 +2,7 @@ package za.co.wethinkcode.TestObstacles;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import za.co.wethinkcode.robots.RobotTypes.RobotType;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.world.*;
@@ -19,7 +20,8 @@ public class TestObstacleDetection {
         world.reset(false); // clears all robots and obstacles
 
         Position robotPos = new Position(0, 0);
-        testRobot = new Robot("TestBot",world,robotPos);
+        RobotType type = new RobotType("bot",5,5,5);
+        testRobot = new Robot("TestBot",world,robotPos,type);
         world.addRobot(testRobot);
     }
 
