@@ -1,5 +1,7 @@
 package za.co.wethinkcode.robots.world;
 
+import za.co.wethinkcode.robots.commands.VisibleObjectType;
+
 /**
  * Represents a Bottomless Pit obstacle in the world.
  * This type of obstacle extends {@link Obstacle} and
@@ -23,6 +25,6 @@ public class BottomlessPit extends Obstacle {
      * @return a string representing the type: "bottomless pits".
      */
     public String getType() {
-        return "bottomless pits";
+        return VisibleObjectType.BOTTOMLESS_PIT.name();
     }
 }

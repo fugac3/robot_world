@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robots.world;
 
+import za.co.wethinkcode.robots.commands.VisibleObjectType;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 /**
  * Represents a mountain obstacle in the robot world.
- * This type of obstacle extends {@link RectangleObstacle} and typically blocks robot movement.
+ * This type of obstacle extends {@link Obstacle} and typically blocks robot movement.
  */
 public class MountainObstacle extends Obstacle {
 
@@ -27,6 +28,6 @@ public class MountainObstacle extends Obstacle {
      * @return a string representing the obstacle type: "Mountain"
      */
     public String getType(){
-        return "Mountain";
+        return VisibleObjectType.MOUNTAIN.name();
     }
 }

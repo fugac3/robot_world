@@ -11,6 +11,8 @@ public class Response {
     private final Map<String, Object> data;
     private final Map<String, Object> state;
 
+
+
     public Response(String result, Map<String, Object> data, Robot robot) {
         this.result = result;
         this.data = data;
@@ -22,9 +24,10 @@ public class Response {
         Map<String, Object> currentState = new HashMap<>();
         Position pos = robot.getPosition();
         currentState.put("position", new int[]{pos.getX(), pos.getY()});
+        currentState.put("shots", robot.getAmmo());
         currentState.put("direction", robot.getCurrentDirection());
         currentState.put("status", robot.getStatus());
-        currentState.put("shots", robot.getAmmo());
+        currentState.put("Health", robot.getCurrentShieldStrength());
         return currentState;
     }
 
@@ -39,6 +42,9 @@ public class Response {
     public String getResult() {
         return result;
     }
+
+
+
 
 
 }

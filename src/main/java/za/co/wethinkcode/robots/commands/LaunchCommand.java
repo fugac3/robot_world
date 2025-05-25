@@ -44,7 +44,6 @@ public class LaunchCommand extends Command {
         // Check if robot name is null or empty
         if (robotName == null || robotName.trim().isEmpty()) {
             data.put("message", "Launch command needs a name.");
-            return new Response("ERROR", data, null);
         }
 
         // Check if robot type is null or empty

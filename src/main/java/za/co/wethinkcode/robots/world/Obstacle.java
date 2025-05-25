@@ -4,10 +4,11 @@ import za.co.wethinkcode.robots.robot.Position;
 
 /**
  * Represents a rectangular obstacle in the robot world.
- * This class implements the {@link Obstacle} interface and defines a fixed-size
  * rectangle that can block robot movement and pathfinding.
  */
-public class Obstacle {
+public abstract class Obstacle {
+
+    public abstract String getType();
 
     /** The X-coordinate of the bottom-left corner of the rectangle. */
     private final int bottomLeftX;
@@ -15,6 +16,7 @@ public class Obstacle {
     /** The Y-coordinate of the bottom-left corner of the rectangle. */
     private final int bottomLeftY;
 
+    //default for tests 7,5
     /** The fixed height of the rectangle. */
     private final int height = 5;
 
@@ -69,6 +71,17 @@ public class Obstacle {
     public int getTopRightY() {
         return bottomLeftY + height - 1;
     }
+
+
+
+    public Position ObstacleBottomLeft() {
+        return new Position(getBottomLeftX(),getBottomLeftY());
+    }
+
+    public Position ObstacleTopRight() {
+        return new Position(getTopRightX(),getTopRightY());
+    }
+
 
     /**
      * Checks if a given position is within the obstacle.
