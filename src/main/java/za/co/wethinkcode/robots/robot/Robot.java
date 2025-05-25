@@ -7,6 +7,7 @@ import za.co.wethinkcode.robots.world.Bullet;
 import za.co.wethinkcode.robots.world.TextWorld;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Robot {
     public static final Position CENTRE = new Position(0,0);
@@ -21,13 +22,14 @@ public class Robot {
     private String lastMoveReason = "";
     private int ammo; // current ammo
     private final int maxAmmo; //starting/max ammo robot has
-    private int shieldStrength; //current shield strength
+    private int currentShieldStrength; //current shield strength
     private final int maxShieldStrength; //max shield strength of type of robot
     private final int shootingRange; //how far robot can fire bullets
     private int shotsFired = 0;
-    private static final int bulletMaxDistance = 3;
     private List<Bullet> bullets = new ArrayList<>();
     private final RobotType type;
+    private boolean isRepairing = false;
+    private int repairTime = 5;
 
 
 
@@ -44,7 +46,7 @@ public class Robot {
         this.maxAmmo = type.getMaxShots();
         this.ammo = maxAmmo;
         this.maxShieldStrength = type.getMaxShieldStrength();
-        this.shieldStrength = maxShieldStrength;
+        this.currentShieldStrength = maxShieldStrength;
         this.shootingRange = type.getShootingRange();
 
     }
@@ -60,24 +62,25 @@ public class Robot {
 
 
 
-    public boolean fire() {
+    public Response fire() {
         if (ammo <= 0) {
             status = "NORMAL";
-            return false;
+            return new Response("ERROR", Map.of("message", "No ammo"), this);
         }
 
         ammo--; // consuming a bullet
         shotsFired++;
 
         // Create a new bullet travelling in the current direction
-        Bullet bullet = new Bullet(position, currentDirection, shootingRange); //use robot type's shooting range
-        bullets.add(bullet);
+        Bullet bullet = new Bullet(position, currentDirection, shootingRange, this);
+        boolean hit = world.addBulletAndCheckHit(bullet);
 
-        boolean hit = false; // boolean hit = world.isBulletBlocked(bullet.getPosition()); (for later use)
         status = "NORMAL";
-        return hit;
-//        return new Response("OK", new FireData(hit ? "Hit" : "Miss", shotsFired));
+        String message = hit ? "Hit" : "Miss";
+
+        return new Response("OK", Map.of("message", message, "shotsFired", shotsFired), this);
     }
+
 
     public void updateBullets() {
         List<Bullet> activeBullets = new ArrayList<>();
@@ -102,6 +105,44 @@ public class Robot {
 
     public int getAmmo() {
         return ammo;
+    }
+
+    public boolean getIsRepairing() {
+        return isRepairing;
+    }
+
+    public int getCurrentShieldStrength() {
+        return currentShieldStrength;
+    }
+
+    public void applyDamage(int damage) {
+        this.currentShieldStrength -= damage;
+        if (this.currentShieldStrength < 0) {
+            this.currentShieldStrength = 0;
+        }
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public boolean repairing() {
+        if (isRepairing || currentShieldStrength == maxShieldStrength) {
+            return false;
+        }
+        isRepairing = true;
+        new Thread(() -> {
+            try {
+                Thread.sleep(repairTime * 1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                currentShieldStrength = maxShieldStrength;
+                isRepairing = false;
+                System.out.println("Shields repaired to maximum strength.");
+            }
+        }).start();
+        return true;
     }
 
     public boolean updatePosition(int nrSteps){
@@ -213,10 +254,6 @@ public class Robot {
 
     public int getMaxAmmo() {
         return maxAmmo;
-    }
-
-    public int getShieldStrength() {
-        return shieldStrength;
     }
 
     public int getMaxShieldStrength() {
