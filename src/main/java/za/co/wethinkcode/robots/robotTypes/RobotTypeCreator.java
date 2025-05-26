@@ -1,6 +1,6 @@
 package za.co.wethinkcode.robots.robotTypes;
 
-public class RobotTypeFactory {
+public class RobotTypeCreator {
 
     public static RobotType createRobotType(String robotType){
         if (robotType == null){
