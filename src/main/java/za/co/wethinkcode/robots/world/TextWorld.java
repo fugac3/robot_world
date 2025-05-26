@@ -1,10 +1,9 @@
 package za.co.wethinkcode.robots.world;
 
-import za.co.wethinkcode.robots.Obstacles.Obstacle;
-import za.co.wethinkcode.robots.commands.Direction;
+import za.co.wethinkcode.robots.obstacles.Obstacle;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
-import za.co.wethinkcode.robots.Combat.Bullet;
+import za.co.wethinkcode.robots.combat.Bullet;
 
 import java.util.*;
 

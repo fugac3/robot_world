@@ -1,9 +1,9 @@
 package za.co.wethinkcode.robots.commands;
 
-import za.co.wethinkcode.robots.Combat.HitResult;
+import za.co.wethinkcode.robots.combat.HitResult;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.Combat.Bullet;
+import za.co.wethinkcode.robots.combat.Bullet;
 
 import java.util.HashMap;
 import java.util.Map;

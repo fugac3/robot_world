@@ -1,4 +1,4 @@
-package za.co.wethinkcode.robots.RobotTypes;
+package za.co.wethinkcode.robots.robotTypes;
 
 public class RobotTypeFactory {
 

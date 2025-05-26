@@ -1,4 +1,4 @@
-package za.co.wethinkcode.robots.RobotTypes;
+package za.co.wethinkcode.robots.robotTypes;
 
 public class WaspRobot extends RobotType { //this robot is a quick attacker
     public WaspRobot() {
