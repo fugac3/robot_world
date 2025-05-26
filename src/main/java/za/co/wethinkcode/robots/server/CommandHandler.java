@@ -54,6 +54,8 @@ public class CommandHandler {
                         args.put("name", arg);
                     }
                     break;
+
+
             }
         }
 
