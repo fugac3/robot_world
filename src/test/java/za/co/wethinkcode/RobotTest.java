@@ -121,6 +121,7 @@ class RobotTest {
         assertEquals(new Position(0,5), robot.getPosition());
 
         robot.turnRight();
+
         robot.updatePosition(7);
         assertEquals(new Position(7,5), robot.getPosition());
     }

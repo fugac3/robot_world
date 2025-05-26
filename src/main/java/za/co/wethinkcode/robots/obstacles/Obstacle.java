@@ -72,8 +72,6 @@ public abstract class Obstacle {
         return bottomLeftY + height - 1;
     }
 
-
-
     public Position ObstacleBottomLeft() {
         return new Position(getBottomLeftX(),getBottomLeftY());
     }
@@ -81,7 +79,6 @@ public abstract class Obstacle {
     public Position ObstacleTopRight() {
         return new Position(getTopRightX(),getTopRightY());
     }
-
 
     /**
      * Checks if a given position is within the obstacle.

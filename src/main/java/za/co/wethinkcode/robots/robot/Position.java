@@ -17,7 +17,6 @@ public class Position {
         return y;
     }
 
-
     public boolean isIn(Position topLeft, Position bottomRight) {
         boolean withinTop = this.y <= topLeft.getY();
         boolean withinBottom = this.y >= bottomRight.getY();
@@ -25,8 +24,6 @@ public class Position {
         boolean withinRight = this.x <= bottomRight.getX();
         return withinTop && withinBottom && withinLeft && withinRight;
     }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -36,20 +33,13 @@ public class Position {
         return x == position.x && y == position.y;
     }
 
-
     @Override
     public String toString() {
         return "[" + x + "," + y + "]";  // Format coordinates as [x,y]
     }
 
-    public Position copy() {
-        return new Position(this.x, this.y);
-    }
-
-
     @Override
     public int hashCode() {
         return 31 * x + y;
     }
-
 }
