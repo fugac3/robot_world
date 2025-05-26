@@ -1,10 +1,7 @@
 package za.co.wethinkcode.TestRobotTypes;
 
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robots.robotTypes.BunkerRobot;
-import za.co.wethinkcode.robots.robotTypes.CannonRobot;
-import za.co.wethinkcode.robots.robotTypes.RobotType;
-import za.co.wethinkcode.robots.robotTypes.StormcallerRobot;
+import za.co.wethinkcode.robots.robotTypes.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,6 +32,24 @@ public class RobotTypesTest {
         assertEquals(2, stormcaller.getMaxShieldStrength());
         assertEquals(4, stormcaller.getMaxShots());
         assertEquals(5, stormcaller.getShootingRange());
+    }
+
+    @Test
+    void testWasp(){
+        RobotType wasp = new WaspRobot();
+
+        assertEquals(1, wasp.getMaxShieldStrength());
+        assertEquals(4, wasp.getMaxShots());
+        assertEquals(2, wasp.getShootingRange());
+    }
+
+    @Test
+    void testWhiplash(){
+        RobotType whiplash = new WhiplashRobot();
+
+        assertEquals(2, whiplash.getMaxShieldStrength());
+        assertEquals(5, whiplash.getMaxShots());
+        assertEquals(3, whiplash.getShootingRange());
     }
 
 }
