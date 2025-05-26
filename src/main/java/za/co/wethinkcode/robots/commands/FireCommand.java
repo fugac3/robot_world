@@ -41,16 +41,16 @@ public class FireCommand extends Command {
         // Consume a bullet
         robot.setAmmo(1);
 
-        // Create a new bullet travelling in the current direction
+        // Create a new bullet traveling in the current direction
         Bullet bullet = new Bullet(robot.getPosition(), robot.getCurrentDirection(), robot.getShootingRange(), robot);
 
-        // Check for collision with robots and determine hit result
+        // Check for collision with robots and determines a hit result
         HitResult result = addBulletAndCheckHit(bullet, robot);
 
         // Build response based on hit or miss
         Response response = (result.hitRobot != null)
                 ? buildHitResponse(robot, result, bullet.getDistanceLeft())
-                :buildMissResponse(robot);
+                : buildMissResponse(robot);
 
         robot.setStatus("NORMAL");
         return response;
@@ -92,6 +92,7 @@ public class FireCommand extends Command {
         while (!bullet.hasStopped()) {
             bullet.move();
             for (Robot other : robot.getWorld().getAllRobots()) {
+                // Checks that the other robot is not the shooter and is at the same position as the bullet
                 if (!other.equals(bullet.getShooter()) && other.getPosition().equals(bullet.getPosition())) {
                     // Apply damage to the hit robot
                     other.applyDamage(1);
