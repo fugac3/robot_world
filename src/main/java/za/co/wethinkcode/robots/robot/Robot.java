@@ -4,7 +4,6 @@ import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.combat.Bullet;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
@@ -24,11 +23,13 @@ public class Robot {
     private final int shootingRange; //how far robot can fire bullets
     private final RobotType type;
     private boolean isRepairing = false;
-    private final int repairTime = 5;
+    private final int repairTime = 10;
+    private int robotHealth = 1;
 
     private final List<String> commands;
 
     public Robot(String name,TextWorld world,Position position, RobotType type) {
+        this.robotHealth = getRobotHealth();
         this.name = name;
         this.position = position;
         this.commands = new ArrayList<>();
@@ -40,6 +41,14 @@ public class Robot {
         this.maxShieldStrength = type.getMaxShieldStrength();
         this.currentShieldStrength = maxShieldStrength;
         this.shootingRange = type.getShootingRange();
+    }
+
+    public int getRobotHealth() {
+        return this.robotHealth;
+    }
+
+    public void setRobotHealth(int robotHealth) {
+        this.robotHealth = robotHealth;
     }
 
     public void setStatus(String status) {
@@ -74,8 +83,21 @@ public class Robot {
 
     public void applyDamage(int damage) {
         this.currentShieldStrength -= damage;
-        if (this.currentShieldStrength < 0) {
+        if(this.currentShieldStrength < 0) {
             this.currentShieldStrength = 0;
+        // If shields are gone, subtract from health{
+            this.robotHealth -= 1;
+            // Check if robot is dead
+            if (this.robotHealth <= 0) {
+                this.status = "DEAD";
+                robotDeath(); // handle removal from world
+            }
+        }
+    }
+
+    public void robotDeath() {
+        if (world != null) {
+            world.removeRobot(this);
         }
     }
 

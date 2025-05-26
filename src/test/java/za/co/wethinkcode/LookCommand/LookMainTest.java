@@ -36,7 +36,7 @@ public class LookMainTest {
         Robot robot = new Robot("Looker", world, robotPos,type);
         Robot other = new Robot("Target", world, robot2Pos,type);
 
-        robot.getWorld().setVisibilityConstraint(10);
+//        robot.getWorld().setVisibilityConstraint(10);
 
         world.addRobot(robot);
         world.addRobot(other);

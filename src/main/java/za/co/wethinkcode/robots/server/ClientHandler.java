@@ -13,6 +13,7 @@ public class ClientHandler implements Runnable {
     private final boolean running = true;
     private String clientName;
     private final CommandHandler commandHandler;
+    public static boolean robotDead = false;
 
     public ClientHandler(Socket socket, TextWorld world) {
         this.connectionManager = new ConnectionManager(socket);
@@ -23,7 +24,7 @@ public class ClientHandler implements Runnable {
     public void run() {
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
-                PrintWriter writer = new PrintWriter(connectionManager.getSocket().getOutputStream(), true);  // autoFlush = true
+                PrintWriter writer = new PrintWriter(connectionManager.getSocket().getOutputStream(), true);
         ) {
             this.clientName = reader.readLine();
             System.out.println("Client " + clientName + " has connected.");
@@ -37,10 +38,17 @@ public class ClientHandler implements Runnable {
                     writer.flush();
                     break;
                 }
+                if (robotDead) {
+                    // Already dead; reject any command
+                    Response response = new Response("DEAD", Map.of("message", "Your robot is destroyed. No further commands accepted."), null);
+                    sendResponse(writer,response);
+                    continue;
+                }
                 //Takes the user input and executes the command if possible and returns a response
                 Response response;
                 try {
                     response = commandHandler.handleClientCommand(msgFromClient);
+
                 } catch (Exception e) {
                     sendError(writer, "Internal error: " + e.getMessage());
                     continue;

@@ -48,7 +48,6 @@ public class CommandHandler{
                     else{
                         args.put("name", arg);
                     }
-
                     break;
             }
         }
@@ -93,14 +92,20 @@ public class CommandHandler{
                 this.robot = new Robot(name, world, startPos, type);
                 world.addRobot(this.robot);
 
-                data.put("message", "Robot successfully launched.");
                 Position pos = robot.getPosition();
                 data.put("position", new int[]{pos.getX(), pos.getY()});
-                data.put("type", type.getTypeName());
+                data.put("visibility","Hardcode");
+                data.put("reload","Hardcode");
+                data.put("repair","Hardcode");
                 data.put("shield", type.getMaxShieldStrength());
 
                 return new Response("OK", data, robot);
 
+            }// Check if robot died during this command
+            else if (robot.getStatus().equals("DEAD")) {
+                ClientHandler.robotDead = true;
+                robot.getWorld().removeRobot(robot);  // cleanup from world
+                return new Response("DEAD", Map.of("message", "Your robot has been destroyed. "+robot.getName()), null);
             } else if ("quit".equalsIgnoreCase(cmdName)) {
                 Server.shutdownServer();
                 connectionManager.stop();
