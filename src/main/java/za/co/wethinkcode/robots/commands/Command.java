@@ -121,10 +121,7 @@ public abstract class Command {
                     throw new IllegalArgumentException(emptySteps);
                 }
                 return new BackCommand(args[1]);
-            case "right":
-                return new RightCommand();
-            case "left":
-                return new LeftCommand();
+
             case "fire":
                 return new FireCommand();
             case "reload":
@@ -139,8 +136,15 @@ public abstract class Command {
                 return new CurrentDirectionCommand();
             case "repair":
                 return new RepairCommand();
+            case "turn":
+//                if (args[1].isBlank()) {
+//                    throw new IllegalArgumentException("Could not parse arguments: Turn command must be: turn left|right.");
+//                }
+                System.out.println("arg= " + args[0]+"e"+args[1]);
+                return new TurnCommand(args[1]);
+
             default:
-                return null;  // Unknown command
+                throw new IllegalArgumentException("Unknown command: " + args[0]);
         }
     }
 }

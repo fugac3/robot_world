@@ -32,6 +32,7 @@ public class Robot {
     private boolean isRepairing = false;
     private int repairTime = 5;
 
+
     private final List<String> commands;
 
     public Robot(String name,TextWorld world,Position position, RobotType type) {
@@ -48,6 +49,7 @@ public class Robot {
         this.currentShieldStrength = maxShieldStrength;
         this.shootingRange = type.getShootingRange();
 
+
     }
 
     public void setStatus(String status) {
@@ -57,6 +59,7 @@ public class Robot {
     public String getStatus() {
         return this.status;
     }
+
 
     public void updateBullets() {
         List<Bullet> activeBullets = new ArrayList<>();

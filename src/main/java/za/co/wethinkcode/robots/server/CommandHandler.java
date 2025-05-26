@@ -48,8 +48,9 @@ public class CommandHandler{
                     else{
                         args.put("name", arg);
                     }
-
                     break;
+
+
             }
         }
 
