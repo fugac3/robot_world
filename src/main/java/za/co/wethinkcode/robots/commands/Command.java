@@ -3,7 +3,6 @@ package za.co.wethinkcode.robots.commands;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.TextWorld;
-import za.co.wethinkcode.robots.world.TextWorld;
 
 public abstract class Command {
     private String name;
@@ -116,15 +115,19 @@ public abstract class Command {
                     throw new IllegalArgumentException(emptySteps);
                 }
                 return new ForwardCommand(args[1]);
+
+            case "turn":
+                if (args.length < 2 || args[1].isBlank()) {
+                    throw new IllegalArgumentException("invalid turn thing"+args[0]+" e "+args[1]);
+                }
+                System.out.println("invalid turn thing"+args[0]+" e "+args[1]);
+                return new TurnCommand(args[1]);
+
             case "back":
                 if (args.length < 2 || args[1].isBlank()) {
                     throw new IllegalArgumentException(emptySteps);
                 }
                 return new BackCommand(args[1]);
-            case "right":
-                return new RightCommand();
-            case "left":
-                return new LeftCommand();
             case "fire":
                 return new FireCommand();
             case "reload":

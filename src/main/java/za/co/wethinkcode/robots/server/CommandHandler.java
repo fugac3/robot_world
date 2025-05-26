@@ -38,6 +38,9 @@ public class CommandHandler {
         //assign args based on cmd name
         if (arg != null && !arg.isEmpty()) {
             switch (command.getName()) {
+                case "turn":
+                    args.put("direction", arg);
+                    break;
                 case "forward":
                 case "back":
                     args.put("steps", arg);
@@ -103,6 +106,9 @@ public class CommandHandler {
 
                 return new Response("OK", data, robot);
 
+            }//If robot has not been launched yet
+            else if (robot == null) {
+                return new Response("ERROR", Map.of("message", "Please launch a robot first using: launch <type> <name>"), null);
             }// Check if robot died during this command
             else if (robot.getStatus().equals("DEAD")) {
                 clientHandler.markRobotAsDead();
@@ -112,22 +118,21 @@ public class CommandHandler {
                 Server.shutdownServer();
                 connectionManager.stop();
                 return null; // Signal to break the loop
-            } else { // All other commands after launch
-                Object stepsArg = request.getArguments().get("steps");
-                String reconstructed = cmdName + (stepsArg != null ? " " + stepsArg : "");
-                command = Command.create(reconstructed);
-
-                //If robot has not been launched yet
-                if (robot == null) {
-                    return new Response("ERROR", Map.of("message", "Please launch a robot first using: launch <type> <name>"), null);
+            } else {
+                // Reconstruct full command string from name + args
+                String argument = (String) request.getArguments().get("steps"); // for forward/back
+                if (argument == null) {
+                    argument = (String) request.getArguments().get("direction"); // for turn
                 }
-
-                assert command != null;
-                return robot.handleCommand(command);
+                String reconstructed = cmdName + (argument != null ? " " + argument : "");
+                command = Command.create(reconstructed);
+                if (command == null) {
+                    return new Response("ERROR", Map.of("message", "Invalid command structure."), null);
+                }
+            return robot.handleCommand(command);
             }
         } catch (IllegalArgumentException e) {
             return new Response("ERROR", Map.of("message", e.getMessage()), null);
         }
     }
-
 }
