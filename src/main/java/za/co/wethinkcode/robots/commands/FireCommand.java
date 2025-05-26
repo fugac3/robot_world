@@ -23,58 +23,83 @@ public class FireCommand extends Command {
     }
 
     /**
-     * Executes the fire command by checking the robot's ammo and attempting to fire.
-     * and returns either "Hit" or "Miss" based on the result.
-     * @return a {@link Response} object containing the result of the fire attempt
+     * Executes the fire command:
+     * - Checks if the robot has ammo to fire.
+     * - If no ammo, returns an "Out of ammo" response.
+     * - Otherwise, consumes a bullet, creates a bullet object, and checks for a hit.
+     * - Returns either "Hit", "Miss", or "You have destroyed ..." based on the result.
      */
     @Override
     public Response execute(Robot robot) {
         // Check if the robot has ammo to fire
-        int currentAmmo = robot.getAmmo();
-        if (currentAmmo <= 0) {
-            // If no ammo, return "Out of ammo" response.
+        if (robot.getAmmo() <= 0) {
             robot.setStatus("NORMAL");
+            // If no ammo, return "Out of ammo" response
             return new Response("ERROR", Map.of("message", "No ammo"), robot);
-        }else {
-            robot.setAmmo(1); // consuming a bullet
-            // Create a new bullet travelling in the current direction
-            Bullet bullet = new Bullet(robot.getPosition(), robot.getCurrentDirection(), robot.getShootingRange(), robot);
-            int distance = bullet.getDistanceLeft();
-            HitResult result = addBulletAndCheckHit(bullet,robot);
-
-            Map<String, Object> data = new HashMap<>();
-
-            if (result.hitRobot != null) {
-                if (result.hitRobot.getStatus().equals("DEAD")) {
-                    return new Response("OK", Map.of("message", "You have destroyed "+result.hitRobot.getName()), robot);
-                }
-                //constructing hit bots data
-                data.put("message", "Hit");
-                data.put("robot", result.hitRobot.getName());
-                data.put("state", Response.buildState(result.hitRobot));
-                data.put("distance", distance);
-                result.hitRobot.setStatus("HIT");
-                } else {
-                    data.put("message", "Miss");
-                }
-
-            robot.setStatus("NORMAL");
-            return new Response("OK", data, robot);
         }
+
+        // Consume a bullet
+        robot.setAmmo(1);
+
+        // Create a new bullet travelling in the current direction
+        Bullet bullet = new Bullet(robot.getPosition(), robot.getCurrentDirection(), robot.getShootingRange(), robot);
+
+        // Check for collision with robots and determine hit result
+        HitResult result = addBulletAndCheckHit(bullet, robot);
+
+        // Build response based on hit or miss
+        Response response = (result.hitRobot != null)
+                ? buildHitResponse(robot, result, bullet.getDistanceLeft())
+                :buildMissResponse(robot);
+
+        robot.setStatus("NORMAL");
+        return response;
     }
 
-    public HitResult addBulletAndCheckHit(Bullet bullet,Robot robot) {
-        // Move the bullet and check for collision with robots
+    /**
+     * Constructs a response for a hit:
+     * - If the hit robot is dead, returns a destruction message.
+     * - Otherwise, returns hit details (robot name, state, distance).
+     */
+    private Response buildHitResponse(Robot robot, HitResult result, int distance) {
+        if ("DEAD".equals(result.hitRobot.getStatus())) {
+            // If the hit robot is dead, return destruction message
+            return new Response("OK", Map.of("message", "You have destroyed " + result.hitRobot.getName()), robot);
+        }
+        // Constructing hit bot's data
+        Map<String, Object> data = new HashMap<>();
+        data.put("message", "Hit");
+        data.put("robot", result.hitRobot.getName());
+        data.put("state", Response.buildState(result.hitRobot));
+        data.put("distance", distance);
+        result.hitRobot.setStatus("HIT");
+        return new Response("OK", data, robot);
+    }
+
+    /**
+     * Constructs a response for a miss.
+     */
+    private Response buildMissResponse(Robot robot) {
+        return new Response("OK", Map.of("message", "Miss"), robot);
+    }
+
+    /**
+     * Moves the bullet and checks for collision with robots:
+     * - If a robot (other than the shooter) is hit, applies damage and returns hit result.
+     * - Otherwise, returns a miss result.
+     */
+    public HitResult addBulletAndCheckHit(Bullet bullet, Robot robot) {
         while (!bullet.hasStopped()) {
             bullet.move();
-            for (Robot listRobot : robot.getWorld().getAllRobots()) {
-                if (!listRobot.equals(bullet.getShooter()) && listRobot.getPosition().equals(bullet.getPosition())) {
-                    // Apply damage here!
-                    listRobot.applyDamage(1);  // Apply damage, adjust as needed
-                    return new HitResult(true, listRobot);
+            for (Robot other : robot.getWorld().getAllRobots()) {
+                if (!other.equals(bullet.getShooter()) && other.getPosition().equals(bullet.getPosition())) {
+                    // Apply damage to the hit robot
+                    other.applyDamage(1);
+                    return new HitResult(true, other);
                 }
             }
         }
+        // No robot was hit
         return new HitResult(false, null);
     }
 }
