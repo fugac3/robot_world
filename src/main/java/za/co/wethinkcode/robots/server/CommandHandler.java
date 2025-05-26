@@ -10,14 +10,16 @@ import za.co.wethinkcode.robots.world.TextWorld;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandHandler{
+public class CommandHandler {
     private final TextWorld world;
     private Robot robot;
     private final ConnectionManager connectionManager;
+    private final ClientHandler clientHandler;
 
-    public CommandHandler(TextWorld world, ConnectionManager connectionManager) {
+    public CommandHandler(TextWorld world, ConnectionManager connectionManager, ClientHandler clientHandler) {
         this.world = world;
         this.connectionManager = connectionManager;
+        this.clientHandler = clientHandler;
     }
 
     public Response handleClientCommand(String msgFromClient) {
@@ -103,7 +105,7 @@ public class CommandHandler{
 
             }// Check if robot died during this command
             else if (robot.getStatus().equals("DEAD")) {
-                ClientHandler.robotDead = true;
+                clientHandler.markRobotAsDead();
                 robot.getWorld().removeRobot(robot);  // cleanup from world
                 return new Response("DEAD", Map.of("message", "Your robot has been destroyed. "+robot.getName()), null);
             } else if ("quit".equalsIgnoreCase(cmdName)) {
