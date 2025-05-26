@@ -1,10 +1,10 @@
 package za.co.wethinkcode.robots.world;
 
-import za.co.wethinkcode.robots.Obstacles.Obstacle;
-import za.co.wethinkcode.robots.commands.Direction;
+import org.w3c.dom.Text;
+import za.co.wethinkcode.robots.obstacles.Obstacle;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
-import za.co.wethinkcode.robots.Combat.Bullet;
+import za.co.wethinkcode.robots.combat.Bullet;
 
 import java.util.*;
 
@@ -35,17 +35,12 @@ public class TextWorld extends AbstractWorld {
     /** A position field (not frequently used in this context). */
     private Position position;
 
-    private WorldConfig config;
-
-    private final List<Bullet> bullets = new ArrayList<>();
-
-
+    private final WorldConfig config;
 
     /**
      * Constructs a new TextWorld with the center position and generates random obstacles.
      */
     public TextWorld() {
-//        this.position = CENTRE;
         this.config = ConfigReader.loadConfig();
         TOP_LEFT = config.topLeft;
         BOTTOM_RIGHT = config.bottomRight;
@@ -54,16 +49,19 @@ public class TextWorld extends AbstractWorld {
 
     //just for custom sized worlds in tests
     public TextWorld(Position TOP_LEFT,Position BOTTOM_RIGHT) {
-//        this.position = CENTRE;
         this.config = ConfigReader.loadConfig();
         TextWorld.TOP_LEFT = TOP_LEFT;
         TextWorld.BOTTOM_RIGHT = BOTTOM_RIGHT;
         generateRandomObstacles(config.maxObstacles);
     }
 
-    public int setVisibilityConstraint(int newVis) {
-        return newVis;
+    public void removeRobot(Robot robot) {
+        robots.remove(robot.getName());
     }
+
+//    public int setVisibilityConstraint(int newVis) {
+//        return newVis;
+//    }
 
     public static Position getTopLeft() {
         return TOP_LEFT;
@@ -120,16 +118,15 @@ public class TextWorld extends AbstractWorld {
             int y = rand.nextInt(maxY - minY + 1) + minY;
 //            int x = 0;
 //            int y = 0;
-
             pos = new Position(x, y);
         } while (blocksPosition(pos));  // Retry if blocked
         // cant tell if the world is full
+        // will loop infinitely
         return pos;
     }
 
     /**
      * Determines whether the given position is blocked by an obstacle or another robot.
-     *
      * @param pos the position to check
      * @return {@code true} if the position is occupied, otherwise {@code false}
      */

@@ -3,7 +3,6 @@ package za.co.wethinkcode.robots.commands;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.TextWorld;
-import za.co.wethinkcode.robots.world.TextWorld;
 
 public abstract class Command {
     private String name;
@@ -104,7 +103,7 @@ public abstract class Command {
             case "l":
             case "launch":
                 if (args.length < 3 || args[1].isBlank() || args[2].isBlank()) {
-                    throw new IllegalArgumentException("Could not parse arguments: Launch command must be: launch <type> <name>.");
+                    throw new IllegalArgumentException("Could not parse arguments: Launch command must be: launch type name.");
                 }
                 return new LaunchCommand(args[1].trim(), args[2].trim());
             case "robots":
@@ -116,12 +115,19 @@ public abstract class Command {
                     throw new IllegalArgumentException(emptySteps);
                 }
                 return new ForwardCommand(args[1]);
+
+            case "turn":
+                if (args.length < 2 || args[1].isBlank()) {
+                    throw new IllegalArgumentException("invalid turn thing"+args[0]+" e "+args[1]);
+                }
+                System.out.println("invalid turn thing"+args[0]+" e "+args[1]);
+                return new TurnCommand(args[1]);
+
             case "back":
                 if (args.length < 2 || args[1].isBlank()) {
                     throw new IllegalArgumentException(emptySteps);
                 }
                 return new BackCommand(args[1]);
-
             case "fire":
                 return new FireCommand();
             case "reload":
@@ -136,15 +142,8 @@ public abstract class Command {
                 return new CurrentDirectionCommand();
             case "repair":
                 return new RepairCommand();
-            case "turn":
-//                if (args[1].isBlank()) {
-//                    throw new IllegalArgumentException("Could not parse arguments: Turn command must be: turn left|right.");
-//                }
-                System.out.println("arg= " + args[0]+"e"+args[1]);
-                return new TurnCommand(args[1]);
-
             default:
-                throw new IllegalArgumentException("Unknown command: " + args[0]);
+                return null;  // Unknown command
         }
     }
 }

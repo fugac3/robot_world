@@ -1,14 +1,14 @@
 package za.co.wethinkcode.LookCommand;
 
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robots.RobotTypes.RobotType;
+import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.LookCommand;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.commands.Direction;
-import za.co.wethinkcode.robots.Obstacles.BottomlessPit;
-import za.co.wethinkcode.robots.Obstacles.LakesObstacle;
-import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
+import za.co.wethinkcode.robots.obstacles.BottomlessPit;
+import za.co.wethinkcode.robots.obstacles.LakesObstacle;
+import za.co.wethinkcode.robots.obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 
@@ -88,7 +88,7 @@ public class AllObstacleTypeFoundTest {
         Position obstaclePos2 = new Position(-1, 0); // directly WEST
         robot.getWorld().getObstacles().clear();
         robot.getWorld().getObstacles().add(new BottomlessPit(obstaclePos.getX(), obstaclePos.getY()));
-        robot.getWorld().getObstacles().add(new BottomlessPit(obstaclePos2.getX(), obstaclePos2.getY()));
+        robot.getWorld().getObstacles().add(new MountainObstacle(obstaclePos2.getX(), obstaclePos2.getY()));
 
         // Call the check method for obstacles
         List<Map<String, Object>> objects = new ArrayList<>();

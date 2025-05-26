@@ -1,12 +1,12 @@
 package za.co.wethinkcode.LookCommand;
 
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robots.RobotTypes.RobotType;
+import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.LookCommand;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
+import za.co.wethinkcode.robots.obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.*;
@@ -36,7 +36,7 @@ public class LookMainTest {
         Robot robot = new Robot("Looker", world, robotPos,type);
         Robot other = new Robot("Target", world, robot2Pos,type);
 
-        robot.getWorld().setVisibilityConstraint(10);
+//        robot.getWorld().setVisibilityConstraint(10);
 
         world.addRobot(robot);
         world.addRobot(other);

@@ -1,4 +1,4 @@
-package za.co.wethinkcode.robots.Combat;
+package za.co.wethinkcode.robots.combat;
 
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.robot.Position;

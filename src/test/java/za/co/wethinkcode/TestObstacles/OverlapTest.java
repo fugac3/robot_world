@@ -1,10 +1,10 @@
 package za.co.wethinkcode.TestObstacles;
 
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robots.Obstacles.BottomlessPit;
-import za.co.wethinkcode.robots.Obstacles.LakesObstacle;
-import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
-import za.co.wethinkcode.robots.Obstacles.Obstacle;
+import za.co.wethinkcode.robots.obstacles.BottomlessPit;
+import za.co.wethinkcode.robots.obstacles.LakesObstacle;
+import za.co.wethinkcode.robots.obstacles.MountainObstacle;
+import za.co.wethinkcode.robots.obstacles.Obstacle;
 import za.co.wethinkcode.robots.world.*;
 
 import static org.junit.jupiter.api.Assertions.*;

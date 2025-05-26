@@ -3,21 +3,23 @@ package za.co.wethinkcode.robots.server;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
-import za.co.wethinkcode.robots.RobotTypes.RobotType;
-import za.co.wethinkcode.robots.RobotTypes.RobotTypeFactory;
+import za.co.wethinkcode.robots.robotTypes.RobotType;
+import za.co.wethinkcode.robots.robotTypes.RobotTypeFactory;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandHandler{
+public class CommandHandler {
     private final TextWorld world;
     private Robot robot;
     private final ConnectionManager connectionManager;
+    private final ClientHandler clientHandler;
 
-    public CommandHandler(TextWorld world, ConnectionManager connectionManager) {
+    public CommandHandler(TextWorld world, ConnectionManager connectionManager, ClientHandler clientHandler) {
         this.world = world;
         this.connectionManager = connectionManager;
+        this.clientHandler = clientHandler;
     }
 
     public Response handleClientCommand(String msgFromClient) {
@@ -36,6 +38,9 @@ public class CommandHandler{
         //assign args based on cmd name
         if (arg != null && !arg.isEmpty()) {
             switch (command.getName()) {
+                case "turn":
+                    args.put("direction", arg);
+                    break;
                 case "forward":
                 case "back":
                     args.put("steps", arg);
@@ -94,34 +99,42 @@ public class CommandHandler{
                 this.robot = new Robot(name, world, startPos, type);
                 world.addRobot(this.robot);
 
-                data.put("message", "Robot successfully launched.");
                 Position pos = robot.getPosition();
                 data.put("position", new int[]{pos.getX(), pos.getY()});
-                data.put("type", type.getTypeName());
+                data.put("visibility","Hardcode");
+                data.put("reload","Hardcode");
+                data.put("repair","Hardcode");
                 data.put("shield", type.getMaxShieldStrength());
 
                 return new Response("OK", data, robot);
 
+            }//If robot has not been launched yet
+            else if (robot == null) {
+                return new Response("ERROR", Map.of("message", "Please launch a robot first using: launch <type> <name>"), null);
+            }// Check if robot died during this command
+            else if (robot.getStatus().equals("DEAD")) {
+                clientHandler.markRobotAsDead();
+                robot.getWorld().removeRobot(robot);  // cleanup from world
+                return new Response("DEAD", Map.of("message", "Your robot has been destroyed. "+robot.getName()), null);
             } else if ("quit".equalsIgnoreCase(cmdName)) {
                 Server.shutdownServer();
                 connectionManager.stop();
                 return null; // Signal to break the loop
-            } else { // All other commands after launch
-                Object stepsArg = request.getArguments().get("steps");
-                String reconstructed = cmdName + (stepsArg != null ? " " + stepsArg : "");
-                command = Command.create(reconstructed);
-
-                //If robot has not been launched yet
-                if (robot == null) {
-                    return new Response("ERROR", Map.of("message", "Please launch a robot first using: launch <type> <name>"), null);
+            } else {
+                // Reconstruct full command string from name + args
+                String argument = (String) request.getArguments().get("steps"); // for forward/back
+                if (argument == null) {
+                    argument = (String) request.getArguments().get("direction"); // for turn
                 }
-
-                assert command != null;
-                return robot.handleCommand(command);
+                String reconstructed = cmdName + (argument != null ? " " + argument : "");
+                command = Command.create(reconstructed);
+                if (command == null) {
+                    return new Response("ERROR", Map.of("message", "Invalid command structure."), null);
+                }
+            return robot.handleCommand(command);
             }
         } catch (IllegalArgumentException e) {
             return new Response("ERROR", Map.of("message", e.getMessage()), null);
         }
     }
-
 }

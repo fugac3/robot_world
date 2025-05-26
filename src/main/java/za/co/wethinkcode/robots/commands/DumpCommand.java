@@ -2,7 +2,7 @@ package za.co.wethinkcode.robots.commands;
 
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.Obstacles.Obstacle;
+import za.co.wethinkcode.robots.obstacles.Obstacle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,11 +58,11 @@ public class DumpCommand extends Command {
         robot.setStatus("NORMAL");
 
         // Add the obstacle and robot data to the response data
-//        data.put("Obstacles", obstacleData);
+//        data.put("obstacles", obstacleData);
         if (obstacleData.isEmpty()) {
             data.put("obstacles", "None");
         } else {
-            data.put("Obstacles", obstacleData);
+            data.put("obstacles", obstacleData);
         }
         data.put("robots", robotList);
 

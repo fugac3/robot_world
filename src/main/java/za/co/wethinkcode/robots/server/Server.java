@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
-
 public class Server {
     private static boolean running = true;
 //    private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
@@ -65,7 +63,6 @@ public class Server {
             e.printStackTrace();
         }
 
-
         System.out.println("Server and all clients shut down.");
     }
     // The following initialisation is REQUIRED for `flow` monitoring.
@@ -73,5 +70,4 @@ public class Server {
     static {
         new Recorder().logRun();
     }
-
 }

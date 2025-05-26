@@ -2,12 +2,12 @@ package za.co.wethinkcode;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robots.RobotTypes.RobotType;
+import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.*;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
+import za.co.wethinkcode.robots.obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.Map;
@@ -121,6 +121,7 @@ class RobotTest {
         assertEquals(new Position(0,5), robot.getPosition());
 
         robot.turnRight();
+
         robot.updatePosition(7);
         assertEquals(new Position(7,5), robot.getPosition());
     }

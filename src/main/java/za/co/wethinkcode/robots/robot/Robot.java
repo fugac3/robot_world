@@ -1,55 +1,54 @@
 package za.co.wethinkcode.robots.robot;
 
-import za.co.wethinkcode.robots.RobotTypes.RobotType;
+import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.commands.Direction;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.Combat.Bullet;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Robot {
-    public static final Position CENTRE = new Position(0,0);
-
-    //    private Position position;
     private Direction currentDirection = Direction.NORTH;
-
     private final String name;
     private final TextWorld world;
     private Position position;
     private String status;
-    private String lastMoveReason = "";
+    private String lastMoveReason;
     private int ammo; // current ammo
     private final int maxAmmo; //starting/max ammo robot has
     private int currentShieldStrength; //current shield strength
     private final int maxShieldStrength; //max shield strength of type of robot
     private final int shootingRange; //how far robot can fire bullets
-    private int shotsFired = 0;
-    private List<Bullet> bullets = new ArrayList<>();
     private final RobotType type;
     private boolean isRepairing = false;
-    private int repairTime = 5;
-
+    private final int repairTime = 10;
+    private int robotHealth = 1;
 
     private final List<String> commands;
 
     public Robot(String name,TextWorld world,Position position, RobotType type) {
+        this.robotHealth = getRobotHealth();
         this.name = name;
         this.position = position;
         this.commands = new ArrayList<>();
         this.world = world;
         this.type = type;
         this.status = "NORMAL"; //initialized status
-
         this.maxAmmo = type.getMaxShots();
         this.ammo = maxAmmo;
         this.maxShieldStrength = type.getMaxShieldStrength();
         this.currentShieldStrength = maxShieldStrength;
         this.shootingRange = type.getShootingRange();
+    }
 
+    public int getRobotHealth() {
+        return this.robotHealth;
+    }
 
+    public void setRobotHealth(int robotHealth) {
+        this.robotHealth = robotHealth;
     }
 
     public void setStatus(String status) {
@@ -58,22 +57,6 @@ public class Robot {
 
     public String getStatus() {
         return this.status;
-    }
-
-
-    public void updateBullets() {
-        List<Bullet> activeBullets = new ArrayList<>();
-
-        for (Bullet bullet : bullets) {
-            if (bullet.move()) {
-                activeBullets.add(bullet); // Keep only moving bullets
-            }
-        }
-        bullets = activeBullets; // Remove bullets that have stopped moving
-    }
-
-    public int getShotsFired() {
-        return shotsFired;
     }
 
     public boolean reload() {
@@ -100,13 +83,22 @@ public class Robot {
 
     public void applyDamage(int damage) {
         this.currentShieldStrength -= damage;
-        if (this.currentShieldStrength < 0) {
+        if(this.currentShieldStrength < 0) {
             this.currentShieldStrength = 0;
+        // If shields are gone, subtract from health{
+            this.robotHealth -= 1;
+            // Check if robot is dead
+            if (this.robotHealth <= 0) {
+                this.status = "DEAD";
+                robotDeath(); // handle removal from world
+            }
         }
     }
 
-    public List<Bullet> getBullets() {
-        return bullets;
+    public void robotDeath() {
+        if (world != null) {
+            world.removeRobot(this);
+        }
     }
 
     public boolean repairing() {
@@ -129,7 +121,6 @@ public class Robot {
     }
 
     public boolean updatePosition(int nrSteps){
-
 
         int newY = this.position.getY();
         int newX = this.position.getX();
@@ -216,12 +207,6 @@ public class Robot {
         this.currentDirection = this.currentDirection.turnLeft();
     }
 
-    @Override
-    public String toString() {
-        return "[" + this.position.getX() + "," + this.position.getY() + "] "
-                + this.name + " (" + this.type.getTypeName() + ")> "  + this.status;
-    }
-
     public String getName() {
         return name;
     }
@@ -236,5 +221,11 @@ public class Robot {
 
     public int getShootingRange() {
         return shootingRange;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + this.position.getX() + "," + this.position.getY() + "] "
+                + this.name + " (" + this.type.getTypeName() + ")> "  + this.status;
     }
 }
