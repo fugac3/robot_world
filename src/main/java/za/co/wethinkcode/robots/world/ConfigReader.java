@@ -23,5 +23,6 @@ public class ConfigReader {
         } catch (IOException | NumberFormatException e) {
             throw new RuntimeException("Error loading configuration: " + e.getMessage(), e);
         }
+
     }
 }
