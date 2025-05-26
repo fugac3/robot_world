@@ -1,8 +1,8 @@
-package za.co.wethinkcode.robots.Combat;
+package za.co.wethinkcode.robots.combat;
 
 import za.co.wethinkcode.robots.robot.Robot;
 
-//helper class for getting info on the robot that was hit
+//helper class for getting info on the robot that was hit in FireCommand
 public class HitResult {
     public final boolean hit;
     public final Robot hitRobot;

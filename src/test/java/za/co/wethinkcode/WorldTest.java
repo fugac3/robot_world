@@ -4,11 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import za.co.wethinkcode.robots.RobotTypes.RobotType;
-import za.co.wethinkcode.robots.Obstacles.MountainObstacle;
+import za.co.wethinkcode.robots.robotTypes.RobotType;
+import za.co.wethinkcode.robots.obstacles.MountainObstacle;
 import za.co.wethinkcode.robots.world.TextWorld;
 import za.co.wethinkcode.robots.robot.Position;
-import za.co.wethinkcode.robots.Obstacles.Obstacle;
+import za.co.wethinkcode.robots.obstacles.Obstacle;
 import za.co.wethinkcode.robots.robot.Robot;
 
 import java.util.List;
