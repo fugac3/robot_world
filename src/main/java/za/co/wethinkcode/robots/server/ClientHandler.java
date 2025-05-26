@@ -13,11 +13,15 @@ public class ClientHandler implements Runnable {
     private final boolean running = true;
     private String clientName;
     private final CommandHandler commandHandler;
-    public static boolean robotDead = false;
+    private boolean robotDead = false;
 
     public ClientHandler(Socket socket, TextWorld world) {
         this.connectionManager = new ConnectionManager(socket);
-        this.commandHandler = new CommandHandler(world, connectionManager);
+        this.commandHandler = new CommandHandler(world, connectionManager,this);
+    }
+
+    public void markRobotAsDead() {
+        this.robotDead = true;
     }
 
     @Override
@@ -33,16 +37,16 @@ public class ClientHandler implements Runnable {
 
             String msgFromClient;
             while (running && (msgFromClient = reader.readLine()) != null) {
-                if (msgFromClient.equalsIgnoreCase("quit")) {
-                    writer.println("Bye, " + this.clientName + "!");
-                    writer.flush();
-                    break;
-                }
                 if (robotDead) {
                     // Already dead; reject any command
                     Response response = new Response("DEAD", Map.of("message", "Your robot is destroyed. No further commands accepted."), null);
                     sendResponse(writer,response);
                     continue;
+                }
+                if (msgFromClient.equalsIgnoreCase("quit")) {
+                    writer.println("Bye, " + this.clientName + "!");
+                    writer.flush();
+                    break;
                 }
                 //Takes the user input and executes the command if possible and returns a response
                 Response response;
