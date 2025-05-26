@@ -12,11 +12,19 @@ import za.co.wethinkcode.robots.world.TextWorld;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the ReloadCommand functionality.
+ *
+ * Ensures that reloading restores ammo and updates robot status as expected.
+ */
 public class ReloadTest {
     private Robot robot;
     private RobotType type;
     private TextWorld world;
 
+    /**
+     * Sets up a controlled environment and robot before each test.
+     */
     @BeforeEach
     void setUp() {
         //Create controlled environment
@@ -29,6 +37,10 @@ public class ReloadTest {
         world.addRobot(robot);
     }
 
+    /**
+     * Tests the reload command after ammo is depleted.
+     * Expects ammo to be restored and status set to "RELOAD".
+     */
     @Test
     void testReloadCommand() {
         world.getObstacles().clear();
