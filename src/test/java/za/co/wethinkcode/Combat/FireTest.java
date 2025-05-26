@@ -9,15 +9,23 @@ import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.TextWorld;
-import za.co.wethinkcode.robots.commands.LookCommand;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the FireCommand functionality.
+ *
+ * Verifies correct behavior when firing with and without ammo,
+ * ensuring response codes and messages are as expected.
+ */
 public class FireTest {
     private Robot robot;
     private RobotType type;
     private TextWorld world;
 
+    /**
+     * Sets up a controlled environment and robot before each test.
+     */
     @BeforeEach
     void setUp() {
         //Create controlled environment
@@ -30,7 +38,10 @@ public class FireTest {
         world.addRobot(robot);
     }
 
-
+    /**
+     * Tests firing when the robot has ammo.
+     * Expects ammo to decrease and a valid response ("Hit" or "Miss").
+     */
     @Test
     void testFireCommandWithAmmo() {
         int initialAmmo = robot.getAmmo();
@@ -42,6 +53,10 @@ public class FireTest {
         assertEquals(initialAmmo - 1, robot.getAmmo());
     }
 
+    /**
+     * Tests firing when the robot has no ammo.
+     * Expects an "ERROR" result and "No ammo" message.
+     */
     @Test
     void testFireCommandNoAmmo() {
         while (robot.getAmmo() > 0) {
