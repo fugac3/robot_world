@@ -30,7 +30,7 @@ public class FireCommand extends Command {
      * - Returns either "Hit", "Miss", or "You have destroyed ..." based on the result.
      *
      * @param robot the robot executing the command
-     * @return a Response indicating the result of the fire action
+     * @return a {@link Response} indicating the result of the fire action
      */
     @Override
     public Response execute(Robot robot) {
@@ -67,7 +67,7 @@ public class FireCommand extends Command {
      * @param robot the robot that fired
      * @param result the result of the hit
      * @param distance the distance the bullet traveled
-     * @return a Response indicating the hit result
+     * @return a {@link Response} indicating the hit result
      */
     private Response buildHitResponse(Robot robot, HitResult result, int distance) {
         if ("DEAD".equals(result.hitRobot.getStatus())) {
@@ -88,7 +88,7 @@ public class FireCommand extends Command {
      * Constructs a response for a miss.
      *
      * @param robot the robot that fired
-     * @return a Response indicating a miss
+     * @return a {@link Response} indicating a miss
      */
     private Response buildMissResponse(Robot robot) {
         return new Response("OK", Map.of("message", "Miss"), robot);
@@ -101,7 +101,7 @@ public class FireCommand extends Command {
      *
      * @param bullet the bullet being moved
      * @param robot the robot that fired
-     * @return a HitResult indicating if a robot was hit
+     * @return a {@link HitResult} indicating if a robot was hit
      */
     public HitResult addBulletAndCheckHit(Bullet bullet, Robot robot) {
         while (!bullet.hasStopped()) {
