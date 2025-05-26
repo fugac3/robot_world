@@ -28,6 +28,9 @@ public class FireCommand extends Command {
      * - If no ammo, returns an "Out of ammo" response.
      * - Otherwise, consumes a bullet, creates a bullet object, and checks for a hit.
      * - Returns either "Hit", "Miss", or "You have destroyed ..." based on the result.
+     *
+     * @param robot the robot executing the command
+     * @return a Response indicating the result of the fire action
      */
     @Override
     public Response execute(Robot robot) {
@@ -60,6 +63,11 @@ public class FireCommand extends Command {
      * Constructs a response for a hit:
      * - If the hit robot is dead, returns a destruction message.
      * - Otherwise, returns hit details (robot name, state, distance).
+     *
+     * @param robot the robot that fired
+     * @param result the result of the hit
+     * @param distance the distance the bullet traveled
+     * @return a Response indicating the hit result
      */
     private Response buildHitResponse(Robot robot, HitResult result, int distance) {
         if ("DEAD".equals(result.hitRobot.getStatus())) {
@@ -78,6 +86,9 @@ public class FireCommand extends Command {
 
     /**
      * Constructs a response for a miss.
+     *
+     * @param robot the robot that fired
+     * @return a Response indicating a miss
      */
     private Response buildMissResponse(Robot robot) {
         return new Response("OK", Map.of("message", "Miss"), robot);
@@ -87,6 +98,10 @@ public class FireCommand extends Command {
      * Moves the bullet and checks for collision with robots:
      * - If a robot (other than the shooter) is hit, applies damage and returns hit result.
      * - Otherwise, returns a miss result.
+     *
+     * @param bullet the bullet being moved
+     * @param robot the robot that fired
+     * @return a HitResult indicating if a robot was hit
      */
     public HitResult addBulletAndCheckHit(Bullet bullet, Robot robot) {
         while (!bullet.hasStopped()) {
