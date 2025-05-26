@@ -1,19 +1,20 @@
-package za.co.wethinkcode;
+package za.co.wethinkcode.world;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
-import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.obstacles.MountainObstacle;
-import za.co.wethinkcode.robots.world.TextWorld;
-import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.obstacles.Obstacle;
+import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
+import za.co.wethinkcode.robots.robotTypes.RobotType;
+import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.List;
 
-public class WorldTest {
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class TextWorldTest {
     private TextWorld textWorld;
 
     TextWorld world = new TextWorld();
@@ -85,50 +86,50 @@ public class WorldTest {
 
 
 
-        @BeforeEach
-        public void setUp() {
-            textWorld = TextWorld.getInstance(); // Get singleton instance
-        }
+    @BeforeEach
+    public void setUp() {
+        textWorld = TextWorld.getInstance(); // Get singleton instance
+    }
 
-        @Test
-        public void testSingletonInstance() {
-            TextWorld anotherInstance = TextWorld.getInstance();
-            assertSame(textWorld, anotherInstance, "TextWorld should return the same instance each time");
-        }
+    @Test
+    public void testSingletonInstance() {
+        TextWorld anotherInstance = TextWorld.getInstance();
+        assertSame(textWorld, anotherInstance, "TextWorld should return the same instance each time");
+    }
 
-        @Test
-        public void testAddRobot() {
+    @Test
+    public void testAddRobot() {
 
-            // Add the robot to the world
-            textWorld.addRobot(robot);
+        // Add the robot to the world
+        textWorld.addRobot(robot);
 
-            // Verify that the robot was added successfully
-            assertTrue(textWorld.getAllRobots().contains(robot), "Robot should be added to the world");
-        }
+        // Verify that the robot was added successfully
+        assertTrue(textWorld.getAllRobots().contains(robot), "Robot should be added to the world");
+    }
 
-        @Test
-        public void testgetAllRobots(){
-            Position pos = new Position(0,0);
+    @Test
+    public void testgetAllRobots(){
+        Position pos = new Position(0,0);
 //            Robot robot = new Robot("bot", textWorld,pos);
 
-            textWorld.getAllRobots();
+        textWorld.getAllRobots();
 
-            assertEquals(textWorld.getAllRobots() , textWorld.getAllRobots());
-        }
+        assertEquals(textWorld.getAllRobots() , textWorld.getAllRobots());
+    }
 
-        @Test
-        public void testBlocksPath() {
-            // Create a new world and a robot
-            Position pos = new Position(4,5);
+    @Test
+    public void testBlocksPath() {
+        // Create a new world and a robot
+        Position pos = new Position(4,5);
 //            Robot robot = new Robot("bot", textWorld,pos);
 
-            // Set up some obstacles (this should be done in your world setup)
-            textWorld.blocksPath(new Position(5, 5), new Position(9, 9)); // Example, actual obstacle setup needed
+        // Set up some obstacles (this should be done in your world setup)
+        textWorld.blocksPath(new Position(5, 5), new Position(9, 9)); // Example, actual obstacle setup needed
 
-            // Test if the path between two positions is blocked
-            boolean isPathBlocked = textWorld.blocksPath(new Position(4, 5), new Position(10, 5));
+        // Test if the path between two positions is blocked
+        boolean isPathBlocked = textWorld.blocksPath(new Position(4, 5), new Position(10, 5));
 
-            // Assert that the path is blocked (modify as per actual obstacle setup)
-            assertTrue(isPathBlocked);
-        }
+        // Assert that the path is blocked (modify as per actual obstacle setup)
+        assertTrue(isPathBlocked);
+    }
 }
