@@ -41,23 +41,24 @@ public class FireCommand extends Command {
             Bullet bullet = new Bullet(robot.getPosition(), robot.getCurrentDirection(), robot.getShootingRange(), robot);
             int distance = bullet.getDistanceLeft();
             HitResult result = addBulletAndCheckHit(bullet,robot);
-            if (result.hitRobot.getStatus().equals("DEAD")) {
-                return new Response("OK", Map.of("message", "You have destroyed "+result.hitRobot.getName()), robot);
-            }
-
-            robot.setStatus("NORMAL");
 
             Map<String, Object> data = new HashMap<>();
 
-            data.put("message: ",result.hit ? "Hit" : "Miss");
-
-            //constructing hit bots data
-            if (result.hit) {
-                data.put("distance: ",distance);
+            if (result.hitRobot != null) {
+                if (result.hitRobot.getStatus().equals("DEAD")) {
+                    return new Response("OK", Map.of("message", "You have destroyed "+result.hitRobot.getName()), robot);
+                }
+                //constructing hit bots data
+                data.put("message", "Hit");
                 data.put("robot", result.hitRobot.getName());
-                result.hitRobot.setStatus("HIT");
                 data.put("state", Response.buildState(result.hitRobot));
-            }
+                data.put("distance", distance);
+                result.hitRobot.setStatus("HIT");
+                } else {
+                    data.put("message", "Miss");
+                }
+
+            robot.setStatus("NORMAL");
             return new Response("OK", data, robot);
         }
     }

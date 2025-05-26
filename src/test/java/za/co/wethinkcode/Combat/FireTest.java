@@ -53,7 +53,7 @@ public class FireTest {
         FireCommand fireCommand = new FireCommand();
         Response response = fireCommand.execute(robot);
 
-        assertEquals("FAILED", response.getResult());
-        assertEquals("Miss", response.getData().get("message"));
+        assertEquals("ERROR", response.getResult());
+        assertEquals("No ammo", response.getData().get("message"));
     }
 }
