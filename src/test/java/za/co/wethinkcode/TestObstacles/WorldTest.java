@@ -1,4 +1,4 @@
-package za.co.wethinkcode;
+package za.co.wethinkcode.TestObstacles;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

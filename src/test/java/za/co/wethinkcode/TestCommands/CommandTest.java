@@ -1,4 +1,4 @@
-package za.co.wethinkcode;
+package za.co.wethinkcode.TestCommands;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

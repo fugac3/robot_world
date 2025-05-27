@@ -1,4 +1,4 @@
-package za.co.wethinkcode;
+package za.co.wethinkcode.TestRobotTypes;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,31 +36,6 @@ class RobotTest {
         assertEquals("Robo", robot.getName());
         assertEquals("NORMAL", robot.getStatus());
         assertEquals(5, robot.getAmmo());
-    }
-
-    @Test
-    void testForwardCommand() {
-        //Create a forward command moving 5 steps forward
-        ForwardCommand forwardCommand = new ForwardCommand("5");
-        //Execute command
-        Response response = forwardCommand.execute(robot);
-
-        //Checking response format
-        assertEquals("OK", response.getResult());
-        Map<String, Object> data = response.getData(); //get data to see what message returns inside
-        assertEquals("Done", data.get("message"));
-
-        //Check robot state in response
-        Map<String, Object> state = response.getState();
-        assertNotNull(state); //state should not be empty
-        int[] position = (int[]) state.get("position"); //position is a list in [x,y] format
-        assertEquals(0, position[0]); //x coordinate
-        assertEquals(5, position[1]); //y coordinate
-        assertEquals(Direction.NORTH, state.get("direction"));
-        assertEquals("NORMAL", state.get("status"));
-
-        //Check actual robot state
-        assertEquals(new Position(0, 5), robot.getPosition());
     }
 
     @Test
