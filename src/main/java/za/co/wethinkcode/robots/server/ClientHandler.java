@@ -27,8 +27,8 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try (
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
-                PrintWriter writer = new PrintWriter(connectionManager.getSocket().getOutputStream(), true);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connectionManager.getSocket().getInputStream()));
+            PrintWriter writer = new PrintWriter(connectionManager.getSocket().getOutputStream(), true);
         ) {
             this.clientName = reader.readLine();
             System.out.println("Client " + clientName + " has connected.");
@@ -37,16 +37,16 @@ public class ClientHandler implements Runnable {
 
             String msgFromClient;
             while (running && (msgFromClient = reader.readLine()) != null) {
+                if (msgFromClient.equalsIgnoreCase("quit")) {
+                    writer.println("Bye, " + this.clientName + "!");
+                    writer.flush();
+                    break;
+                }
                 if (robotDead) {
                     // Already dead; reject any command
                     Response response = new Response("DEAD", Map.of("message", "Your robot is destroyed. No further commands accepted."), null);
                     sendResponse(writer,response);
                     continue;
-                }
-                if (msgFromClient.equalsIgnoreCase("quit")) {
-                    writer.println("Bye, " + this.clientName + "!");
-                    writer.flush();
-                    break;
                 }
                 //Takes the user input and executes the command if possible and returns a response
                 Response response;
