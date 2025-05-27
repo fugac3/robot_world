@@ -71,4 +71,45 @@ public class FireTest {
         assertEquals("ERROR", response.getResult());
         assertEquals("No ammo", response.getData().get("message"));
     }
+
+    @Test
+    void testFireUntilNoAmmo() {
+        FireCommand fireCommand = new FireCommand();
+        int shots = robot.getAmmo();
+        for (int i = 0; i < shots; i++)  {
+            Response response = fireCommand.execute(robot);
+            assertEquals("OK", response.getResult());
+        }
+        Response response = fireCommand.execute(robot);
+        assertEquals("ERROR", response.getResult());
+        assertEquals(0, robot.getAmmo());
+    }
+
+    @Test
+    void testFireHitsAnotherRobot() {
+        Robot target = new Robot("TargetBot", world, new Position(0, 1), type);
+        world.addRobot(target);
+        robot.setPosition(new Position(0, 0));
+        robot.turnRight();
+        FireCommand fireCommand = new FireCommand();
+        Response response = fireCommand.execute(robot);
+        assertEquals("OK", response.getResult());
+        assertTrue(target.getCurrentShieldStrength() < target.getMaxShieldStrength());
+    }
+
+    @Test
+    void testFireDoesNotHitSelf() {
+        int initialShield = robot.getCurrentShieldStrength();
+        FireCommand fireCommand = new FireCommand();
+        fireCommand.execute(robot);
+        assertEquals(initialShield, robot.getCurrentShieldStrength());
+    }
+
+    @Test
+    void testStatusAfterFire() {
+        robot.setStatus("BUSY");
+        FireCommand fireCommand =  new FireCommand();
+        fireCommand.execute(robot);
+        assertEquals("NORMAL", robot.getStatus());
+    }
 }
