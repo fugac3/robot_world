@@ -37,11 +37,11 @@ public class FireCommand extends Command {
             return new Response("ERROR", Map.of("message", "No ammo"), robot);
         }else {
             robot.setAmmo(1); // consuming a bullet
-            // Create a new bullet travelling in the current direction
             Bullet bullet = new Bullet(robot.getPosition(), robot.getCurrentDirection(), robot.getShootingRange(), robot);
             int distance = bullet.getDistanceLeft();
             HitResult result = addBulletAndCheckHit(bullet,robot);
-            if (result.hitRobot.getStatus().equals("DEAD")) {
+            //makes sure when shot misses getStatus() doesnt return null point exception
+            if (result.hitRobot != null && result.hitRobot.getStatus().equals("DEAD")) {
                 return new Response("OK", Map.of("message", "You have destroyed "+result.hitRobot.getName()), robot);
             }
 
