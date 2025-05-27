@@ -10,27 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class RobotsCommand {
-    public static List<Map<String, Object>> getAllRobotsInfo() {
-        List<Map<String, Object>> robotInfoList = new ArrayList<>();
-
-        for (Robot r : TextWorld.getInstance().getAllRobots()) {
-            Map<String, Object> robotInfo = new HashMap<>();
-
-            robotInfo.put("name", r.getName());
-            robotInfo.put("type", r.getTypeName());
-            Position pos = r.getPosition();
-            robotInfo.put("position", new int[]{pos.getX(), pos.getY()});
-            robotInfo.put("direction", r.getCurrentDirection());
-            robotInfo.put("shields", r.getCurrentShieldStrength());
-            robotInfo.put("shots", r.getAmmo());
-            robotInfo.put("status", r.getStatus());
-
-            robotInfoList.add(robotInfo);
-        }
-
-        return robotInfoList;
-    }
-
     public static String formatRobotList(List<Map<String, Object>> robots) {
         if (robots == null || robots.isEmpty()) {
             return "No robots found.";

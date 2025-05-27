@@ -1,6 +1,8 @@
 package za.co.wethinkcode.robots.server;
 
 import za.co.wethinkcode.flow.Recorder;
+import za.co.wethinkcode.robots.commands.DumpCommand;
+import za.co.wethinkcode.robots.commands.RobotList;
 import za.co.wethinkcode.robots.commands.RobotsCommand;
 import za.co.wethinkcode.robots.world.TextWorld;
 
@@ -68,16 +70,19 @@ public class Server {
     }
 
     private static void handleServerCommand(String command) {
+//        world.get
+        List<Map<String, Object>> allRobots = RobotList.getAllRobotsInfo();
+        String formatted = RobotsCommand.formatRobotList(allRobots);
         switch (command.toLowerCase()) {
             case "robots":
-                List<Map<String, Object>> allRobots = RobotsCommand.getAllRobotsInfo();
-                String formatted = RobotsCommand.formatRobotList(allRobots);
                 System.out.println(formatted);
                 break;
 
-            case "world":
-                System.out.println("== World State ==");
-                System.out.println(world); // You can implement a custom toString in TextWorld
+            case "dump":
+                System.out.println("== Objects in World ==");
+                System.out.println();
+                System.out.println(formatted);
+                DumpCommand.dumpWorldState(world);
                 break;
 
             case "shutdown":

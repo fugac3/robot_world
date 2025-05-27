@@ -24,31 +24,23 @@ public class RobotList {
      * @return a list of maps, where each map contains the information about a robot in the world
      *         or `null` if the world is not a {@link TextWorld}.
      */
-    public static List<Map<String, Object>> getAllRobotsInfo(Robot robot) {
-        // Ensure the robot's world is an instance of TextWorld
-        if (robot.getWorld() == null) {
-            return null;
-        }
-
-        // Cast the world to TextWorld
-        TextWorld world = (TextWorld) robot.getWorld();
-
+    public static List<Map<String, Object>> getAllRobotsInfo() {
         // Create a list to store information about all robots
         List<Map<String, Object>> robotInfoList = new ArrayList<>();
 
         // Iterate over all robots in the world
-        for (Robot r : world.getAllRobots()) {
+        for (Robot r : TextWorld.getInstance().getAllRobots()) {
             Map<String, Object> robotInfo = new HashMap<>();
 
-            // Add robot's details to the map
             robotInfo.put("name", r.getName());
+            robotInfo.put("type", r.getTypeName());
             Position pos = r.getPosition();
             robotInfo.put("position", new int[]{pos.getX(), pos.getY()});
             robotInfo.put("direction", r.getCurrentDirection());
+            robotInfo.put("shields", r.getCurrentShieldStrength());
             robotInfo.put("shots", r.getAmmo());
             robotInfo.put("status", r.getStatus());
 
-            // Add the robot's information to the list
             robotInfoList.add(robotInfo);
         }
 
