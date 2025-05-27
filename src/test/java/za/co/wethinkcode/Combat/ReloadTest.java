@@ -15,9 +15,10 @@ import java.util.ResourceBundle;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for the ReloadCommand functionality.
+ * Unit tests for the {@link ReloadCommand} functionality.
  *
- * Ensures that reloading restores ammo and updates robot status as expected.
+ * Verifies correct behavior for reloading with empty, full, and dead robots,
+ * ensuring response codes, ammo, and status are as expected.
  */
 public class ReloadTest {
     private Robot robot;
@@ -61,6 +62,10 @@ public class ReloadTest {
         assertEquals("RELOAD", robot.getStatus());
     }
 
+    /**
+     * Tests reloading when ammo is already full.
+     * Expects ammo to remain at max and status to "RELOAD".
+     */
     @Test
     void testReloadWhenAmmoFull() {
         robot.setStatus("NORMAL");
@@ -72,6 +77,9 @@ public class ReloadTest {
         assertEquals("RELOAD", robot.getStatus());
     }
 
+    /**
+     * Tests that reloading does not affect the robot's shield.
+     */
     @Test
     void testReloadDoesNotAffectShield() {
         int initialShield = robot.getCurrentShieldStrength();
@@ -82,6 +90,10 @@ public class ReloadTest {
         assertEquals(initialShield, robot.getCurrentShieldStrength());
     }
 
+    /**
+     * Tests multiple reloads in succession.
+     * Expects ammo to remain at max and status set to "RELOAD".
+     */
     @Test
     void testMultipleReloads() {
         robot.fireCommand();
@@ -93,12 +105,16 @@ public class ReloadTest {
         assertEquals("RELOAD", robot.getStatus());
     }
 
+    /**
+     * Tests reloading when the robot is dead.
+     * Expects a "FAILED" result and no change to ammo.
+     */
     @Test
     void testReloadWhenDead() {
         robot.setStatus("DEAD");
         ReloadCommand reloadCommand = new ReloadCommand();
         Response response = reloadCommand.execute(robot);
 
-        assertEquals("ERROR", response.getResult());
+        assertEquals("FAILED", response.getResult());
     }
 }

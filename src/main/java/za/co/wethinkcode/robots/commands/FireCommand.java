@@ -38,7 +38,7 @@ public class FireCommand extends Command {
         if (robot.getAmmo() <= 0) {
             robot.setStatus("NORMAL");
             // If no ammo, return "Out of ammo" response
-            return new Response("ERROR", Map.of("message", "No ammo"), robot);
+            return new Response("FAILED", Map.of("message", "No ammo"), robot);
         }
 
         // Consume a bullet

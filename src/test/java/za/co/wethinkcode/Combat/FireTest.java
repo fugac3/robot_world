@@ -13,7 +13,7 @@ import za.co.wethinkcode.robots.world.TextWorld;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for the FireCommand functionality.
+ * Unit tests for the {@link FireCommand} functionality.
  *
  * Verifies correct behavior when firing with and without ammo,
  * ensuring response codes and messages are as expected.
@@ -55,7 +55,7 @@ public class FireTest {
 
     /**
      * Tests firing when the robot has no ammo.
-     * Expects an "ERROR" result and "No ammo" message.
+     * Expects an "FAILED" result and "No ammo" message.
      */
     @Test
     void testFireCommandNoAmmo() {
@@ -68,10 +68,14 @@ public class FireTest {
         FireCommand fireCommand = new FireCommand();
         Response response = fireCommand.execute(robot);
 
-        assertEquals("ERROR", response.getResult());
+        assertEquals("FAILED", response.getResult());
         assertEquals("No ammo", response.getData().get("message"));
     }
 
+    /**
+     * Tests repeated firing until ammo is depleted.
+     * Expects "OK" reponses until empty, then "FAILED".
+     */
     @Test
     void testFireUntilNoAmmo() {
         FireCommand fireCommand = new FireCommand();
@@ -81,10 +85,13 @@ public class FireTest {
             assertEquals("OK", response.getResult());
         }
         Response response = fireCommand.execute(robot);
-        assertEquals("ERROR", response.getResult());
+        assertEquals("FAILED", response.getResult());
         assertEquals(0, robot.getAmmo());
     }
 
+    /**
+     * Tests that firing can hit another robot and reduce its shield.
+     */
     @Test
     void testFireHitsAnotherRobot() {
         Robot target = new Robot("TargetBot", world, new Position(1, 0), type);
@@ -97,6 +104,9 @@ public class FireTest {
         assertTrue(target.getCurrentShieldStrength() < target.getMaxShieldStrength());
     }
 
+    /**
+     * Tests that a robot cannot hit itself when firing.
+     */
     @Test
     void testFireDoesNotHitSelf() {
         int initialShield = robot.getCurrentShieldStrength();
@@ -105,6 +115,9 @@ public class FireTest {
         assertEquals(initialShield, robot.getCurrentShieldStrength());
     }
 
+    /**
+     * Tests that the robot's status is set to "NORMAL" after firing.
+     */
     @Test
     void testStatusAfterFire() {
         robot.setStatus("BUSY");

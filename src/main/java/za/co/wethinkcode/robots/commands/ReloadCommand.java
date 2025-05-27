@@ -34,7 +34,7 @@ public class ReloadCommand extends Command {
         // Check if the robot is dead
         if ("DEAD".equals(robot.getStatus())) {
             data.put("message", "Cannot reload: robot is dead.");
-            return new Response("ERROR", data, robot);
+            return new Response("FAILED", data, robot);
         }
 
         // Attempt to reload the robot's ammo
