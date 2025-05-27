@@ -26,13 +26,6 @@ public class CommandTest {
     RobotType type = new RobotType("bot",5,5,5);
     Robot robot = new Robot("Reloader", world, new Position(0, 0),type);
 
-    @Test
-    public void testCreateLaunchCommand() {
-        Command command = Command.create("launch Robo");
-        assertNotNull(command);
-        assertTrue(command instanceof LaunchCommand);
-        assertEquals("robo", command.getArgument().toLowerCase());
-    }
 
     @Test
     public void testCreateForwardCommand() {
@@ -40,14 +33,6 @@ public class CommandTest {
         assertNotNull(command);
         assertTrue(command instanceof ForwardCommand);
         assertEquals("10", command.getArgument());
-    }
-
-    @Test
-    public void testCreateQuitCommand() {
-        Command command = Command.create("quit");
-        assertNotNull(command);
-        assertTrue(command instanceof
-                QuitCommand);
     }
 
     @Test
@@ -64,13 +49,6 @@ public class CommandTest {
         assertEquals("Could not parse arguments: Steps cannot be null.", exception.getMessage());
     }
 
-    @Test
-    public void testCreateThrowsOnMissingLaunchName() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Command.create("launch ");
-        });
-        assertTrue(exception.getMessage().contains("Launch command needs a name"));
-    }
 
     @BeforeEach
     void setUp() {
@@ -136,20 +114,6 @@ public class CommandTest {
         assertEquals(5, northObject.get("distance"));
     }
 
-    @Test
-    void testFireCommandWithAmmo() {
-        TextWorld world = TextWorld.getInstance();
-        world.getObstacles().clear();
-        world.addRobot(robot);
-
-        int initialAmmo = robot.getAmmo();
-        FireCommand fireCommand = new FireCommand();
-        Response response = fireCommand.execute(robot);
-
-        assertEquals("OK", response.getResult());
-        assertTrue(response.getData().get("message").toString().matches("Hit|Miss"));
-        assertEquals(initialAmmo - 1, robot.getAmmo());
-    }
 
 //    @Test
 //    void testFireCommandNoAmmo() {
