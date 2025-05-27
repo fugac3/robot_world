@@ -22,6 +22,19 @@ public class CommandHandler {
         this.clientHandler = clientHandler;
     }
 
+    public void disconnect() {
+        System.out.println("Disconnecting client: " + (clientHandler.getClientName() != null ? clientHandler.getClientName() : "unknown"));
+        connectionManager.stop();
+    }
+
+    public void removeRobot() {
+        if (robot != null) {
+            world.removeRobot(robot);
+            System.out.println("Robot '" + robot.getName() + "' removed from world.");
+        }
+    }
+
+
     public Response handleClientCommand(String msgFromClient) {
         Map<String, Object> data = new HashMap<>();
         Request request;
@@ -117,8 +130,8 @@ public class CommandHandler {
                 robot.getWorld().removeRobot(robot);  // cleanup from world
                 return new Response("DEAD", Map.of("message", "Your robot has been destroyed. "+robot.getName()), null);
             } else if ("quit".equalsIgnoreCase(cmdName)) {
-                Server.shutdownServer();
-                connectionManager.stop();
+                world.removeRobot(robot);
+                clientHandler.disconnect();
                 return null; // Signal to break the loop
             } else {
                 // Reconstruct full command string from name + args

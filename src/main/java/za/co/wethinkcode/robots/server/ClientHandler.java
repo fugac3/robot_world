@@ -10,7 +10,7 @@ import java.util.Map;
 //  allows handling multiple clients at the same time
 public class ClientHandler implements Runnable {
     private final ConnectionManager connectionManager;
-    private final boolean running = true;
+    private volatile boolean running = true;
     private String clientName;
     private final CommandHandler commandHandler;
     private boolean robotDead = false;
@@ -40,7 +40,10 @@ public class ClientHandler implements Runnable {
             String msgFromClient;
             while (running && (msgFromClient = reader.readLine()) != null) {
                 if (msgFromClient.equalsIgnoreCase("quit")) {
+                    commandHandler.removeRobot();
+
                     writer.println("Bye, " + this.clientName + "!");
+                    writer.println("===END===");
                     writer.flush();
                     break;
                 }
@@ -70,10 +73,19 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    public void disconnect() {
+        running = false;
+        connectionManager.stop();
+        try {
+            connectionManager.getSocket().close();  // triggers reader.readLine() to throw
+        } catch (IOException e) {
+            // Ignore or log
+        }
+    }
+
+
     private void sendResponse(PrintWriter writer, Response response) throws IOException {
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonResponse = GSON.toJson(response);
-//        String jsonResponse = gson.toJson(response);
         System.out.print(clientName+": ");
         System.out.println(jsonResponse);
         for (String line : jsonResponse.split("\n")) {
@@ -88,6 +100,10 @@ public class ClientHandler implements Runnable {
     private void sendError(PrintWriter writer, String errorMessage) throws IOException {
         Response errorResponse = new Response("ERROR", Map.of("message", errorMessage), null);
         sendResponse(writer, errorResponse);
+    }
+
+    public String getClientName() {
+        return clientName;
     }
     //================
 }
