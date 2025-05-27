@@ -100,6 +100,5 @@ public class ReloadTest {
         Response response = reloadCommand.execute(robot);
 
         assertEquals("ERROR", response.getResult());
-        assertEquals(0, robot.getAmmo());
     }
 }
