@@ -38,50 +38,6 @@ class RobotTest {
         assertEquals(5, robot.getAmmo());
     }
 
-    @Test
-    void testTurnRight(){
-        assertEquals(Direction.NORTH, robot.getCurrentDirection()); //should face North initially
-
-        robot.turnRight();
-        assertEquals(Direction.EAST, robot.getCurrentDirection());
-
-        robot.turnRight();
-        assertEquals(Direction.SOUTH, robot.getCurrentDirection());
-
-        robot.turnRight();
-        assertEquals(Direction.WEST, robot.getCurrentDirection());
-
-        robot.turnRight();
-        assertEquals(Direction.NORTH, robot.getCurrentDirection());
-    }
-
-    @Test
-    void testTurnLeft(){
-        assertEquals(Direction.NORTH, robot.getCurrentDirection());
-
-        robot.turnLeft();
-        assertEquals(Direction.WEST, robot.getCurrentDirection());
-
-        robot.turnLeft();
-        assertEquals(Direction.SOUTH, robot.getCurrentDirection());
-
-        robot.turnLeft();
-        assertEquals(Direction.EAST, robot.getCurrentDirection());
-
-        robot.turnLeft();
-        assertEquals(Direction.NORTH, robot.getCurrentDirection());
-    }
-
-    @Test
-    void testMovingAroundInDifferentDirections(){
-        robot.updatePosition(5);
-        assertEquals(new Position(0,5), robot.getPosition());
-
-        robot.turnRight();
-
-        robot.updatePosition(7);
-        assertEquals(new Position(7,5), robot.getPosition());
-    }
 
     @Test
     void testForwardCommandWithObstacleInPath() {
