@@ -19,7 +19,7 @@ public class Robot {
     private int ammo; // current ammo
     private final int maxAmmo; //starting/max ammo robot has
     private int currentShieldStrength; //current shield strength
-    private final int maxShieldStrength; //max shield strength of type of robot
+    private final int maxShieldStrength; //max shield based off type of robot
     private final int shootingRange; //how far robot can fire bullets
     private final RobotType type;
     private boolean isRepairing = false;

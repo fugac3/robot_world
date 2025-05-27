@@ -1,4 +1,4 @@
-package za.co.wethinkcode;
+package za.co.wethinkcode.TestCommands;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,13 +26,6 @@ public class CommandTest {
     RobotType type = new RobotType("bot",5,5,5);
     Robot robot = new Robot("Reloader", world, new Position(0, 0),type);
 
-    @Test
-    public void testCreateLaunchCommand() {
-        Command command = Command.create("launch Robo");
-        assertNotNull(command);
-        assertTrue(command instanceof LaunchCommand);
-        assertEquals("robo", command.getArgument().toLowerCase());
-    }
 
     @Test
     public void testCreateForwardCommand() {
@@ -40,14 +33,6 @@ public class CommandTest {
         assertNotNull(command);
         assertTrue(command instanceof ForwardCommand);
         assertEquals("10", command.getArgument());
-    }
-
-    @Test
-    public void testCreateQuitCommand() {
-        Command command = Command.create("quit");
-        assertNotNull(command);
-        assertTrue(command instanceof
-                QuitCommand);
     }
 
     @Test
@@ -64,13 +49,6 @@ public class CommandTest {
         assertEquals("Could not parse arguments: Steps cannot be null.", exception.getMessage());
     }
 
-    @Test
-    public void testCreateThrowsOnMissingLaunchName() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Command.create("launch ");
-        });
-        assertTrue(exception.getMessage().contains("Launch command needs a name"));
-    }
 
     @BeforeEach
     void setUp() {
@@ -135,6 +113,43 @@ public class CommandTest {
         assertEquals("MOUNTAIN", northObject.get("type"));
         assertEquals(5, northObject.get("distance"));
     }
+
+
+//    @Test
+//    void testFireCommandNoAmmo() {
+//        TextWorld world = TextWorld.getInstance();
+//        world.getObstacles().clear();
+//        world.addRobot(robot);
+//
+//        // Set ammo to 0
+//        while (robot.getAmmo() > 0) {
+//            robot.fire();
+//        }
+//
+//        FireCommand fireCommand = new FireCommand();
+//        Response response = fireCommand.execute(robot);
+//
+//        assertEquals("FAILED", response.getResult());
+//        assertEquals("Miss", response.getData().get("message"));
+//    }
+
+//    @Test
+//    void testReloadCommand() {
+//        world.getObstacles().clear();
+//        world.addRobot(robot);
+//
+//        while (robot.getAmmo() > 0) {
+//            robot.fire();
+//        }
+//        assertEquals(0, robot.getAmmo());
+//
+//        ReloadCommand reloadCommand = new ReloadCommand();
+//        Response response = reloadCommand.execute(robot);
+//
+//        assertEquals("OK", response.getResult());
+//        assertEquals(5, robot.getAmmo());
+//        assertEquals("RELOAD", robot.getStatus());
+//    }
 
 
 

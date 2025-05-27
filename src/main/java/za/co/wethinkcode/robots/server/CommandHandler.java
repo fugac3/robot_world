@@ -4,7 +4,7 @@ import za.co.wethinkcode.robots.commands.Command;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robotTypes.RobotType;
-import za.co.wethinkcode.robots.robotTypes.RobotTypeFactory;
+import za.co.wethinkcode.robots.robotTypes.RobotCreator;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.HashMap;
@@ -54,6 +54,8 @@ public class CommandHandler {
                         args.put("name", arg);
                     }
                     break;
+
+
             }
         }
 
@@ -86,7 +88,7 @@ public class CommandHandler {
                     return new Response("ERROR", data, null);
                 }
 
-                RobotType type = RobotTypeFactory.createRobotType(typeName);
+                RobotType type = RobotCreator.createRobotType(typeName);
                 if (type == null) { //if no robot gets created aka type doesn't exist
                     data.put("message", "Unknown robot type: " + typeName);
                     return new Response("ERROR", data, null);
