@@ -26,7 +26,7 @@ public class RobotList {
      */
     public static List<Map<String, Object>> getAllRobotsInfo(Robot robot) {
         // Ensure the robot's world is an instance of TextWorld
-        if (!(robot.getWorld() instanceof TextWorld)) {
+        if (robot.getWorld() == null) {
             return null;
         }
 
@@ -55,3 +55,5 @@ public class RobotList {
         return robotInfoList;
     }
 }
+
+

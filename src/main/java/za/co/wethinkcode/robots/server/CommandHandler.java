@@ -129,7 +129,7 @@ public class CommandHandler {
                 String reconstructed = cmdName + (argument != null ? " " + argument : "");
                 command = Command.create(reconstructed);
                 if (command == null) {
-                    return new Response("ERROR", Map.of("message", "Invalid command structure."), null);
+                    return new Response("ERROR", Map.of("message", "Invalid command"), null);
                 }
             return robot.handleCommand(command);
             }

@@ -1,7 +1,7 @@
 package za.co.wethinkcode.robots.commands;
 
+import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
-import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
@@ -9,50 +9,52 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * The RobotsCommand class is responsible for retrieving and displaying a list of all robots in the world.
- * It uses the {@link RobotList} class to gather information about the robots in the world and returns the information
- * in a structured format.
- */
-public class RobotsCommand extends Command {
+public class RobotsCommand {
+    public static List<Map<String, Object>> getAllRobotsInfo() {
+        List<Map<String, Object>> robotInfoList = new ArrayList<>();
 
-    /**
-     * Constructs a RobotsCommand instance with the command name "robots".
-     */
-    public RobotsCommand() {
-        super("robots");
-    }
+        for (Robot r : TextWorld.getInstance().getAllRobots()) {
+            Map<String, Object> robotInfo = new HashMap<>();
 
-    /**
-     * Executes the "robots" command, which retrieves the list of all robots in the world.
-     * It uses the {@link RobotList#getAllRobotsInfo(Robot)} method to gather information about the robots.
-     * If the robot list is successfully retrieved, it returns the list along with an "OK" response.
-     * If there is an error in retrieving the list, it returns an error message with an "ERROR" response.
-     *
-     * @param robot the robot executing the command
-     * @return a {@link Response} containing the list of all robots in the world or an error message
-     */
-    @Override
-    public Response execute(Robot robot) {
-        Map<String, Object> state = new HashMap<>();
+            robotInfo.put("name", r.getName());
+            robotInfo.put("type", r.getTypeName());
+            Position pos = r.getPosition();
+            robotInfo.put("position", new int[]{pos.getX(), pos.getY()});
+            robotInfo.put("direction", r.getCurrentDirection());
+            robotInfo.put("shields", r.getCurrentShieldStrength());
+            robotInfo.put("shots", r.getAmmo());
+            robotInfo.put("status", r.getStatus());
 
-        // Retrieve information about all robots
-        List<Map<String, Object>> robotList = RobotList.getAllRobotsInfo(robot);
-
-        // Check if the robot list is null (indicating an error in retrieving the list)
-        if (robotList == null) {
-            Map<String, Object> errorData = new HashMap<>();
-            errorData.put("message", "Failed to retrieve robot list.");
-            return new Response("ERROR", errorData, robot);
+            robotInfoList.add(robotInfo);
         }
 
-        // Add the robot list to the response data
-        state.put("robots", robotList);
+        return robotInfoList;
+    }
 
-        // Set the robot's status to "NORMAL"
-        robot.setStatus("NORMAL");
+    public static String formatRobotList(List<Map<String, Object>> robots) {
+        if (robots == null || robots.isEmpty()) {
+            return "No robots found.";
+        }
 
-        // Return the response with the robot list
-        return new Response("OK", state, null);
+        StringBuilder sb = new StringBuilder();
+        sb.append("== All Active Robots ==\n");
+        sb.append(String.format("%-6s %-6s %-9s %-10s %-8s %-6s %-10s\n",
+                "name", "type", "position", "direction", "shields", "shots", "status"));
+
+        for (Map<String, Object> r : robots) {
+            String name = (String) r.get("name");
+            String type = (String) r.get("type");
+            int[] pos = (int[]) r.get("position");
+            String posStr = String.format("(%1d,%1d)", pos[0], pos[1]);
+            String dir = r.get("direction").toString();
+            int shields = (int) r.get("shields");
+            int shots = (int) r.get("shots");
+            String status = r.get("status").toString();
+
+            sb.append(String.format("%-6s %-6s %-9s %-10s %-8d %-6d %-10s\n",
+                    name, type, posStr, dir, shields, shots, status));
+        }
+
+        return sb.toString();
     }
 }

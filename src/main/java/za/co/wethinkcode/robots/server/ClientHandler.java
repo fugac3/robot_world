@@ -14,6 +14,8 @@ public class ClientHandler implements Runnable {
     private String clientName;
     private final CommandHandler commandHandler;
     private boolean robotDead = false;
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
 
     public ClientHandler(Socket socket, TextWorld world) {
         this.connectionManager = new ConnectionManager(socket);
@@ -69,8 +71,9 @@ public class ClientHandler implements Runnable {
     }
 
     private void sendResponse(PrintWriter writer, Response response) throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String jsonResponse = gson.toJson(response);
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonResponse = GSON.toJson(response);
+//        String jsonResponse = gson.toJson(response);
         System.out.print(clientName+": ");
         System.out.println(jsonResponse);
         for (String line : jsonResponse.split("\n")) {

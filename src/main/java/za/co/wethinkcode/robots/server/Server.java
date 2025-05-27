@@ -1,14 +1,18 @@
 package za.co.wethinkcode.robots.server;
 
 import za.co.wethinkcode.flow.Recorder;
+import za.co.wethinkcode.robots.commands.RobotsCommand;
 import za.co.wethinkcode.robots.world.TextWorld;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Server {
     private static boolean running = true;
@@ -23,6 +27,20 @@ public class Server {
         try {
             serverSocket = new ServerSocket(port);
             System.out.println("Server started. Listening on port " + port);
+
+            // Start a thread to listen for server-only commands
+            new Thread(() -> {
+                BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
+                String command;
+                try {
+                    while ((command = consoleReader.readLine()) != null) {
+                        handleServerCommand(command.trim());
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error reading server command: " + e.getMessage());
+                }
+            }).start();
+
 
             while (running) {
                 //Socket object :
@@ -48,6 +66,30 @@ public class Server {
             shutdownServer(); // Clean up even if crash
         }
     }
+
+    private static void handleServerCommand(String command) {
+        switch (command.toLowerCase()) {
+            case "robots":
+                List<Map<String, Object>> allRobots = RobotsCommand.getAllRobotsInfo();
+                String formatted = RobotsCommand.formatRobotList(allRobots);
+                System.out.println(formatted);
+                break;
+
+            case "world":
+                System.out.println("== World State ==");
+                System.out.println(world); // You can implement a custom toString in TextWorld
+                break;
+
+            case "shutdown":
+                System.out.println("Shutting down the server...");
+                shutdownServer();
+                break;
+
+            default:
+                System.out.println("Unknown server command: " + command);
+        }
+    }
+
 
     public static void shutdownServer() {
         running = false;

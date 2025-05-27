@@ -94,7 +94,6 @@ public abstract class Command {
      * @throws IllegalArgumentException If the instruction is empty or invalid
      */
     public static Command create(String instruction) {
-
         String emptySteps = "Could not parse arguments: Steps cannot be null.";
         String[] args = instruction.trim().split("\\s+");
 
@@ -103,11 +102,9 @@ public abstract class Command {
             case "l":
             case "launch":
                 if (args.length < 3 || args[1].isBlank() || args[2].isBlank()) {
-                    throw new IllegalArgumentException("Could not parse arguments: Launch command must be: launch type name.");
+                    throw new IllegalArgumentException("Could not parse arguments: Launch command must have: launch type and name");
                 }
                 return new LaunchCommand(args[1].trim(), args[2].trim());
-            case "robots":
-                return new RobotsCommand();
             case "quit":
                 return new QuitCommand();
             case "forward":
@@ -115,14 +112,12 @@ public abstract class Command {
                     throw new IllegalArgumentException(emptySteps);
                 }
                 return new ForwardCommand(args[1]);
-
             case "turn":
                 if (args.length < 2 || args[1].isBlank()) {
                     throw new IllegalArgumentException("invalid turn thing"+args[0]+" e "+args[1]);
                 }
                 System.out.println("invalid turn thing"+args[0]+" e "+args[1]);
                 return new TurnCommand(args[1]);
-
             case "back":
                 if (args.length < 2 || args[1].isBlank()) {
                     throw new IllegalArgumentException(emptySteps);
@@ -132,8 +127,6 @@ public abstract class Command {
                 return new FireCommand();
             case "reload":
                 return new ReloadCommand();
-            case "dump":
-                return new DumpCommand();
             case "look":
                 return new LookCommand();
             case "state":
