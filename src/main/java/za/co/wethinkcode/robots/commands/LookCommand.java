@@ -77,6 +77,7 @@ public class LookCommand extends Command {
                 emptyDirection(direction, visibilityConstraint, objects);
             }
         }
+        robot.setStatus("NORMAL");
         // Add objects to data
         data.put("objects", objects);
         // Return the response with the required format

@@ -44,6 +44,7 @@ public class ForwardCommand extends Command {
             moved = robot.updatePosition(steps);
         } catch (NumberFormatException e) {
             data.put("message","Invalid steps: steps must be a number.");
+            robot.setStatus("NORMAL");
             return new Response("ERROR",data,null);
         }
 

@@ -1,11 +1,9 @@
-package za.co.wethinkcode.robots.commands;
+package za.co.wethinkcode.robots.serverCommands;
 
-import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.world.TextWorld;
 import za.co.wethinkcode.robots.obstacles.Obstacle;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * The DumpCommand is responsible for collecting and returning a snapshot of the current

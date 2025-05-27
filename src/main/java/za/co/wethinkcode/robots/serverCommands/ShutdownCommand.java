@@ -1,7 +1,6 @@
-package za.co.wethinkcode.robots.commands;
+package za.co.wethinkcode.robots.serverCommands;
 
 import za.co.wethinkcode.robots.server.ClientHandler;
-import za.co.wethinkcode.robots.server.ConnectionManager;
 import za.co.wethinkcode.robots.server.Server;
 import za.co.wethinkcode.robots.world.TextWorld;
 

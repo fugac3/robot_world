@@ -1,10 +1,10 @@
 package za.co.wethinkcode.robots.server;
 
 import za.co.wethinkcode.flow.Recorder;
-import za.co.wethinkcode.robots.commands.DumpCommand;
-import za.co.wethinkcode.robots.commands.RobotList;
-import za.co.wethinkcode.robots.commands.RobotsCommand;
-import za.co.wethinkcode.robots.commands.ShutdownCommand;
+import za.co.wethinkcode.robots.serverCommands.DumpCommand;
+import za.co.wethinkcode.robots.serverCommands.RobotList;
+import za.co.wethinkcode.robots.serverCommands.RobotsCommand;
+import za.co.wethinkcode.robots.serverCommands.ShutdownCommand;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.io.BufferedReader;

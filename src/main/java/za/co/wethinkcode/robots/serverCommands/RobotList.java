@@ -1,4 +1,4 @@
-package za.co.wethinkcode.robots.commands;
+package za.co.wethinkcode.robots.serverCommands;
 
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
