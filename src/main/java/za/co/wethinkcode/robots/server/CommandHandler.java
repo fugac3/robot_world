@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robots.server;
 
 import za.co.wethinkcode.robots.commands.Command;
+import za.co.wethinkcode.robots.commands.RepairCommand;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robotTypes.RobotType;
@@ -133,7 +134,17 @@ public class CommandHandler {
                 world.removeRobot(robot);
                 clientHandler.disconnect();
                 return null; // Signal to break the loop
+            }// Only allow status check or repair command
+            else if (robot.getIsRepairing()){
+                return new Response("FAILED", Map.of(
+                        "message", "Robot is currently repairing. Please wait."
+                ), robot);
             } else {
+                if ("repair".equalsIgnoreCase(cmdName)) {
+                    // Directly create and execute RepairCommand
+                    RepairCommand repairCommand = new RepairCommand();
+                    return repairCommand.execute(robot);
+                }
                 // Reconstruct full command string from name + args
                 String argument = (String) request.getArguments().get("steps"); // for forward/back
                 if (argument == null) {

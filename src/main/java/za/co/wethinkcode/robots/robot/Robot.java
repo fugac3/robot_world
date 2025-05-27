@@ -118,9 +118,9 @@ public class Robot {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                currentShieldStrength = maxShieldStrength;
+                currentShieldStrength += maxShieldStrength;
                 isRepairing = false;
-                System.out.println("Shields repaired to maximum strength.");
+                System.out.println("Shields repaired.");
             }
         }).start();
         return true;
