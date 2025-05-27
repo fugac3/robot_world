@@ -70,7 +70,7 @@ public class FireCommand extends Command {
      * @return a {@link Response} indicating the hit result
      */
     private Response buildHitResponse(Robot robot, HitResult result, int distance) {
-        if ("DEAD".equals(result.hitRobot.getStatus())) {
+        if (result.hitRobot != null && "DEAD".equals(result.hitRobot.getStatus())) {
             // If the hit robot is dead, return destruction message
             return new Response("OK", Map.of("message", "You have destroyed " + result.hitRobot.getName()), robot);
         }

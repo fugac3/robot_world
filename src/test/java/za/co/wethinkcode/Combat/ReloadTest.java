@@ -10,6 +10,8 @@ import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.TextWorld;
 
+import java.util.ResourceBundle;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -57,5 +59,47 @@ public class ReloadTest {
         assertEquals("OK", response.getResult());
         assertEquals(5, robot.getAmmo());
         assertEquals("RELOAD", robot.getStatus());
+    }
+
+    @Test
+    void testReloadWhenAmmoFull() {
+        robot.setStatus("NORMAL");
+        ReloadCommand reloadCommand = new ReloadCommand();
+        Response response = reloadCommand.execute(robot);
+
+        assertEquals("OK", response.getResult());
+        assertEquals(robot.getMaxAmmo(), robot.getAmmo());
+        assertEquals("RELOAD", robot.getStatus());
+    }
+
+    @Test
+    void testReloadDoesNotAffectShield() {
+        int initialShield = robot.getCurrentShieldStrength();
+
+        ReloadCommand reloadCommand = new ReloadCommand();
+        reloadCommand.execute(robot);
+
+        assertEquals(initialShield, robot.getCurrentShieldStrength());
+    }
+
+    @Test
+    void testMultipleReloads() {
+        robot.fireCommand();
+        ReloadCommand reloadCommand = new ReloadCommand();
+        reloadCommand.execute(robot);
+        reloadCommand.execute(robot);
+
+        assertEquals(robot.getMaxAmmo(), robot.getAmmo());
+        assertEquals("RELOAD", robot.getStatus());
+    }
+
+    @Test
+    void testReloadWhenDead() {
+        robot.setStatus("DEAD");
+        ReloadCommand reloadCommand = new ReloadCommand();
+        Response response = reloadCommand.execute(robot);
+
+        assertEquals("ERROR", response.getResult());
+        assertEquals(0, robot.getAmmo());
     }
 }
