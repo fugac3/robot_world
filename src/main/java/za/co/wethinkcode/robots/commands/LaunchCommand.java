@@ -3,7 +3,7 @@ package za.co.wethinkcode.robots.commands;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.server.Response;
-import za.co.wethinkcode.robots.robotTypes.RobotTypeCreator;
+import za.co.wethinkcode.robots.robotTypes.RobotCreator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class LaunchCommand extends Command {
         }
 
         // Check if robot type is valid
-        RobotType type = RobotTypeCreator.createRobotType(robotTypeName);
+        RobotType type = RobotCreator.createRobotType(robotTypeName);
         if (type == null) {
             data.put("message", "Unknown robot type: " + robotTypeName);
             return new Response("ERROR", data, null);
