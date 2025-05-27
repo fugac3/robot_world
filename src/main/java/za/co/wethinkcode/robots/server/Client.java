@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Client {
     public static void main(String[] args) {
 
-        int Port = 4401;
+        int Port = 4402;
 
         Socket socket = null;
 //        InputStreamReader inputStreamReader = null;  //byte based
