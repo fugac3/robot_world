@@ -87,7 +87,7 @@ public class FireTest {
 
     @Test
     void testFireHitsAnotherRobot() {
-        Robot target = new Robot("TargetBot", world, new Position(0, 1), type);
+        Robot target = new Robot("TargetBot", world, new Position(1, 0), type);
         world.addRobot(target);
         robot.setPosition(new Position(0, 0));
         robot.turnRight();
