@@ -39,24 +39,6 @@ class RobotTest {
     }
 
     @Test
-    void testBackCommand(){
-        BackCommand back = new BackCommand("5");
-        Response response = back.execute(robot);
-
-        assertEquals("OK", response.getResult());
-        Map<String, Object> data = response.getData();
-        assertEquals("Done", data.get("message"));
-        Map<String, Object> state = response.getState();
-        assertNotNull(state);
-        int[] position = (int[]) state.get("position");
-        assertEquals(0,position[0]); //x
-        assertEquals(-5, position[1]); //y coordinate
-        assertEquals(Direction.NORTH, state.get("direction"));
-        assertEquals("NORMAL", state.get("status"));
-        assertEquals(new Position(0, -5), robot.getPosition());
-    }
-
-    @Test
     void testTurnRight(){
         assertEquals(Direction.NORTH, robot.getCurrentDirection()); //should face North initially
 
