@@ -47,4 +47,21 @@ public class RobotTypeCreatorTest {
         assertEquals("Whiplash", robot.getTypeName());
     }
 
+    @Test
+    public void testCreateRobotCaseInsensitive() {
+        RobotType robot1 = RobotTypeCreator.createRobotType("CANNON");
+        RobotType robot2 = RobotTypeCreator.createRobotType("Cannon");
+        RobotType robot3 = RobotTypeCreator.createRobotType("cannon");
+
+        assertEquals("Cannon", robot1.getTypeName());
+        assertEquals("Cannon", robot2.getTypeName());
+        assertEquals("Cannon", robot3.getTypeName());
+    }
+
+    @Test
+    public void testCreateUnknownRobotType() {
+        RobotType robot = RobotTypeCreator.createRobotType("unknown");
+        assertNull(robot);
+    }
+
 }
