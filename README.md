@@ -20,6 +20,35 @@ You may use IntelliJ to run your code and tests, but alternatively you can use t
 * To run the tests: `mvn test`
 * To run your application: `mvn compile exec:java`
 
+## Build and Run Instructions
+Running Tests and Building the Project
+
+
+If all tests pass, run the following command to clean, install dependencies, compile, and package your project:
+
+    mvn clean install compile package
+
+If some tests are failing or you want to skip tests, run:
+
+    mvn clean install compile package -DskipTests
+
+Navigating to the Build Output
+
+After building, navigate to the directory where the packaged JAR file is located:
+
+    cd target
+
+You should see the JAR file, typically named something like:
+
+    robot-world-0.0.2-jar-with-dependencies.jar
+
+Running the Application
+
+## To run the project from the terminal, use:
+    
+    java -jar robot-world-0.0.2-jar-with-dependencies.jar
+
+
 ## Server
 This module is the server component for the za.co.wethinkcode.robots project. It handles incoming client
 connections, manages the game world (TextWorld), and coordinates client communication using multithreaded handlers.
@@ -60,7 +89,7 @@ Use this to shuttdown the server.
 
 ## Client
 
-🤖 Robot World Client
+## Robot World Client
 
 This module acts as a console-based client that connects to the Robot World Server. It allows users to input commands, send them to the server, and receive structured responses based on game logic handled on the server side.
 Package
@@ -133,8 +162,8 @@ All network and stream resources are closed safely in a finally block to ensure 
 * Enforces rules like disabling input after robot death.
 
 ## Key Components
-Component	Purpose
-ConnectionManager  |Manages socket I/O streams safely
-CommandHandler	   |Parses and processes client commands
-Response	       |Encapsulates server replies in a JSON-serializable object
-Gson	           |Formats responses for readability
+Component	                Purpose
+* ConnectionManager     -> Manages socket I/O streams safely
+* CommandHandler	    -> Parses and processes client commands
+* Response	            -> Encapsulates server replies in a JSON-serializable object
+* Gson	                -> Formats responses for readability
