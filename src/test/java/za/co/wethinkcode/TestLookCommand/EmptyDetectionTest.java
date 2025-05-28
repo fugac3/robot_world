@@ -1,4 +1,4 @@
-package za.co.wethinkcode.LookCommand;
+package za.co.wethinkcode.TestLookCommand;
 
 import org.junit.jupiter.api.Test;
 import za.co.wethinkcode.robots.commands.LookCommand;

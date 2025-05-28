@@ -15,14 +15,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class BackwardsTest {
-    private TextWorld world;
     private Robot robot;
 
+    Position TOP_LEFT = new Position(-10,10);
+    Position BOTTOM_RIGHT = new Position(10,-10);
+    TextWorld world = TextWorld.getInstance(TOP_LEFT,BOTTOM_RIGHT);
 
     @Test
     void testBackCommand() {
         //Creating a controlled environment with no obstacles and defined position to make testing easier
-        world = TextWorld.getInstance();
         world.getObstacles().clear(); //get rid of all obstacles in world
         TextWorld world = new TextWorld();
         RobotType type = new RobotType("bot",5,5,5);

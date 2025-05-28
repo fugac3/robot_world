@@ -1,8 +1,6 @@
-package za.co.wethinkcode;
+package za.co.wethinkcode.TestServerClient;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robots.server.Server;
 
 import java.io.*;
 import java.net.ServerSocket;

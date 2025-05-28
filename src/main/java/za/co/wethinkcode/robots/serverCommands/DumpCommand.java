@@ -30,7 +30,7 @@ public class DumpCommand {
             System.out.printf("%-20s %-12s %-12s\n",
                                 "Type", "bottom left", "top right");
             for (Obstacle o : obstacles) {
-                System.out.printf("%-20s (%-1d,%-1d)     (%-1d,%-1d)\n",
+                System.out.printf("%-20s (%-1d,%-1d)        (%-1d,%-1d)\n",
                         o.getClass().getSimpleName(), // Get the type of obstacle (e.g., MountainObstacle)
                         o.getBottomLeftX(), o.getBottomLeftY(),
                         o.getTopRightX(), o.getTopRightY());

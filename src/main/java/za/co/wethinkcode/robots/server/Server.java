@@ -24,11 +24,6 @@ public class Server {
     private static final TextWorld world = TextWorld.getInstance();
     private static final List<Thread> clientThreads = Collections.synchronizedList(new ArrayList<>());
 
-
-    public static boolean isRunning() {
-        return running;
-    }
-
     public static void setRunning(boolean value) {
         running = value;
     }
@@ -123,16 +118,8 @@ public class Server {
 
             case "shutdown":
                 System.out.println("Shutting down the server...");
-                setRunning(false);
-                try {
-                    serverSocket.close();  // 🔥 This unblocks serverSocket.accept()
-                } catch (IOException e) {
-                    System.out.println("Error closing server socket: " + e.getMessage());
-                }
+                ShutdownCommand.shutdownServer(serverSocket,clients);
                 break;
-
-            default:
-                System.out.println("Unknown server command: " + command);
         }
     }
 

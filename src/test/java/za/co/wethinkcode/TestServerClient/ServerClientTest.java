@@ -1,4 +1,4 @@
-package za.co.wethinkcode;
+package za.co.wethinkcode.TestServerClient;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

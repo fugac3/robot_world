@@ -1,4 +1,4 @@
-package za.co.wethinkcode.Combat;
+package za.co.wethinkcode.TestCombat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,8 +9,6 @@ import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.server.Response;
 import za.co.wethinkcode.robots.world.TextWorld;
-
-import java.util.ResourceBundle;
 
 import static org.junit.jupiter.api.Assertions.*;
 
