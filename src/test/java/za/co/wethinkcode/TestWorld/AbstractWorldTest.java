@@ -1,4 +1,4 @@
-package za.co.wethinkcode.world;
+package za.co.wethinkcode.TestWorld;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
