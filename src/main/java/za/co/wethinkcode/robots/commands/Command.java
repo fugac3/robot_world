@@ -82,8 +82,8 @@ public abstract class Command {
      *
      * @return the world associated with this command
      */
-    public TextWorld getWorld() {
-        return world;
+    public static TextWorld getWorld() {
+        return TextWorld.getInstance();
     }
 
     /**

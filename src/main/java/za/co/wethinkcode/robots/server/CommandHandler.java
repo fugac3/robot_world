@@ -63,14 +63,12 @@ public class CommandHandler {
                 case "launch":
                     String[] parts = arg.split("\\s+"); //take into account robot type
                     if (parts.length == 2) {
-                    args.put("type", parts[0]);
-                    args.put("name", parts[1]);}
-                    else{
+                        args.put("type", parts[0]);
+                        args.put("name", parts[1]);
+                    } else {
                         args.put("name", arg);
                     }
                     break;
-
-
             }
         }
 
@@ -79,49 +77,11 @@ public class CommandHandler {
         try {
             String cmdName = request.getCommand();
 
-            if ("launch".equalsIgnoreCase(cmdName)||"l".equalsIgnoreCase(cmdName)) {
-//            if ("launch".equalsIgnoreCase(cmdName)) {
+            if ("launch".equalsIgnoreCase(cmdName)) {
                 String name = (String) request.getArguments().get("name");
                 String typeName = (String) request.getArguments().get(("type"));
 
-                if (typeName == null) {
-                    data.put("message", "Launch command needs a robot type.");
-                    return new Response("ERROR", data, null);
-                }
-
-                //Block clients trying to launch more than one robot
-                if (this.robot != null) {
-                    data.put("message", "A robot has already been launched for this client.");
-                    return new Response("ERROR", data, null);
-                }
-
-                //Check world for duplicate robot names
-                boolean nameTaken = world.getAllRobots().stream()
-                        .anyMatch(r -> r.getName().equalsIgnoreCase(name));
-                if (nameTaken) {
-                    data.put("message", "Too many of you in this world (name taken)");
-                    return new Response("ERROR", data, null);
-                }
-
-                RobotType type = RobotCreator.createRobotType(typeName);
-                if (type == null) { //if no robot gets created aka type doesn't exist
-                    data.put("message", "Unknown robot type: " + typeName);
-                    return new Response("ERROR", data, null);
-                }
-
-                // If all good, launch the robot
-                Position startPos = world.getRandomFreePosition();
-                this.robot = new Robot(name, world, startPos, type);
-                world.addRobot(this.robot);
-
-                Position pos = robot.getPosition();
-                data.put("position", new int[]{pos.getX(), pos.getY()});
-                data.put("visibility","Hardcode");
-                data.put("reload","Hardcode");
-                data.put("repair","Hardcode");
-                data.put("shield", type.getMaxShieldStrength());
-
-                return new Response("OK", data, robot);
+                return LaunchChecker(name, typeName);
 
             }//If robot has not been launched yet
             else if (robot == null) {
@@ -131,7 +91,7 @@ public class CommandHandler {
                 clientHandler.markRobotAsDead();
                 robot.getWorld().removeRobot(robot);  // cleanup from world
                 return new Response("DEAD", Map.of("message", "Your robot has been destroyed!\n GAME OVER"), null);
-            } else if (robot.getRobotHealth()==0) {
+            } else if (robot.getRobotHealth() == 0) {
                 robot.setStatus("DEAD");
                 robot.getWorld().removeRobot(robot);  // cleanup from world
                 return new Response("DEAD", Map.of("message", "YOU FELL INTO A hole! GAME OVER"), null);
@@ -140,7 +100,7 @@ public class CommandHandler {
                 clientHandler.disconnect();
                 return null; // Signal to break the loop
             }// Only allow status check or repair command
-            else if (robot.getIsRepairing()){
+            else if (robot.getIsRepairing()) {
                 return new Response("FAILED", Map.of(
                         "message", "Robot is currently repairing. Please wait."
                 ), robot);
@@ -165,10 +125,57 @@ public class CommandHandler {
                 if (command == null) {
                     return new Response("ERROR", Map.of("message", "Invalid command"), null);
                 }
-            return robot.handleCommand(command);
+                return robot.handleCommand(command);
             }
         } catch (IllegalArgumentException e) {
             return new Response("ERROR", Map.of("message", e.getMessage()), null);
         }
+        return null;
     }
+
+
+public Response LaunchChecker(String robotName,String robotTypeName) {
+    Map<String, Object> data = new HashMap<>();
+
+    // Check if robot name is null or empty
+    if (robotName == null || robotName.trim().isEmpty()) {
+        data.put("message", "Launch command needs a name.");
+        return new Response("ERROR", data, null);
+    }
+
+    // Check if robot type is null or empty
+    if (robotTypeName == null || robotTypeName.trim().isEmpty()) {
+        data.put("message", "Launch command needs a robot type.");
+        return new Response("ERROR", data, null);
+    }
+
+    // Check if robot type is valid
+    RobotType type = RobotCreator.createRobotType(robotTypeName);
+    if (type == null) {
+        data.put("message", "Unknown robot type: " + robotTypeName);
+        return new Response("ERROR", data, null);
+    }
+    // Check if name is taken
+    boolean nameTaken = world.getAllRobots().stream()
+            .anyMatch(r -> r.getName().equalsIgnoreCase(robotName));
+    if (nameTaken) {
+        data.put("message", "Too many of you in this world (name taken)");
+        return new Response("ERROR", data, null);
+    }
+
+    // Launch the robot
+    Position startPos = world.getRandomFreePosition();
+    this.robot = new Robot(robotName, world, startPos, type);
+    world.addRobot(this.robot);
+
+    Position pos = robot.getPosition();
+    data.put("position", new int[]{pos.getX(), pos.getY()});
+    data.put("visibility", world.);
+    data.put("reload", "Hardcode");
+    data.put("repair", "Hardcode");
+    data.put("shield", type.getMaxShieldStrength());
+
+    return new Response("OK", data, robot);
+
+}
 }
