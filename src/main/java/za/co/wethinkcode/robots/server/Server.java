@@ -1,6 +1,6 @@
 package za.co.wethinkcode.robots.server;
 
-import za.co.wethinkcode.flow.Recorder;
+//import za.co.wethinkcode.flow.Recorder;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class Server {
 //    private static final TextWorld world = new TextWorld();
     private static final TextWorld world = TextWorld.getInstance();
     public static void main(String[] args) {
-        int port = 4402;
+        int port = 4404;
         try {
             serverSocket = new ServerSocket(port);
             System.out.println("Server started. Listening on port " + port);
@@ -67,7 +67,7 @@ public class Server {
     }
     // The following initialisation is REQUIRED for `flow` monitoring.
     // DO NOT REMOVE OR MODIFY THIS CODE.
-    static {
-        new Recorder().logRun();
-    }
+//    static {
+//        new Recorder().logRun();
+//    }
 }
