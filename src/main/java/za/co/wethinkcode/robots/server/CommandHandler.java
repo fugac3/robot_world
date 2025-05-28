@@ -116,10 +116,11 @@ public class CommandHandler {
     //launch logic
     public Response LaunchChecker(String robotName,String robotTypeName) {
 
-//        if(robot!=null ||  world.getRobotByName(robotName) != null){
-//            data.put("message","Too many of you in this world");
-//            return new Response("FAILED",data,null);
-//        }
+        if (this.robot != null) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("message", "You have already launched a robot");
+            return new Response("FAILED", data, null);
+        }
 
         if (world.getAllRobots().stream().anyMatch(r -> r.getName().equals(robotName))) {
             Map<String, Object> data = new HashMap<>();
@@ -149,6 +150,7 @@ public class CommandHandler {
         boolean nameTaken = world.getAllRobots().stream()
                 .anyMatch(r -> r.getName().equalsIgnoreCase(robotName));
         if (nameTaken) {
+            Map<String, Object> data = new HashMap<>();
             data.put("message","Too many of you in this world (name taken)");
             return new Response("ERROR",data, null);
         }
@@ -159,6 +161,7 @@ public class CommandHandler {
         world.addRobot(this.robot);
 
         Position pos = robot.getPosition();
+        Map<String, Object> data = new HashMap<>();
         data.put("position", new int[]{pos.getX(), pos.getY()});
         data.put("visibility", world.getConfig().visibilityConstraint);
         data.put("reload", robot.getReloadTime());
