@@ -65,6 +65,15 @@ public class Robot {
         return this.status;
     }
 
+    public boolean fireCommand() {
+        if (ammo > 0) {
+            ammo--;
+            return true; // Fired successfully
+        } else {
+            return false; // No ammo left
+        }
+    }
+
     public boolean reload() {
         ammo = maxAmmo; // reset to full ammo
         status = "RELOAD";

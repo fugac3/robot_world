@@ -34,7 +34,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        int port = 4400;
+        int port = 4402;
         try {
             serverSocket = new ServerSocket(port);
             System.out.println("Server started. Listening on port " + port);
