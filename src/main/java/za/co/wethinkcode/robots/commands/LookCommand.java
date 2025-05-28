@@ -42,18 +42,19 @@ public class LookCommand extends Command {
 
         // Get the robot's position
         Position robotPosition = robot.getPosition();
+        // Get the world configuration for visibility constraint
+        int visibilityConstraint = robot.getWorld().getConfig().visibilityConstraint;
+
         //Create data structure for the response
         Map<String, Object> data = new HashMap<>(); //data = "data":{}
         //List to store all found obstacles
         List<Map<String, Object>> objects = new ArrayList<>(); //"objects": [{},{},{},{}]
+
         // Checks every direction and every coordinate in that direction up to visibility range
         for (Direction direction : Direction.values()) {
-
-            int visibilityConstraint = 10; //robot's visibility range
             boolean robotFound = false;
             boolean edgeFound = false;
             boolean obstacleFound = false;
-
 
             // Check each position in that direction up to visibility range
             for (int distance = 1; distance <= visibilityConstraint; distance++) {

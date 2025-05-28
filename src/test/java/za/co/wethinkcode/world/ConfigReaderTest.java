@@ -19,6 +19,12 @@ class ConfigReaderTest {
         assertEquals(0, config.maxObstacles);
     }
 
+    @Test
+    void testVisibilityConstraintInWorld() {
+        // Test with a custom visibility constraint
+        WorldConfig config = new WorldConfig(10, 10, 5, 5);
+        assertEquals(5, config.visibilityConstraint);
+    }
 
 }
 
