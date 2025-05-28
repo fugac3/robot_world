@@ -176,6 +176,21 @@ public class TextWorld extends AbstractWorld {
      */
     public boolean blocksPath(Position start, Position end) {
         for (Obstacle o : obstacles) {
+            if ("BOTTOMLESS_PIT".equalsIgnoreCase(o.getType())) {
+                continue; // pits don't block path
+            }
+            if (o.blocksPath(start, end)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean pathContainsPit(Position start, Position end) {
+        for (Obstacle o : obstacles) {
+            if (!"BOTTOMLESS_PIT".equalsIgnoreCase(o.getType())) {
+                continue;
+            }
             if (o.blocksPath(start, end)) {
                 return true;
             }
