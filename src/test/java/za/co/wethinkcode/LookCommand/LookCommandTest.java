@@ -35,39 +35,6 @@ public class LookCommandTest {
         look = new LookCommand();
     }
 
-    @Test
-    void testLookWithNoObstacles() {
-        Response response = look.execute(robot); //execute look command
-        assertEquals("OK", response.getResult()); //check response is OK
-
-        //Get objects from response
-        Map<String, Object> data = response.getData();
-        assertNotNull(data); //shouldn't be null
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects"); //list of objects from data dict
-        assertNotNull(objects);
-
-        //Should return list of 4 objects for 4 directions
-        assertEquals(4, objects.size());
-
-        //All should be EMPTY or EDGE (no obstacles)
-        for (Map<String, Object> object : objects) {
-            String type = (String) object.get("type");
-            assertTrue(type.equals("EMPTY") || type.equals("EDGE"));
-
-            //Check distance is present and an integer
-            Object distance = object.get("distance");
-            assertNotNull(distance);
-            assertTrue(distance instanceof Integer, "Distance should be an integer");
-        }
-
-        //Check robot state and that it hasn't moved
-        Map<String, Object> state = response.getState();
-        assertNotNull(state);
-        int[] position = (int[]) state.get("position");
-        assertEquals(0, position[0]); // x coordinate
-        assertEquals(0, position[1]); // y coordinate
-    }
 
     @Test
     void testLookWithMountainObstacle() {

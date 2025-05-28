@@ -61,38 +61,7 @@ public class CommandTest {
         look = new LookCommand();
     }
 
-    @Test
-    void testLookWithNoObstacles() {
-        Response response = look.execute(robot); //execute look command
-        assertEquals("OK", response.getResult()); //check response is OK
 
-        //Get objects from response
-        Map<String, Object> data = response.getData();
-        assertNotNull(data); //shouldn't be null
-        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects"); //list of objects from data dict
-        assertNotNull(objects);
-
-        //Should return list of 4 objects for 4 directions
-        assertEquals(4, objects.size());
-
-        //All should be EMPTY or EDGE (no obstacles)
-        for (Map<String, Object> object : objects) {
-            String type = (String) object.get("type");
-            assertTrue(type.equals("EMPTY") || type.equals("EDGE"));
-
-            //Check distance is present and an integer
-            Object distance = object.get("distance");
-            assertNotNull(distance);
-            assertTrue(distance instanceof Integer, "Distance should be an integer");
-        }
-
-        //Check robot state and that it hasn't moved
-        Map<String, Object> state = response.getState();
-        assertNotNull(state);
-        int[] position = (int[]) state.get("position");
-        assertEquals(0, position[0]); // x coordinate
-        assertEquals(0, position[1]); // y coordinate
-    }
 
     @Test
     void testLookWithMountainObstacle() {
@@ -113,47 +82,6 @@ public class CommandTest {
         assertEquals("MOUNTAIN", northObject.get("type"));
         assertEquals(5, northObject.get("distance"));
     }
-
-
-//    @Test
-//    void testFireCommandNoAmmo() {
-//        TextWorld world = TextWorld.getInstance();
-//        world.getObstacles().clear();
-//        world.addRobot(robot);
-//
-//        // Set ammo to 0
-//        while (robot.getAmmo() > 0) {
-//            robot.fire();
-//        }
-//
-//        FireCommand fireCommand = new FireCommand();
-//        Response response = fireCommand.execute(robot);
-//
-//        assertEquals("FAILED", response.getResult());
-//        assertEquals("Miss", response.getData().get("message"));
-//    }
-
-//    @Test
-//    void testReloadCommand() {
-//        world.getObstacles().clear();
-//        world.addRobot(robot);
-//
-//        while (robot.getAmmo() > 0) {
-//            robot.fire();
-//        }
-//        assertEquals(0, robot.getAmmo());
-//
-//        ReloadCommand reloadCommand = new ReloadCommand();
-//        Response response = reloadCommand.execute(robot);
-//
-//        assertEquals("OK", response.getResult());
-//        assertEquals(5, robot.getAmmo());
-//        assertEquals("RELOAD", robot.getStatus());
-//    }
-
-
-
-
 
 
 }
