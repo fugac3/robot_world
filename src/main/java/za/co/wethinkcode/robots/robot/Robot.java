@@ -96,12 +96,24 @@ public class Robot {
         return isRepairing;
     }
 
+    public void setIsRepairing(boolean isRepairing) {
+        this.isRepairing = isRepairing;
+    }
+
+    public void setCanRepair(boolean canRepair) { // test helper to force repair state
+        this.isRepairing = !canRepair;
+    }
+
     public boolean getIsReloading() {
         return isReloading;
     }
 
     public int getCurrentShieldStrength() {
         return currentShieldStrength;
+    }
+
+    public void setCurrentShieldStrength(int currentShieldStrength) {
+        this.currentShieldStrength = currentShieldStrength;
     }
 
     public void applyDamage(int damage) {
