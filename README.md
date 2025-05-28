@@ -169,7 +169,9 @@ Component	                Purpose
 * CommandHandler	    -> Parses and processes client commands
 * Response	            -> Encapsulates server replies in a JSON-serializable object
 * Gson	                -> Formats responses for readability
-  🧠 CommandHandler
+ 
+
+🧠 CommandHandler
 
 Handles all robot-related client commands, manages robot creation, interaction with the world, and command execution logic.
 📦 Package
@@ -358,6 +360,72 @@ Used in:
     ClientHandler (as part of managing each client's connection)
 
     CommandHandler (to trigger disconnection on quit)
+
+
+📬 Request
+
+A simple data structure representing a command sent from a client to the robot server, typically over a socket connection. Used as part of the client-server communication protocol.
+📦 Package
+
+package za.co.wethinkcode.robots.server;
+
+🎯 Purpose
+
+The Request class encapsulates:
+
+    The command a client wants to execute (e.g. launch, forward, turn).
+
+    The arguments (parameters) associated with that command.
+
+* This is used to pass structured command data into the server logic, typically after parsing from a raw input string.
+
+🛠️ Constructor 
+
+    public Request(String command, Map<String, Object> arguments)
+
+Creates a new Request with a specific command and its arguments.
+Parameters:
+
+    command: A String representing the action to perform.
+
+    arguments: A Map<String, Object> containing the key-value pairs relevant to that command (e.g. steps, direction, name).
+
+public Request()
+
+    A no-argument constructor required by Gson (or similar JSON libraries) for deserialization.
+
+🔍 Methods
+public String getCommand()
+
+    Returns the command name as a String.
+
+    public Map<String, Object> getArguments()
+
+    Returns the arguments as a Map<String, Object>.
+
+📚 Example Usage
+Constructing a request manually:
+
+    Map<String, Object> args = new HashMap<>();
+    args.put("name", "Robo");
+    args.put("type", "shieldBot");
+
+    Request request = new Request("launch", args);
+
+Example JSON (used with Gson):
+
+    {
+    "command": "forward",
+    "arguments": {
+    "steps": 5
+    }
+    }
+
+🔗 Used By
+
+    CommandHandler: to structure and interpret incoming client commands.
+
+    Gson (or other serialization libs): to convert JSON payloads into Java objects.
 
 
 
