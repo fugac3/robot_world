@@ -18,8 +18,8 @@ public class Robot {
     private String lastMoveReason;
     private int ammo; // current ammo
     private final int maxAmmo; //starting/max ammo robot has
+    private final int maxShieldStrength; // starting/max shield strength robot has
     private int currentShieldStrength; //current shield strength
-    private final int maxShieldStrength; //max shield based off type of robot
     private final int shootingRange; //how far robot can fire bullets
     private final RobotType type;
     private boolean isRepairing = false;
@@ -39,8 +39,14 @@ public class Robot {
         this.status = "NORMAL"; //initialized status
         this.maxAmmo = type.getMaxShots();
         this.ammo = maxAmmo;
-        this.maxShieldStrength = type.getMaxShieldStrength();
-        this.currentShieldStrength = maxShieldStrength;
+
+        // Get the shield constraint from world config
+        int worldMaxShields = world.getConfig().shieldConstraint;
+        int typeMaxShields = type.getMaxShieldStrength();
+
+        // Set maxShieldStrength to the smaller of the two values
+        this.maxShieldStrength = Math.min(worldMaxShields, typeMaxShields);
+        this.currentShieldStrength = this.maxShieldStrength;
         this.shootingRange = type.getShootingRange();
         this.typeName = type.getTypeName();
     }

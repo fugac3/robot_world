@@ -3,6 +3,6 @@ package za.co.wethinkcode.robots.robotTypes;
 public class TankRobot extends RobotType {
 
     public TankRobot() {
-        super("Tank", 5, 5, 1);
+        super("Tank", 50, 5, 1);
     }
 }
