@@ -64,8 +64,8 @@ public abstract class AbstractWorld {
         //Ensures that all classes in the list extend Obstacle.
         //List of classes allow the creation of new ones when the check fails
         List<Class<? extends Obstacle>> obstacleTypes = Arrays.asList(
-//                LakesObstacle.class,
-//                MountainObstacle.class,
+                LakesObstacle.class,
+                MountainObstacle.class,
                 BottomlessPit.class
         );
 
