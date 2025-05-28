@@ -39,7 +39,7 @@ public class ReloadCommand extends Command {
 
         // Attempt to reload the robot's ammo
         boolean reloaded = robot.reload();
-
+        robot.setStatus("NORMAL");
         // Set the message and return an appropriate response
         data.put("message", "Done");
 

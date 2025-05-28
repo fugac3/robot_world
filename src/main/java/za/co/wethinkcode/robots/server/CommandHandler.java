@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robots.server;
 
 import za.co.wethinkcode.robots.commands.Command;
+import za.co.wethinkcode.robots.commands.RepairCommand;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robotTypes.RobotType;
@@ -21,6 +22,19 @@ public class CommandHandler {
         this.connectionManager = connectionManager;
         this.clientHandler = clientHandler;
     }
+
+    public void disconnect() {
+        System.out.println("Disconnecting client: " + (clientHandler.getClientName() != null ? clientHandler.getClientName() : "unknown"));
+        connectionManager.stop();
+    }
+
+    public void removeRobot() {
+        if (robot != null) {
+            world.removeRobot(robot);
+            System.out.println("Robot '" + robot.getName() + "' removed from world.");
+        }
+    }
+
 
     public Response handleClientCommand(String msgFromClient) {
         Map<String, Object> data = new HashMap<>();
@@ -117,10 +131,20 @@ public class CommandHandler {
                 robot.getWorld().removeRobot(robot);  // cleanup from world
                 return new Response("DEAD", Map.of("message", "Your robot has been destroyed. "+robot.getName()), null);
             } else if ("quit".equalsIgnoreCase(cmdName)) {
-                Server.shutdownServer();
-                connectionManager.stop();
+                world.removeRobot(robot);
+                clientHandler.disconnect();
                 return null; // Signal to break the loop
+            }// Only allow status check or repair command
+            else if (robot.getIsRepairing()){
+                return new Response("FAILED", Map.of(
+                        "message", "Robot is currently repairing. Please wait."
+                ), robot);
             } else {
+                if ("repair".equalsIgnoreCase(cmdName)) {
+                    // Directly create and execute RepairCommand
+                    RepairCommand repairCommand = new RepairCommand();
+                    return repairCommand.execute(robot);
+                }
                 // Reconstruct full command string from name + args
                 String argument = (String) request.getArguments().get("steps"); // for forward/back
                 if (argument == null) {
@@ -129,7 +153,7 @@ public class CommandHandler {
                 String reconstructed = cmdName + (argument != null ? " " + argument : "");
                 command = Command.create(reconstructed);
                 if (command == null) {
-                    return new Response("ERROR", Map.of("message", "Invalid command structure."), null);
+                    return new Response("ERROR", Map.of("message", "Invalid command"), null);
                 }
             return robot.handleCommand(command);
             }

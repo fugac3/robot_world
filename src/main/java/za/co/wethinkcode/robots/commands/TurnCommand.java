@@ -29,6 +29,7 @@ public class TurnCommand extends Command {
         if(argument.equals("left")) {
             robot.turnLeft();
         }
+        robot.setStatus("NORMAL");
         data.put("message","Done");
         return new Response("OK", data, robot);
     }

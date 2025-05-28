@@ -27,6 +27,7 @@ public class Robot {
     private int robotHealth = 1;
 
     private final List<String> commands;
+    private final String typeName;
 
     public Robot(String name,TextWorld world,Position position, RobotType type) {
         this.robotHealth = getRobotHealth();
@@ -41,6 +42,11 @@ public class Robot {
         this.maxShieldStrength = type.getMaxShieldStrength();
         this.currentShieldStrength = maxShieldStrength;
         this.shootingRange = type.getShootingRange();
+        this.typeName = type.getTypeName();
+    }
+
+    public String getTypeName() {
+        return this.typeName;
     }
 
     public int getRobotHealth() {
@@ -121,9 +127,9 @@ public class Robot {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                currentShieldStrength = maxShieldStrength;
+                currentShieldStrength += maxShieldStrength;
                 isRepairing = false;
-                System.out.println("Shields repaired to maximum strength.");
+                System.out.println("Shields repaired.");
             }
         }).start();
         return true;

@@ -13,6 +13,9 @@ public class StateCommand extends Command {
 
     @Override
     public Response execute(Robot robot) {
+        if ((robot.getCurrentShieldStrength()<robot.getMaxShieldStrength())){
+            robot.setStatus("DAMAGED");
+        }
         return new Response(null, null,robot);
     }
 }
