@@ -9,47 +9,47 @@ public class RobotTypesTest {
 
     @Test
     void testBunkerRobot(){
-        RobotType bunker = new BunkerRobot();
+        RobotType bunker = new TankRobot();
 
         assertEquals(5, bunker.getMaxShieldStrength());
-        assertEquals(2, bunker.getMaxShots());
+        assertEquals(5, bunker.getMaxShots());
         assertEquals(1, bunker.getShootingRange());
     }
 
     @Test
-    void testCannonRobot(){
-        RobotType cannon = new CannonRobot();
+    void testHeavyRobot(){
+        RobotType heavy = new HeavyRobot();
 
-        assertEquals(3, cannon.getMaxShieldStrength());
-        assertEquals(2, cannon.getMaxShots());
-        assertEquals(5, cannon.getShootingRange());
+        assertEquals(4, heavy.getMaxShieldStrength());
+        assertEquals(4, heavy.getMaxShots());
+        assertEquals(2, heavy.getShootingRange());
     }
 
     @Test
-    void testStormcaller(){
-        RobotType stormcaller = new StormcallerRobot();
+    void testBasicRobot(){
+        RobotType basic = new BasicRobot();
 
-        assertEquals(2, stormcaller.getMaxShieldStrength());
-        assertEquals(4, stormcaller.getMaxShots());
-        assertEquals(5, stormcaller.getShootingRange());
+        assertEquals(3, basic.getMaxShieldStrength());
+        assertEquals(3, basic.getMaxShots());
+        assertEquals(3, basic.getShootingRange());
     }
 
     @Test
-    void testWasp(){
-        RobotType wasp = new WaspRobot();
+    void testScoutRobot(){
+        RobotType scout = new ScoutRobot();
 
-        assertEquals(1, wasp.getMaxShieldStrength());
-        assertEquals(4, wasp.getMaxShots());
-        assertEquals(2, wasp.getShootingRange());
+        assertEquals(1, scout.getMaxShieldStrength());
+        assertEquals(4, scout.getMaxShots());
+        assertEquals(2, scout.getShootingRange());
     }
 
     @Test
-    void testWhiplash(){
-        RobotType whiplash = new WhiplashRobot();
+    void testSniperRobot(){
+        RobotType sniper = new SniperRobot();
 
-        assertEquals(2, whiplash.getMaxShieldStrength());
-        assertEquals(5, whiplash.getMaxShots());
-        assertEquals(3, whiplash.getShootingRange());
+        assertEquals(2, sniper.getMaxShieldStrength());
+        assertEquals(5, sniper.getMaxShots());
+        assertEquals(3, sniper.getShootingRange());
     }
 
 }

@@ -50,7 +50,7 @@ public class ReloadTest {
         world.addRobot(robot);
 
         while (robot.getAmmo() > 0) {
-            robot.fireCommand();
+            FireCommand(robot);
         }
         assertEquals(0, robot.getAmmo());
 
