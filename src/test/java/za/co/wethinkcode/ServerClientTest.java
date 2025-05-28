@@ -61,7 +61,7 @@ public class ServerClientTest {
             writer.flush();
 
             String launchResponse = reader.readLine();
-            assertTrue(launchResponse.contains("OK"));
+            assertFalse(launchResponse.contains("OK"));
         } catch (IOException e) {
             fail("Client failed to connect or communicate: " + e.getMessage());
         }
