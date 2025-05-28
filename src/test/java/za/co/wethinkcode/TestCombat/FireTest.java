@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for the {@link FireCommand} functionality.
- *
  * Verifies correct behavior when firing with and without ammo,
  * ensuring response codes and messages are as expected.
  */
