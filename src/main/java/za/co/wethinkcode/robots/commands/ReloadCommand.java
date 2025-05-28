@@ -30,19 +30,25 @@ public class ReloadCommand extends Command {
     @Override
     public Response execute(Robot robot) {
         Map<String, Object> data = new HashMap<>();
-
-        // Check if the robot is dead
-        if ("DEAD".equals(robot.getStatus())) {
-            data.put("message", "Cannot reload: robot is dead.");
+        if (robot.getIsReloading()) {
+            robot.setStatus("NORMAL");
+            data.put("message", "reload in progress");
+            data.put("reload time", robot.getReloadTime());
             return new Response("FAILED", data, robot);
         }
 
-        // Attempt to reload the robot's ammo
-        boolean reloaded = robot.reload();
-        robot.setStatus("NORMAL");
-        // Set the message and return an appropriate response
-        data.put("message", "Done");
+        if (robot.getMaxAmmo() == robot.getAmmo()) {
+            robot.setStatus("NORMAL");
+            data.put("message", "Ammo already full");
+            data.put("Shots", robot.getAmmo());
+            return new Response("FAILED", data, robot);
+        }
 
-        return reloaded ? new Response("OK", data, robot) : new Response("FAILED", data, robot);
+        boolean startedReload = robot.reloading();
+        robot.setStatus("RELOAD");
+        data.put("message", startedReload ? "Reload started" : "Could not start reload");
+        data.put("shots", robot.getAmmo());
+
+        return new Response("OK", data, robot);
     }
 }

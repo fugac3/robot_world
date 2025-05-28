@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robots.server;
 
 import za.co.wethinkcode.robots.commands.Command;
+import za.co.wethinkcode.robots.commands.ReloadCommand;
 import za.co.wethinkcode.robots.commands.RepairCommand;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
@@ -148,6 +149,11 @@ public class CommandHandler {
                     // Directly create and execute RepairCommand
                     RepairCommand repairCommand = new RepairCommand();
                     return repairCommand.execute(robot);
+                }
+                if ("reload".equalsIgnoreCase(cmdName)) {
+                    // Directly create and execute ReloadCommand
+                    ReloadCommand reloadCommand = new ReloadCommand();
+                    return reloadCommand.execute(robot);
                 }
                 // Reconstruct full command string from name + args
                 String argument = (String) request.getArguments().get("steps"); // for forward/back

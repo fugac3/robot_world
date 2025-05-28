@@ -38,18 +38,18 @@ public class RobotTypesTest {
     void testScoutRobot(){
         RobotType scout = new ScoutRobot();
 
-        assertEquals(1, scout.getMaxShieldStrength());
-        assertEquals(4, scout.getMaxShots());
-        assertEquals(2, scout.getShootingRange());
+        assertEquals(2, scout.getMaxShieldStrength());
+        assertEquals(2, scout.getMaxShots());
+        assertEquals(4, scout.getShootingRange());
     }
 
     @Test
     void testSniperRobot(){
         RobotType sniper = new SniperRobot();
 
-        assertEquals(2, sniper.getMaxShieldStrength());
-        assertEquals(5, sniper.getMaxShots());
-        assertEquals(3, sniper.getShootingRange());
+        assertEquals(1, sniper.getMaxShieldStrength());
+        assertEquals(1, sniper.getMaxShots());
+        assertEquals(5, sniper.getShootingRange());
     }
 
 }
