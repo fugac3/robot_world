@@ -59,14 +59,14 @@ public class TurnTest {
         assertEquals(Direction.NORTH, robot.getCurrentDirection());
     }
 
-//    @Test
-//    void testMovingAroundInDifferentDirections(){
-//        robot.updatePosition(5);
-//        assertEquals(new Position(0,5), robot.getPosition());
-//
-//        robot.turnRight();
-//
-//        robot.updatePosition(7);
-//        assertEquals(new Position(7,5), robot.getPosition());
-//    }
+    @Test
+    void testMovingAroundInDifferentDirections(){
+        robot.updatePosition(5);
+        assertEquals(new Position(0,5), robot.getPosition());
+
+        robot.turnRight();
+
+        robot.updatePosition(4);
+        assertEquals(new Position(4,5), robot.getPosition());
+    }
 }

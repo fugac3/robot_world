@@ -8,6 +8,7 @@ import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Robot {
     private Direction currentDirection = Direction.NORTH;
@@ -15,7 +16,7 @@ public class Robot {
     private final TextWorld world;
     private Position position;
     private String status;
-    private String lastMoveReason;
+    private String lastMoveReason=null;
     private int ammo; // current ammo
     private final int maxAmmo; //starting/max ammo robot has
     private int currentShieldStrength; //current shield strength
@@ -27,6 +28,7 @@ public class Robot {
     private int robotHealth = 1;
 
     private final List<String> commands;
+    private final String typeName;
 
     public Robot(String name,TextWorld world,Position position, RobotType type) {
         this.robotHealth = getRobotHealth();
@@ -41,6 +43,11 @@ public class Robot {
         this.maxShieldStrength = type.getMaxShieldStrength();
         this.currentShieldStrength = maxShieldStrength;
         this.shootingRange = type.getShootingRange();
+        this.typeName = type.getTypeName();
+    }
+
+    public String getTypeName() {
+        return this.typeName;
     }
 
     public int getRobotHealth() {
@@ -58,6 +65,15 @@ public class Robot {
     public String getStatus() {
         return this.status;
     }
+
+//    public boolean fireCommand() {
+//        if (ammo > 0) {
+//            ammo--;
+//            return true; // Fired successfully
+//        } else {
+//            return false; // No ammo left
+//        }
+//    }
 
     public boolean reload() {
         ammo = maxAmmo; // reset to full ammo
@@ -112,9 +128,9 @@ public class Robot {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                currentShieldStrength = maxShieldStrength;
+                currentShieldStrength += maxShieldStrength;
                 isRepairing = false;
-                System.out.println("Shields repaired to maximum strength.");
+                System.out.println("Shields repaired.");
             }
         }).start();
         return true;
@@ -143,6 +159,16 @@ public class Robot {
         }
 
         Position newPosition = new Position(newX,  newY);
+
+
+
+        if (world.pathContainsPit(this.position, newPosition)) {
+            this.setRobotHealth(0);
+            System.out.println("Robot fell into a pit at " + newPosition);
+            lastMoveReason = "pit";
+            return false;
+        }
+
 
         if (world.blocksPath(this.position, newPosition)) {
             lastMoveReason = "Obstructed";

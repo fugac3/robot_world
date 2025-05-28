@@ -31,9 +31,15 @@ public class ReloadCommand extends Command {
     public Response execute(Robot robot) {
         Map<String, Object> data = new HashMap<>();
 
+        // Check if the robot is dead
+        if ("DEAD".equals(robot.getStatus())) {
+            data.put("message", "Cannot reload: robot is dead.");
+            return new Response("FAILED", data, robot);
+        }
+
         // Attempt to reload the robot's ammo
         boolean reloaded = robot.reload();
-
+        robot.setStatus("NORMAL");
         // Set the message and return an appropriate response
         data.put("message", "Done");
 
