@@ -198,6 +198,8 @@ public class TextWorld extends AbstractWorld {
         return false;
     }
 
-
+    public WorldConfig getConfig() {
+        return this.config;
+    }
 //==========
 }

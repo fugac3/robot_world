@@ -19,8 +19,8 @@ public class Robot {
     private String lastMoveReason=null;
     private int currentAmmo; // current ammo
     private final int maxAmmo; //starting/max ammo robot has
+    private final int maxShieldStrength; // starting/max shield strength robot has
     private int currentShieldStrength; //current shield strength
-    private final int maxShieldStrength; //max shield based off type of robot
     private final int shootingRange; //how far robot can fire bullets
     private final RobotType type;
     private boolean isRepairing = false;
@@ -28,7 +28,7 @@ public class Robot {
     private final int repairTime = 10;
     private final int reloadTime = 4;
     private int robotHealth = 1;
-    private int shieldRepairAmount = 2;
+    private final int shieldRepairAmount = 2;
 
     private final List<String> commands;
     private final String typeName;
@@ -43,8 +43,15 @@ public class Robot {
         this.status = "NORMAL"; //initialized status
         this.maxAmmo = type.getMaxShots();
         this.currentAmmo = maxAmmo;
-        this.maxShieldStrength = type.getMaxShieldStrength();
-        this.currentShieldStrength = maxShieldStrength;
+
+        // Get the shield constraint from world config
+        int worldMaxShields = world.getConfig().shieldConstraint;
+        int typeMaxShields = type.getMaxShieldStrength();
+
+        // Set maxShieldStrength to the smaller of the two values
+        this.maxShieldStrength = Math.min(worldMaxShields, typeMaxShields);
+        this.currentShieldStrength = this.maxShieldStrength;
+        this.currentAmmo = maxAmmo;
         this.shootingRange = type.getShootingRange();
         this.typeName = type.getTypeName();
     }
@@ -76,17 +83,6 @@ public class Robot {
     public String getStatus() {
         return this.status;
     }
-
-//    public boolean fireCommand() {
-//        if (ammo > 0) {
-//            ammo--;
-//            return true; // Fired successfully
-//        } else {
-//            return false; // No ammo left
-//        }
-//    }
-
-
 
     public int getAmmo() {
         return currentAmmo;
