@@ -1,24 +1,5 @@
 # oop-ex-toy-robot-group
 
-## Getting Started
-This project is a `Java` project using `maven` as build tool.
-
-The structure is as follow:
-* `src/main/java` - in here is some skeleton code that you must use as starting point for the problem.
-* `src/test/java` - add your unittests here (your unittests will also be reviewed)
-
-### IntelliJ
-To open it in `IntelliJ` IDE:
-1. _File_ -> _New_ -> _Project from Existing Sources..._
-1. Select the directory where this code has been checked out to by the LMS
-1. Choose _External Model_ as *Maven*
-
-## Build, Test & Run
-You may use IntelliJ to run your code and tests, but alternatively you can use the Maven build tool:
-* First ensure you are in the root directory of the project
-* To compile your code, run: `mvn compile`
-* To run the tests: `mvn test`
-* To run your application: `mvn compile exec:java`
 
 ## Build and Run Instructions
 Running Tests and Building the Project
@@ -27,6 +8,8 @@ Running Tests and Building the Project
 If all tests pass, run the following command to clean, install dependencies, compile, and package your project:
 
     mvn clean install compile package
+    
+
 
 If some tests are failing or you want to skip tests, run:
 
@@ -76,6 +59,22 @@ Running the Application
 ## To run the project from the terminal, use:
     
     java -jar robot-world-0.0.2-jar-with-dependencies.jar
+## Running client
+    java -cp target/classes za.co.wethinkcode.robots.server.Client
+
+
+## for Maven
+
+* Server
+
+
+    mvn compile exec:java -Dexec.mainClass="za.co.wethinkcode.robots.server.Server"
+
+
+* Client
+
+
+    mvn compile exec:java -Dexec.mainClass="za.co.wethinkcode.robots.server.Server"
 
 
 ## Server
