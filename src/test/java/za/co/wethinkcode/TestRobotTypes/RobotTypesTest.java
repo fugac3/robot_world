@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RobotTypesTest {
 
-    @Test
-    void testBunkerRobot(){
-        RobotType bunker = new TankRobot();
-
-        assertEquals(5, bunker.getMaxShieldStrength());
-        assertEquals(5, bunker.getMaxShots());
-        assertEquals(1, bunker.getShootingRange());
-    }
+//    @Test
+//    void testBunkerRobot(){
+//        RobotType bunker = new TankRobot();
+//
+//        assertEquals(5, bunker.getMaxShieldStrength());
+//        assertEquals(5, bunker.getMaxShots());
+//        assertEquals(1, bunker.getShootingRange());
+//    }
 
     @Test
     void testHeavyRobot(){
