@@ -5,6 +5,7 @@ import za.co.wethinkcode.robots.server.Response;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Command to move the robot backwards.
@@ -52,12 +53,26 @@ public class BackCommand extends Command {
             data.put("message", "Done");
             robot.setStatus("NORMAL");
             return new Response("OK", data, robot);
-        }
-        else {
+        }else {
+            if (Objects.equals(robot.getLastMoveReason(), "pit")){
+                data.put("message", "Your robot has fallen into a bottomless pit and has been destroyed! GAME OVER");
+                return new Response("Dead", data, null);
+            }
             data.put("message", robot.getLastMoveReason());
             robot.setStatus("NORMAL");
             return new Response("FAILED", data, robot);
         }
+    }
+
+    /**
+     * Returns a string representation of this command.
+     *
+     * @return A string describing this command
+     */
+    @Override
+    public String toString() {
+        // This will be used for logging the command
+        return "Back Command " + getArgument() + " steps back";
     }
 }
 

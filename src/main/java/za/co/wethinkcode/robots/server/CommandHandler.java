@@ -129,7 +129,11 @@ public class CommandHandler {
             else if (robot.getStatus().equals("DEAD")) {
                 clientHandler.markRobotAsDead();
                 robot.getWorld().removeRobot(robot);  // cleanup from world
-                return new Response("DEAD", Map.of("message", "Your robot has been destroyed. "+robot.getName()), null);
+                return new Response("DEAD", Map.of("message", "Your robot has been destroyed!\n GAME OVER"), null);
+            } else if (robot.getRobotHealth()==0) {
+                robot.setStatus("DEAD");
+                robot.getWorld().removeRobot(robot);  // cleanup from world
+                return new Response("DEAD", Map.of("message", "YOU FELL INTO A hole! GAME OVER"), null);
             } else if ("quit".equalsIgnoreCase(cmdName)) {
                 world.removeRobot(robot);
                 clientHandler.disconnect();

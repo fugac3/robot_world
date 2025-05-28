@@ -66,7 +66,7 @@ public class TurnTest {
 
         robot.turnRight();
 
-        robot.updatePosition(7);
-        assertEquals(new Position(7,5), robot.getPosition());
+        robot.updatePosition(4);
+        assertEquals(new Position(4,5), robot.getPosition());
     }
 }
