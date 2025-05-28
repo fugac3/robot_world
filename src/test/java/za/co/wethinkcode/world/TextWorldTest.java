@@ -50,7 +50,7 @@ public class TextWorldTest {
     void testObstacleBlocksPath() {
 
 //        TextWorld obstacle = new TextWorld();
-        Position pastObstacle = new Position(7, 11);
+        Position pastObstacle = new Position(3, 3);
         //Blocked
         assertFalse(world.blocksPath(robot.getPosition(),pastObstacle));
 

@@ -82,8 +82,8 @@ public abstract class Command {
      *
      * @return the world associated with this command
      */
-    public TextWorld getWorld() {
-        return world;
+    public static TextWorld getWorld() {
+        return TextWorld.getInstance();
     }
 
     /**
@@ -99,7 +99,6 @@ public abstract class Command {
 
         // Switch-case to create different commands based on the instruction
         switch (args[0]) {
-            case "l":
             case "launch":
                 if (args.length < 3 || args[1].isBlank() || args[2].isBlank()) {
                     throw new IllegalArgumentException("Could not parse arguments: Launch command must have: launch type and name");

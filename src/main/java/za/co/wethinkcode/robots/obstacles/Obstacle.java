@@ -18,9 +18,11 @@ public abstract class Obstacle {
 
     //default for tests 7,5
     /** The fixed height of the rectangle. */
+//    private final int height = 5;
     private final int height = 5;
 
     /** The fixed width of the rectangle. */
+//    private final int width = 7;
     private final int width = 7;
 
     /**
