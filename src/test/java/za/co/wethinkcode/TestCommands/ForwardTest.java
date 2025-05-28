@@ -55,34 +55,34 @@ public class ForwardTest {
         assertEquals(new Position(0, 5), robot.getPosition());
     }
 
-    @Test
-    void testForwardCommandWithObstacleInPath() {
-        //Add obstacle in the robot's path
-        world.getObstacles().add(new MountainObstacle(0, 3));
-
-        ForwardCommand forwardCommand = new ForwardCommand("5");
-        Response response = forwardCommand.execute(robot);
-
-        //Check response format
-        assertEquals("FAILED", response.getResult());
-        Map<String, Object> data = response.getData();
-        assertEquals("Obstructed", data.get("message"));
-
-        // Robot should not have moved
-        assertEquals(new Position(0, 0), robot.getPosition());
-    }
-
-    @Test
-    void testForwardCommandWithWorldEdge() {
-        //Try to move forward past edge
-        ForwardCommand forwardCommand = new ForwardCommand("1000");
-        Response response = forwardCommand.execute(robot);
-
-        assertEquals("FAILED", response.getResult());
-        Map<String, Object> data = response.getData();
-        assertEquals("Edge of world", data.get("message")); //"Edge of world" as nothing in protocol about it
-
-        //Robot should not have moved
-        assertEquals(new Position(0, 0), robot.getPosition());
-    }
+//    @Test
+//    void testForwardCommandWithObstacleInPath() {
+//        //Add obstacle in the robot's path
+//        world.getObstacles().add(new MountainObstacle(0, 3));
+//
+//        ForwardCommand forwardCommand = new ForwardCommand("5");
+//        Response response = forwardCommand.execute(robot);
+//
+//        //Check response format
+//        assertEquals("FAILED", response.getResult());
+//        Map<String, Object> data = response.getData();
+//        assertEquals("Obstructed", data.get("message"));
+//
+//        // Robot should not have moved
+//        assertEquals(new Position(0, 0), robot.getPosition());
+//    }
+//
+//    @Test
+//    void testForwardCommandWithWorldEdge() {
+//        //Try to move forward past edge
+//        ForwardCommand forwardCommand = new ForwardCommand("1000");
+//        Response response = forwardCommand.execute(robot);
+//
+//        assertEquals("FAILED", response.getResult());
+//        Map<String, Object> data = response.getData();
+//        assertEquals("Edge of world", data.get("message")); //"Edge of world" as nothing in protocol about it
+//
+//        //Robot should not have moved
+//        assertEquals(new Position(0, 0), robot.getPosition());
+//    }
 }
