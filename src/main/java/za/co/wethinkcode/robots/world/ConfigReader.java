@@ -18,8 +18,9 @@ public class ConfigReader {
             int length = Integer.parseInt(props.getProperty("world.length"));
             int height = Integer.parseInt(props.getProperty("world.height"));
             int maxObstacles = Integer.parseInt(props.getProperty("max.obstacles"));
+            int visibilityConstraint = Integer.parseInt(props.getProperty("visibility.constraint", "5"));
 
-            return new WorldConfig(length, height, maxObstacles);
+            return new WorldConfig(length, height, maxObstacles, visibilityConstraint);
         } catch (IOException | NumberFormatException e) {
             throw new RuntimeException("Error loading configuration: " + e.getMessage(), e);
         }

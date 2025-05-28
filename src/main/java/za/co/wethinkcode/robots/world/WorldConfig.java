@@ -6,12 +6,18 @@ public class WorldConfig {
     public final Position topLeft;
     public final Position bottomRight;
     public final int maxObstacles;
+    public final int visibilityConstraint;
 
     public WorldConfig(int length, int height, int maxObstacles) {
+        this(length, height, maxObstacles, 5);
+    }
+
+    public WorldConfig(int length, int height, int maxObstacles, int visibilityConstraint) {
         int divLength = length/2;
         int divHeight = height/2;
         this.topLeft = new Position(-divLength, divLength);
         this.bottomRight = new Position(divHeight, -divHeight);
         this.maxObstacles = maxObstacles;
+        this.visibilityConstraint = visibilityConstraint;
     }
 }
