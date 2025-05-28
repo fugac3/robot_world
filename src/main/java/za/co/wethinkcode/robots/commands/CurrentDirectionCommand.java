@@ -14,6 +14,7 @@ public class CurrentDirectionCommand extends Command {
     @Override
     public Response execute(Robot robot) {
         Map<String, Object> data = new HashMap<>();
+        robot.setStatus("NORMAL");
         data.put("message","The current direction is: "+robot.getCurrentDirection());
         return new Response("OK",data,null);
     }

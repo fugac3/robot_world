@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Client {
     public static void main(String[] args) {
 
-        int Port = 4400;
+        int Port = 4402;
 
         Socket socket = null;
 //        InputStreamReader inputStreamReader = null;  //byte based
@@ -18,7 +18,7 @@ public class Client {
         String clientName;
 
         try {
-            socket = new Socket("localhost",Port);
+            socket = new Socket("localhost", Port);
             System.out.println("Connected to server.");
 
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //End in Stream is byte     //Not end in Stream so = char
@@ -30,8 +30,7 @@ public class Client {
                 clientName = scanner.nextLine().trim();
                 if (clientName.isBlank()) {
                     System.out.println("Invalid name. Try again.");
-                }
-                else {
+                } else {
                     break;
                 }
             }
@@ -52,38 +51,41 @@ public class Client {
                     msgToSend = "null";
                 }
 
-                bufferedWriter.write(msgToSend);
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
+                try {
+                    bufferedWriter.write(msgToSend);
+                    bufferedWriter.newLine();
+                    bufferedWriter.flush();
+                } catch (IOException e) {
+                    System.out.println("Server disconnected. Cannot send message.");
+                    break;
+                }
 
                 StringBuilder fullResponse = new StringBuilder();
                 String line;
 
-                // Read until the "===END===" marker
-                while ((line = bufferedReader.readLine()) != null) {
-                    if (line.equals("===END===")) {
+                    // Read until the "===END===" marker
+                    while ((line = bufferedReader.readLine()) != null) {
+                        if (line.equals("===END===")) {
+                            break;
+                        }
+                        fullResponse.append(line).append("\n");
+                    }
+
+                    // If the first line is null, assume server is gone
+                    if (line == null && fullResponse.isEmpty()) {
+                        System.out.println("Server disconnected.");
                         break;
                     }
-                    fullResponse.append(line).append("\n");
-                }
 
-                System.out.println("Server:\n" + fullResponse);
+                    System.out.println("Server:\n" + fullResponse);
 
-                if (msgToSend.equalsIgnoreCase("QUIT")) {
-                    break;
+                    if (msgToSend.equalsIgnoreCase("QUIT")) {
+                        break;
+                    }
                 }
-            }
-        } catch (IOException e) {
-            System.out.println("Unable to connect to server. Is it running?");
-            e.printStackTrace();
-        } finally {
-            try {
-                if (socket != null) socket.close();
-                if (bufferedReader != null) bufferedReader.close();
-                if (bufferedWriter != null) bufferedWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            }catch (IOException e) {
+            System.out.println("Server disconnected.");
         }
+
     }
 }

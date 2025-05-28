@@ -4,7 +4,6 @@ import org.w3c.dom.Text;
 import za.co.wethinkcode.robots.obstacles.Obstacle;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
-import za.co.wethinkcode.robots.combat.Bullet;
 
 import java.util.*;
 
@@ -23,17 +22,11 @@ public class TextWorld extends AbstractWorld {
     /** Bottom-right corner of the world boundary. */
     public static Position BOTTOM_RIGHT;
 
-    /** Central starting position in the world. */
-//    public static final Position CENTRE = new Position(0, 0);
-
     /** Singleton instance of the TextWorld. */
     private static TextWorld instance;
 
     /** Map of robot names to robot instances. */
     private final Map<String, Robot> robots = new HashMap<>();
-
-    /** A position field (not frequently used in this context). */
-    private Position position;
 
     private final WorldConfig config;
 
@@ -54,14 +47,6 @@ public class TextWorld extends AbstractWorld {
         TextWorld.BOTTOM_RIGHT = BOTTOM_RIGHT;
         generateRandomObstacles(config.maxObstacles);
     }
-
-    public void removeRobot(Robot robot) {
-        robots.remove(robot.getName());
-    }
-
-//    public int setVisibilityConstraint(int newVis) {
-//        return newVis;
-//    }
 
     public static Position getTopLeft() {
         return TOP_LEFT;
@@ -91,6 +76,11 @@ public class TextWorld extends AbstractWorld {
         return instance;
     }
 
+
+    /**
+     * Clears all robots and obstacles currently in the world.
+     * With the option to generate new random obstacles.
+     */
     public void reset(boolean withObstacles) {
         this.robots.clear();
         this.obstacles.clear();
@@ -116,8 +106,6 @@ public class TextWorld extends AbstractWorld {
         do {
             int x = rand.nextInt(maxX - minX + 1) + minX;
             int y = rand.nextInt(maxY - minY + 1) + minY;
-//            int x = 0;
-//            int y = 0;
             pos = new Position(x, y);
         } while (blocksPosition(pos));  // Retry if blocked
         // cant tell if the world is full
@@ -134,7 +122,6 @@ public class TextWorld extends AbstractWorld {
         // Check for obstacles
         for (Obstacle obstacle : this.obstacles) {
             if (obstacle.blocksPosition(pos)) {
-//                System.out.println("Obstacle stuck");
                 return true;
             }
         }
@@ -142,7 +129,6 @@ public class TextWorld extends AbstractWorld {
         // Check for other robots
         for (Robot robot : getAllRobots()) {
             if (robot.getPosition().equals(pos)) {
-//                System.out.println("Robot stuck");
                 return true;
             }
         }
@@ -168,13 +154,26 @@ public class TextWorld extends AbstractWorld {
     }
 
     /**
+     * Clears all robots currently in the world.
+     */
+    public void clearRobots() {
+        robots.clear(); // assuming 'robots' is the map of name → Robot
+    }
+
+    /**
+     * Removes a specific robot from the world.
+     */
+    public void removeRobot(Robot robot) {
+        robots.remove(robot.getName());
+    }
+
+    /**
      * Determines whether any obstacle blocks the straight-line path between two positions.
      *
      * @param start the starting position
      * @param end the ending position
      * @return {@code true} if the path is blocked, otherwise {@code false}
      */
-
     public boolean blocksPath(Position start, Position end) {
         for (Obstacle o : obstacles) {
             if (o.blocksPath(start, end)) {
@@ -183,15 +182,5 @@ public class TextWorld extends AbstractWorld {
         }
         return false;
     }
-
-    /**
-     * Updates the internal position (not directly used for robot positioning).
-     *
-     * @param pos the new position
-     */
-    public void setPosition(Position pos) {
-        this.position = pos;
-    }
-
 //==========
 }
