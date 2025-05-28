@@ -18,7 +18,7 @@ public class RepairCommand extends Command {
         if (robot.getIsRepairing()) {
             robot.setStatus("NORMAL");
             data.put("message", "Repair in progress");
-            data.put("repairingTime", 5); // or dynamically tracked time if implemented
+            data.put("Repairing Time", robot.getRepairTime());
             return new Response("FAILED", data, robot);
         }
 

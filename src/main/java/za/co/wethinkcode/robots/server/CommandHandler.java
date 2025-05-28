@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robots.server;
 
 import za.co.wethinkcode.robots.commands.Command;
+import za.co.wethinkcode.robots.commands.ReloadCommand;
 import za.co.wethinkcode.robots.commands.RepairCommand;
 import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
@@ -129,7 +130,11 @@ public class CommandHandler {
             else if (robot.getStatus().equals("DEAD")) {
                 clientHandler.markRobotAsDead();
                 robot.getWorld().removeRobot(robot);  // cleanup from world
-                return new Response("DEAD", Map.of("message", "Your robot has been destroyed. "+robot.getName()), null);
+                return new Response("DEAD", Map.of("message", "Your robot has been destroyed!\n GAME OVER"), null);
+            } else if (robot.getRobotHealth()==0) {
+                robot.setStatus("DEAD");
+                robot.getWorld().removeRobot(robot);  // cleanup from world
+                return new Response("DEAD", Map.of("message", "YOU FELL INTO A hole! GAME OVER"), null);
             } else if ("quit".equalsIgnoreCase(cmdName)) {
                 world.removeRobot(robot);
                 clientHandler.disconnect();
@@ -144,6 +149,11 @@ public class CommandHandler {
                     // Directly create and execute RepairCommand
                     RepairCommand repairCommand = new RepairCommand();
                     return repairCommand.execute(robot);
+                }
+                if ("reload".equalsIgnoreCase(cmdName)) {
+                    // Directly create and execute ReloadCommand
+                    ReloadCommand reloadCommand = new ReloadCommand();
+                    return reloadCommand.execute(robot);
                 }
                 // Reconstruct full command string from name + args
                 String argument = (String) request.getArguments().get("steps"); // for forward/back

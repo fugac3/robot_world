@@ -6,6 +6,7 @@ import za.co.wethinkcode.robots.server.Response;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Command to move the robot forward.
@@ -53,6 +54,10 @@ public class ForwardCommand extends Command {
             robot.setStatus("NORMAL");
             return new Response("OK", data, robot);
         }else {
+            if (Objects.equals(robot.getLastMoveReason(), "pit")){
+                data.put("message", "Your robot has fallen into a bottomless pit and has been destroyed! GAME OVER");
+                return new Response("Dead", data, null);
+            }
             data.put("message", robot.getLastMoveReason());
             robot.setStatus("NORMAL");
             return new Response("FAILED", data, robot);

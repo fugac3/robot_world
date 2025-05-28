@@ -8,6 +8,7 @@ import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Robot {
     private Direction currentDirection = Direction.NORTH;
@@ -15,16 +16,19 @@ public class Robot {
     private final TextWorld world;
     private Position position;
     private String status;
-    private String lastMoveReason;
-    private int ammo; // current ammo
+    private String lastMoveReason=null;
+    private int currentAmmo; // current ammo
     private final int maxAmmo; //starting/max ammo robot has
+    private final int maxShieldStrength; // starting/max shield strength robot has
     private int currentShieldStrength; //current shield strength
-    private final int maxShieldStrength; //max shield based off type of robot
     private final int shootingRange; //how far robot can fire bullets
     private final RobotType type;
     private boolean isRepairing = false;
+    private boolean isReloading = false;
     private final int repairTime = 10;
+    private final int reloadTime = 4;
     private int robotHealth = 1;
+    private final int shieldRepairAmount = 2;
 
     private final List<String> commands;
     private final String typeName;
@@ -38,11 +42,26 @@ public class Robot {
         this.type = type;
         this.status = "NORMAL"; //initialized status
         this.maxAmmo = type.getMaxShots();
-        this.ammo = maxAmmo;
-        this.maxShieldStrength = type.getMaxShieldStrength();
-        this.currentShieldStrength = maxShieldStrength;
+        this.currentAmmo = maxAmmo;
+
+        // Get the shield constraint from world config
+        int worldMaxShields = world.getConfig().shieldConstraint;
+        int typeMaxShields = type.getMaxShieldStrength();
+
+        // Set maxShieldStrength to the smaller of the two values
+        this.maxShieldStrength = Math.min(worldMaxShields, typeMaxShields);
+        this.currentShieldStrength = this.maxShieldStrength;
+        this.currentAmmo = maxAmmo;
         this.shootingRange = type.getShootingRange();
         this.typeName = type.getTypeName();
+    }
+
+    public int getReloadTime() {
+        return reloadTime;
+    }
+
+    public int getRepairTime() {
+        return repairTime;
     }
 
     public String getTypeName() {
@@ -65,31 +84,20 @@ public class Robot {
         return this.status;
     }
 
-    public boolean fireCommand() {
-        if (ammo > 0) {
-            ammo--;
-            return true; // Fired successfully
-        } else {
-            return false; // No ammo left
-        }
-    }
-
-    public boolean reload() {
-        ammo = maxAmmo; // reset to full ammo
-        status = "RELOAD";
-        return true;
-    }
-
     public int getAmmo() {
-        return ammo;
+        return currentAmmo;
     }
 
     public void setAmmo(int ammoShot) {
-        this.ammo = ammo - ammoShot;
+        this.currentAmmo = currentAmmo - ammoShot;
     }
 
     public boolean getIsRepairing() {
         return isRepairing;
+    }
+
+    public boolean getIsReloading() {
+        return isReloading;
     }
 
     public int getCurrentShieldStrength() {
@@ -116,6 +124,32 @@ public class Robot {
         }
     }
 
+//    public boolean reload() {
+//        currentAmmo = maxAmmo; // reset to full ammo
+//        status = "RELOAD";
+//        return true;
+//    }
+
+    public boolean reloading() {
+        if (isReloading || currentAmmo == maxShieldStrength) {
+            return false;
+        }
+        isReloading = true;
+        new Thread(() -> {
+            try {
+                Thread.sleep(reloadTime * 1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                currentAmmo = maxAmmo;
+                isReloading = false;
+                System.out.println("Ammo reloaded.");
+            }
+        }).start();
+        return true;
+    }
+
+
     public boolean repairing() {
         if (isRepairing || currentShieldStrength == maxShieldStrength) {
             return false;
@@ -127,7 +161,10 @@ public class Robot {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                currentShieldStrength += maxShieldStrength;
+                currentShieldStrength += shieldRepairAmount;
+                if(currentShieldStrength>maxShieldStrength){
+                    currentShieldStrength = maxShieldStrength;
+                }
                 isRepairing = false;
                 System.out.println("Shields repaired.");
             }
@@ -158,6 +195,16 @@ public class Robot {
         }
 
         Position newPosition = new Position(newX,  newY);
+
+
+
+        if (world.pathContainsPit(this.position, newPosition)) {
+            this.setRobotHealth(0);
+            System.out.println("Robot fell into a pit at " + newPosition);
+            lastMoveReason = "pit";
+            return false;
+        }
+
 
         if (world.blocksPath(this.position, newPosition)) {
             lastMoveReason = "Obstructed";
