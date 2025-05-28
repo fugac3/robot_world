@@ -64,8 +64,8 @@ public abstract class AbstractWorld {
         //Ensures that all classes in the list extend Obstacle.
         //List of classes allow the creation of new ones when the check fails
         List<Class<? extends Obstacle>> obstacleTypes = Arrays.asList(
-//                LakesObstacle.class,
-//                MountainObstacle.class,
+                LakesObstacle.class,
+                MountainObstacle.class,
                 BottomlessPit.class
         );
 
@@ -87,10 +87,10 @@ public abstract class AbstractWorld {
             // Random position for obstacle
             //between ~300 - ~200 + 1 + the min again to stay in bounds
             // (100 - (-200) + 1 = 301), shift by -200
-//            int x = random.nextInt(maxX - minX + 1) + minX;
-//            int y = random.nextInt(maxY - minY + 1) + minY;
-            int x = 0;
-            int y = 1;
+            int x = random.nextInt(maxX - minX + 1) + minX;
+            int y = random.nextInt(maxY - minY + 1) + minY;
+//            int x = 0;
+//            int y = 1;
 
             // Create new obstacle to be checked an added
             Obstacle newObstacle = createObstacleOfType(obstacleType, x, y);

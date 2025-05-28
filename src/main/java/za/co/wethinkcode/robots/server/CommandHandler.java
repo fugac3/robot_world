@@ -15,18 +15,11 @@ import java.util.Map;
 public class CommandHandler {
     private final TextWorld world;
     private Robot robot;
-    private final ConnectionManager connectionManager;
     private final ClientHandler clientHandler;
 
-    public CommandHandler(TextWorld world, ConnectionManager connectionManager, ClientHandler clientHandler) {
+    public CommandHandler(TextWorld world, ClientHandler clientHandler) {
         this.world = world;
-        this.connectionManager = connectionManager;
         this.clientHandler = clientHandler;
-    }
-
-    public void disconnect() {
-        System.out.println("Disconnecting client: " + (clientHandler.getClientName() != null ? clientHandler.getClientName() : "unknown"));
-        connectionManager.stop();
     }
 
     public void removeRobot() {
@@ -36,146 +29,170 @@ public class CommandHandler {
         }
     }
 
-
     public Response handleClientCommand(String msgFromClient) {
-        Map<String, Object> data = new HashMap<>();
-        Request request;
-        Command command;
-
-        command = Command.create(msgFromClient.toLowerCase());
+        Command command = Command.create(msgFromClient.toLowerCase());
         if (command == null) {
             return new Response("ERROR", Map.of("message", "Unsupported command: " + msgFromClient), null);
         }
-
-        Map<String, Object> args = new HashMap<>();
         String arg = command.getArgument();
+        Map<String, Object> args = parseArgsForCommand(command, arg);
 
-        //assign args based on cmd name
+        Request request = new Request(command.getName(), args);
+        return routeRequest(request);
+    }
+
+    private Response routeRequest(Request request) {
+        String cmdName = request.getCommand();
+        String name = (String) request.getArguments().get("name");
+        String type = (String) request.getArguments().get("type");
+
+        if (robot.getIsRepairing()) {
+            error("Robot is currently repairing. Please wait.", robot);
+        }
+        if (robot.getIsReloading()) {
+            error("Robot is currently reloading. Please wait.", robot);
+        }
+
+        if ("launch".equalsIgnoreCase(cmdName)) {
+            return LaunchChecker(name,type);
+        }
+
+        if (robot == null) {
+            error("Please launch a robot first using: launch type name");
+        }
+
+        if (robot.getStatus().equals("DEAD")) {
+            cleanupAndReturnDeadResponse();
+        }
+
+        if (robot.getRobotHealth() == 0) {
+            cleanupAndReturnDeadResponse();
+        }
+
+        if ("quit".equalsIgnoreCase(cmdName)) {
+            world.removeRobot(robot);
+            clientHandler.disconnect();
+            return null;
+        }
+        return handleOtherCommand(request);
+    }
+
+    private Response handleOtherCommand(Request request) {
+        String cmdName = request.getCommand();
+        // Directly create and execute RepairCommand/ReloadCommand
+        switch (cmdName.toLowerCase()) {
+            case "repair":
+                return new RepairCommand().execute(robot);
+            case "reload":
+                return new ReloadCommand().execute(robot);
+            default:
+                return handleMovementOrCustomCommand(request);
+        }
+    }
+
+    private void cleanupAndReturnDeadResponse() {
+        robot.setStatus("DEAD");
+        robot.getWorld().removeRobot(robot);
+        clientHandler.markRobotAsDead();
+
+        String message = (robot.getRobotHealth() == 0) ?
+                "you fell into a bottomless pit! GOOD JOB" :
+                "Your robot has been destroyed! GAME OVER";
+
+        new Response("DEAD", Map.of("message", message), null);
+    }
+
+    private Response handleMovementOrCustomCommand(Request request) {
+        String arg = (String) request.getArguments().get("steps");
+        if (arg == null) {
+            arg = (String) request.getArguments().get("direction");
+        }
+
+        String reconstructed = request.getCommand() + (arg != null ? " " + arg : "");
+        Command command = Command.create(reconstructed);
+
+        if (command == null) {
+            return error("Command cannot be blank");
+        }
+
+        return robot.handleCommand(command);
+    }
+
+    //launch logic
+    public Response LaunchChecker(String robotName,String robotTypeName) {
+        Map<String, Object> data = new HashMap<>();
+
+        // Check if robot name is null or empty
+        if (robotName == null || robotName.trim().isEmpty()) {
+            error("Launch command needs a name.");
+        }
+
+        // Check if robot type is null or empty
+        if (robotTypeName == null || robotTypeName.trim().isEmpty()) {
+            error("Launch command needs a robot type.");
+        }
+
+        // Check if robot type is valid
+        RobotType type = RobotCreator.createRobotType(robotTypeName);
+        if (type == null) {
+            error("Unknown robot type: " + robotTypeName);
+        }
+        // Check if name is taken
+        boolean nameTaken = world.getAllRobots().stream()
+                .anyMatch(r -> r.getName().equalsIgnoreCase(robotName));
+        if (nameTaken) {
+            error("Too many of you in this world (name taken)");
+        }
+
+        // Launch the robot
+        Position startPos = world.getRandomFreePosition();
+        this.robot = new Robot(robotName, world, startPos, type);
+        world.addRobot(this.robot);
+
+        Position pos = robot.getPosition();
+        data.put("position", new int[]{pos.getX(), pos.getY()});
+        data.put("visibility", world.getConfig().visibilityConstraint);
+        data.put("reload", robot.getReloadTime());
+        data.put("repair", robot.getRepairTime());
+        data.put("shield", type.getMaxShieldStrength());
+
+        return new Response("OK", data, robot);
+    }
+
+    //arg parser
+    private Map<String, Object> parseArgsForCommand(Command command, String arg) {
+        Map<String, Object> args = new HashMap<>();
+
         if (arg != null && !arg.isEmpty()) {
             switch (command.getName()) {
                 case "turn":
-                    args.put("direction", arg);
+                    args.put("direction", arg.trim());
                     break;
+
                 case "forward":
                 case "back":
-                    args.put("steps", arg);
+                    args.put("steps", Integer.parseInt(arg.trim()));
                     break;
+
                 case "launch":
-                    String[] parts = arg.split("\\s+"); //take into account robot type
+                    String[] parts = arg.trim().split("\\s+");
                     if (parts.length == 2) {
                         args.put("type", parts[0]);
                         args.put("name", parts[1]);
                     } else {
-                        args.put("name", arg);
+                        args.put("name", arg.trim());
                     }
                     break;
             }
         }
-
-        request = new Request(command.getName(), args);
-
-        try {
-            String cmdName = request.getCommand();
-
-            if ("launch".equalsIgnoreCase(cmdName)) {
-                String name = (String) request.getArguments().get("name");
-                String typeName = (String) request.getArguments().get(("type"));
-
-                return LaunchChecker(name, typeName);
-
-            }//If robot has not been launched yet
-            else if (robot == null) {
-                return new Response("ERROR", Map.of("message", "Please launch a robot first using: launch <type> <name>"), null);
-            }// Check if robot died during this command
-            else if (robot.getStatus().equals("DEAD")) {
-                clientHandler.markRobotAsDead();
-                robot.getWorld().removeRobot(robot);  // cleanup from world
-                return new Response("DEAD", Map.of("message", "Your robot has been destroyed!\n GAME OVER"), null);
-            } else if (robot.getRobotHealth() == 0) {
-                robot.setStatus("DEAD");
-                robot.getWorld().removeRobot(robot);  // cleanup from world
-                return new Response("DEAD", Map.of("message", "YOU FELL INTO A hole! GAME OVER"), null);
-            } else if ("quit".equalsIgnoreCase(cmdName)) {
-                world.removeRobot(robot);
-                clientHandler.disconnect();
-                return null; // Signal to break the loop
-            }// Only allow status check or repair command
-            else if (robot.getIsRepairing()) {
-                return new Response("FAILED", Map.of(
-                        "message", "Robot is currently repairing. Please wait."
-                ), robot);
-            } else {
-                if ("repair".equalsIgnoreCase(cmdName)) {
-                    // Directly create and execute RepairCommand
-                    RepairCommand repairCommand = new RepairCommand();
-                    return repairCommand.execute(robot);
-                }
-                if ("reload".equalsIgnoreCase(cmdName)) {
-                    // Directly create and execute ReloadCommand
-                    ReloadCommand reloadCommand = new ReloadCommand();
-                    return reloadCommand.execute(robot);
-                }
-                // Reconstruct full command string from name + args
-                String argument = (String) request.getArguments().get("steps"); // for forward/back
-                if (argument == null) {
-                    argument = (String) request.getArguments().get("direction"); // for turn
-                }
-                String reconstructed = cmdName + (argument != null ? " " + argument : "");
-                command = Command.create(reconstructed);
-                if (command == null) {
-                    return new Response("ERROR", Map.of("message", "Invalid command"), null);
-                }
-                return robot.handleCommand(command);
-            }
-        } catch (IllegalArgumentException e) {
-            return new Response("ERROR", Map.of("message", e.getMessage()), null);
-        }
-        return null;
+        return args;
     }
 
-
-public Response LaunchChecker(String robotName,String robotTypeName) {
-    Map<String, Object> data = new HashMap<>();
-
-    // Check if robot name is null or empty
-    if (robotName == null || robotName.trim().isEmpty()) {
-        data.put("message", "Launch command needs a name.");
-        return new Response("ERROR", data, null);
+    private Response error(String message) {
+        return new Response("ERROR", Map.of("message", message), null);
     }
 
-    // Check if robot type is null or empty
-    if (robotTypeName == null || robotTypeName.trim().isEmpty()) {
-        data.put("message", "Launch command needs a robot type.");
-        return new Response("ERROR", data, null);
+    private void error(String message, Robot robot) {
+        new Response("FAILED", Map.of("message", message), robot);
     }
-
-    // Check if robot type is valid
-    RobotType type = RobotCreator.createRobotType(robotTypeName);
-    if (type == null) {
-        data.put("message", "Unknown robot type: " + robotTypeName);
-        return new Response("ERROR", data, null);
-    }
-    // Check if name is taken
-    boolean nameTaken = world.getAllRobots().stream()
-            .anyMatch(r -> r.getName().equalsIgnoreCase(robotName));
-    if (nameTaken) {
-        data.put("message", "Too many of you in this world (name taken)");
-        return new Response("ERROR", data, null);
-    }
-
-    // Launch the robot
-    Position startPos = world.getRandomFreePosition();
-    this.robot = new Robot(robotName, world, startPos, type);
-    world.addRobot(this.robot);
-
-    Position pos = robot.getPosition();
-    data.put("position", new int[]{pos.getX(), pos.getY()});
-    data.put("visibility", world.);
-    data.put("reload", "Hardcode");
-    data.put("repair", "Hardcode");
-    data.put("shield", type.getMaxShieldStrength());
-
-    return new Response("OK", data, robot);
-
-}
 }
