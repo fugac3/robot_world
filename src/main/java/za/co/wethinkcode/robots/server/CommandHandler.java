@@ -46,33 +46,35 @@ public class CommandHandler {
         String name = (String) request.getArguments().get("name");
         String type = (String) request.getArguments().get("type");
 
-        if (robot.getIsRepairing()) {
-            error("Robot is currently repairing. Please wait.", robot);
-        }
-        if (robot.getIsReloading()) {
-            error("Robot is currently reloading. Please wait.", robot);
-        }
 
         if ("launch".equalsIgnoreCase(cmdName)) {
             return LaunchChecker(name,type);
         }
+
+
 
         if (robot == null) {
             error("Please launch a robot first using: launch type name");
         }
 
         if (robot.getStatus().equals("DEAD")) {
-            cleanupAndReturnDeadResponse();
+            return cleanupAndReturnDeadResponse();
         }
 
         if (robot.getRobotHealth() == 0) {
-            cleanupAndReturnDeadResponse();
+            return cleanupAndReturnDeadResponse();
         }
 
         if ("quit".equalsIgnoreCase(cmdName)) {
             world.removeRobot(robot);
             clientHandler.disconnect();
             return null;
+        }
+        if (robot.getIsRepairing()) {
+            error("Robot is currently repairing. Please wait.", robot);
+        }
+        if (robot.getIsReloading()) {
+            error("Robot is currently reloading. Please wait.", robot);
         }
         return handleOtherCommand(request);
     }
@@ -90,7 +92,7 @@ public class CommandHandler {
         }
     }
 
-    private void cleanupAndReturnDeadResponse() {
+    private Response cleanupAndReturnDeadResponse() {
         robot.setStatus("DEAD");
         robot.getWorld().removeRobot(robot);
         clientHandler.markRobotAsDead();
@@ -99,7 +101,7 @@ public class CommandHandler {
                 "you fell into a bottomless pit! GOOD JOB" :
                 "Your robot has been destroyed! GAME OVER";
 
-        new Response("DEAD", Map.of("message", message), null);
+        return new Response("DEAD", Map.of("message", message), null);
     }
 
     private Response handleMovementOrCustomCommand(Request request) {
@@ -171,7 +173,7 @@ public class CommandHandler {
 
                 case "forward":
                 case "back":
-                    args.put("steps", Integer.parseInt(arg.trim()));
+                    args.put("steps", arg.trim());
                     break;
 
                 case "launch":

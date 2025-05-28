@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class BackwardsTest {
     private Robot robot;
 
-    Position TOP_LEFT = new Position(-5,5);
-    Position BOTTOM_RIGHT = new Position(5,-5);
+    Position TOP_LEFT = new Position(-10,10);
+    Position BOTTOM_RIGHT = new Position(10,-10);
     TextWorld world = TextWorld.getInstance(TOP_LEFT,BOTTOM_RIGHT);
 
     @Test

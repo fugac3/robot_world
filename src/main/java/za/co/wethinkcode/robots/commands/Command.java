@@ -103,7 +103,7 @@ public abstract class Command {
                 if (args.length < 3 || args[1].isBlank() || args[2].isBlank()) {
                     throw new IllegalArgumentException("Could not parse arguments: Launch command must have: launch type and name");
                 }
-                return new LaunchCommand(args[1].trim(), args[2].trim());
+                return new LaunchHelper(args[1].trim(), args[2].trim());
             case "quit":
                 return new QuitCommand();
             case "forward":
