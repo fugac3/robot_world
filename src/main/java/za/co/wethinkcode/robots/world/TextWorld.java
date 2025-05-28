@@ -48,6 +48,11 @@ public class TextWorld extends AbstractWorld {
         generateRandomObstacles(config.maxObstacles);
     }
 
+    public Robot getRobotByName(String name) {
+        return robots.get(name);
+    }
+
+
     public static Position getTopLeft() {
         return TOP_LEFT;
     }

@@ -34,8 +34,8 @@ public class LaunchHelper extends Command {
     @Override
     public Response execute(Robot robot) {
         Map<String, Object> data = new HashMap<>();
-
-        data.put("message", "Launch successful for "+robotName);
-        return new Response("OK", data, null);
+        data.put("message", "Launch ignored.");
+        return new Response("IGNORED", data, null);
     }
+
 }

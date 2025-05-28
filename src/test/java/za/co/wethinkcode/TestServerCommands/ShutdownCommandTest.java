@@ -6,6 +6,7 @@ import za.co.wethinkcode.robots.robot.Position;
 import za.co.wethinkcode.robots.robot.Robot;
 import za.co.wethinkcode.robots.robotTypes.RobotType;
 import za.co.wethinkcode.robots.server.ClientHandler;
+import za.co.wethinkcode.robots.serverCommands.ShutdownCommand;
 import za.co.wethinkcode.robots.world.TextWorld;
 
 import java.io.IOException;
