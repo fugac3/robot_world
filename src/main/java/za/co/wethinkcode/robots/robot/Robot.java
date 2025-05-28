@@ -124,12 +124,6 @@ public class Robot {
         }
     }
 
-//    public boolean reload() {
-//        currentAmmo = maxAmmo; // reset to full ammo
-//        status = "RELOAD";
-//        return true;
-//    }
-
     public boolean reloading() {
         if (isReloading || currentAmmo == maxShieldStrength) {
             return false;
@@ -196,8 +190,6 @@ public class Robot {
 
         Position newPosition = new Position(newX,  newY);
 
-
-
         if (world.pathContainsPit(this.position, newPosition)) {
             this.setRobotHealth(0);
             System.out.println("Robot fell into a pit at " + newPosition);
@@ -222,7 +214,6 @@ public class Robot {
                 return false;
             }
         }
-
         this.position = newPosition;
         return true;
     }

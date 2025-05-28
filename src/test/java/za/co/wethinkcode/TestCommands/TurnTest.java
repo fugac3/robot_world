@@ -19,7 +19,6 @@ public class TurnTest {
         //Creating a controlled environment with no obstacles and defined position to make testing easier
         world = TextWorld.getInstance();
         world.getObstacles().clear(); //get rid of all obstacles in world
-        TextWorld world = new TextWorld();
         RobotType type = new RobotType("bot",5,5,5);
         robot = new Robot("Robo", world, new Position(0,0),type);
         robot.setStatus("NORMAL");
@@ -61,12 +60,12 @@ public class TurnTest {
 
     @Test
     void testMovingAroundInDifferentDirections(){
-        robot.updatePosition(5);
-        assertEquals(new Position(0,5), robot.getPosition());
+        robot.updatePosition(4);
+        assertEquals(new Position(0,4), robot.getPosition());
 
         robot.turnRight();
 
         robot.updatePosition(4);
-        assertEquals(new Position(4,5), robot.getPosition());
+        assertEquals(new Position(4,4), robot.getPosition());
     }
 }

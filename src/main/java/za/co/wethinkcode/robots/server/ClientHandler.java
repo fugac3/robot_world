@@ -19,7 +19,7 @@ public class ClientHandler implements Runnable {
 
     public ClientHandler(Socket socket, TextWorld world) {
         this.connectionManager = new ConnectionManager(socket);
-        this.commandHandler = new CommandHandler(world, connectionManager,this);
+        this.commandHandler = new CommandHandler(world,this);
     }
 
     public void markRobotAsDead() {

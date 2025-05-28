@@ -25,15 +25,16 @@ public class ForwardTest {
     @Test
     void testForwardCommand() {
         //Creating a controlled environment with no obstacles and defined position to make testing easier
-        world = TextWorld.getInstance();
+        Position TOP_LEFT = new Position(-5,5);
+        Position BOTTOM_RIGHT = new Position(5,-5);
+        TextWorld world = TextWorld.getInstance(TOP_LEFT,BOTTOM_RIGHT);
         world.getObstacles().clear(); //get rid of all obstacles in world
-        TextWorld world = new TextWorld();
         RobotType type = new RobotType("bot",5,5,5);
         robot = new Robot("Robo", world, new Position(0,0),type);
         robot.setStatus("NORMAL");
 
         //Create a forward command moving 5 steps forward
-        ForwardCommand forwardCommand = new ForwardCommand("5");
+        ForwardCommand forwardCommand = new ForwardCommand("4");
         //Execute command
         Response response = forwardCommand.execute(robot);
 
@@ -47,17 +48,19 @@ public class ForwardTest {
         assertNotNull(state); //state should not be empty
         int[] position = (int[]) state.get("position"); //position is a list in [x,y] format
         assertEquals(0, position[0]); //x coordinate
-        assertEquals(5, position[1]); //y coordinate
+        assertEquals(4, position[1]); //y coordinate
         assertEquals(Direction.NORTH, state.get("direction"));
         assertEquals("NORMAL", state.get("status"));
 
         //Check actual robot state
-        assertEquals(new Position(0, 5), robot.getPosition());
+        assertEquals(new Position(0, 4), robot.getPosition());
     }
 
 //    @Test
 //    void testForwardCommandWithObstacleInPath() {
 //        //Add obstacle in the robot's path
+//        world = TextWorld.getInstance();
+//        world.getObstacles().clear();
 //        world.getObstacles().add(new MountainObstacle(0, 3));
 //
 //        ForwardCommand forwardCommand = new ForwardCommand("5");
@@ -72,17 +75,21 @@ public class ForwardTest {
 //        assertEquals(new Position(0, 0), robot.getPosition());
 //    }
 //
-//    @Test
-//    void testForwardCommandWithWorldEdge() {
-//        //Try to move forward past edge
-//        ForwardCommand forwardCommand = new ForwardCommand("1000");
-//        Response response = forwardCommand.execute(robot);
-//
-//        assertEquals("FAILED", response.getResult());
-//        Map<String, Object> data = response.getData();
-//        assertEquals("Edge of world", data.get("message")); //"Edge of world" as nothing in protocol about it
-//
-//        //Robot should not have moved
-//        assertEquals(new Position(0, 0), robot.getPosition());
-//    }
+    @Test
+    void testForwardCommandWithWorldEdge() {
+        //Try to move forward past edge
+        world = TextWorld.getInstance();
+        world.getObstacles().clear(); //get rid of all obstacles in world
+        RobotType type = new RobotType("bot",5,5,5);
+        robot = new Robot("Robo", world, new Position(0,0),type);
+        ForwardCommand forwardCommand = new ForwardCommand("100");
+        Response response = forwardCommand.execute(robot);
+
+        assertEquals("FAILED", response.getResult());
+        Map<String, Object> data = response.getData();
+        assertEquals("Edge of world", data.get("message")); //"Edge of world" as nothing in protocol about it
+
+        //Robot should not have moved
+        assertEquals(new Position(0, 0), robot.getPosition());
+    }
 }
