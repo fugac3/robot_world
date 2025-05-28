@@ -17,15 +17,18 @@ public class Robot {
     private Position position;
     private String status;
     private String lastMoveReason=null;
-    private int ammo; // current ammo
+    private int currentAmmo; // current ammo
     private final int maxAmmo; //starting/max ammo robot has
     private int currentShieldStrength; //current shield strength
     private final int maxShieldStrength; //max shield based off type of robot
     private final int shootingRange; //how far robot can fire bullets
     private final RobotType type;
     private boolean isRepairing = false;
+    private boolean isReloading = false;
     private final int repairTime = 10;
+    private final int reloadTime = 4;
     private int robotHealth = 1;
+    private int shieldRepairAmount = 2;
 
     private final List<String> commands;
     private final String typeName;
@@ -39,11 +42,19 @@ public class Robot {
         this.type = type;
         this.status = "NORMAL"; //initialized status
         this.maxAmmo = type.getMaxShots();
-        this.ammo = maxAmmo;
+        this.currentAmmo = maxAmmo;
         this.maxShieldStrength = type.getMaxShieldStrength();
         this.currentShieldStrength = maxShieldStrength;
         this.shootingRange = type.getShootingRange();
         this.typeName = type.getTypeName();
+    }
+
+    public int getReloadTime() {
+        return reloadTime;
+    }
+
+    public int getRepairTime() {
+        return repairTime;
     }
 
     public String getTypeName() {
@@ -75,22 +86,22 @@ public class Robot {
 //        }
 //    }
 
-    public boolean reload() {
-        ammo = maxAmmo; // reset to full ammo
-        status = "RELOAD";
-        return true;
-    }
+
 
     public int getAmmo() {
-        return ammo;
+        return currentAmmo;
     }
 
     public void setAmmo(int ammoShot) {
-        this.ammo = ammo - ammoShot;
+        this.currentAmmo = currentAmmo - ammoShot;
     }
 
     public boolean getIsRepairing() {
         return isRepairing;
+    }
+
+    public boolean getIsReloading() {
+        return isReloading;
     }
 
     public int getCurrentShieldStrength() {
@@ -117,6 +128,32 @@ public class Robot {
         }
     }
 
+//    public boolean reload() {
+//        currentAmmo = maxAmmo; // reset to full ammo
+//        status = "RELOAD";
+//        return true;
+//    }
+
+    public boolean reloading() {
+        if (isReloading || currentAmmo == maxShieldStrength) {
+            return false;
+        }
+        isReloading = true;
+        new Thread(() -> {
+            try {
+                Thread.sleep(reloadTime * 1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                currentAmmo = maxAmmo;
+                isReloading = false;
+                System.out.println("Ammo reloaded.");
+            }
+        }).start();
+        return true;
+    }
+
+
     public boolean repairing() {
         if (isRepairing || currentShieldStrength == maxShieldStrength) {
             return false;
@@ -128,7 +165,10 @@ public class Robot {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                currentShieldStrength += maxShieldStrength;
+                currentShieldStrength += shieldRepairAmount;
+                if(currentShieldStrength>maxShieldStrength){
+                    currentShieldStrength = maxShieldStrength;
+                }
                 isRepairing = false;
                 System.out.println("Shields repaired.");
             }
